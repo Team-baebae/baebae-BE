@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: baebae-BE
+
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+
+  config:
+    import: optional:secrets.yml  #????? ???
+
