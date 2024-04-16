@@ -9,7 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 @EnableWebSecurity
 @Configuration
-public class SecurityConfiguration {
+public class H2Configuration {
 
     @Bean
     @ConditionalOnProperty(name = "spring.h2.console.enabled",havingValue = "true")
