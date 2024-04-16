@@ -1,12 +1,15 @@
 package com.web.baebaeBE.login.api;
 
 
+import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 import com.web.baebaeBE.login.application.MemberService;
 import com.web.baebaeBE.login.dto.MemberRequest;
 import com.web.baebaeBE.login.dto.MemberResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -25,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/oauth")
 public class MemberController {
+
 
     private final MemberService memberService;
 
@@ -60,6 +64,18 @@ public class MemberController {
         return ResponseEntity.ok(memberService.newAccessToken(refreshToken));
     }
 
+    @GetMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletRequest httpServletRequest){
+        String authorizationHeader = httpServletRequest.getHeader("Authorization");
+        String accessToken = null;
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer "))
+            accessToken = authorizationHeader.substring(7); // "Bearer " 이후의 토큰 값만 추출
+
+        //로그아웃 진행
+        memberService.logout(accessToken);
+
+        return ResponseEntity.ok().build();
+    }
 
 
 

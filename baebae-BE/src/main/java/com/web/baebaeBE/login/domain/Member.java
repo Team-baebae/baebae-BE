@@ -7,6 +7,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -36,6 +37,7 @@ public class Member implements UserDetails {
     @Column(name = "refresh_token")
     private String refreshToken;
 
+    private LocalDateTime tokenExpirationTime;
 
 
     public Member update(String nickname){
@@ -47,6 +49,9 @@ public class Member implements UserDetails {
         this.refreshToken = refreshToken;
     }
 
+    public void updateTokenExpirationTime(LocalDateTime time) {
+        this.tokenExpirationTime = time;
+    }
 
     @Override // 권한 반환 메서드
     public Collection<? extends GrantedAuthority> getAuthorities() {

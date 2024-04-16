@@ -87,11 +87,11 @@ public class JwtTokenProvider {
     //토큰에서 사용자 ID 가져오는 메서드
     public Long getUserId(String token) {
         Claims claims = getClaims(token); // 토큰에서 클레임 가져옴.
-        return claims.get("id", Long.class); // 사용자 ID반환
+        return Long.valueOf(claims.getId()); // 사용자 ID반환
     }
 
     //토큰을 파싱하여 클레임 가져오는 메서드
-     Claims getClaims(String token) {
+    public Claims getClaims(String token) {
         return Jwts.parser() // jwt 파서
                 .setSigningKey(jwtProperties.getSecretKey()) // 서명키 설정
                 .parseClaimsJws(token) // 토큰 파싱

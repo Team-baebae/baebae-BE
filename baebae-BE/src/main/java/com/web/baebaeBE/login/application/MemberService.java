@@ -7,12 +7,14 @@ import com.web.baebaeBE.login.dto.MemberRequest;
 import com.web.baebaeBE.login.dto.MemberResponse;
 import com.web.baebaeBE.token.dto.KakaoUserInfoDto;
 import com.web.baebaeBE.token.service.TokenService;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -42,6 +44,7 @@ public class MemberService {
                 .nickname(signUpRequest.getNickname())
                 .memberType(signUpRequest.getMemberType())
                 .refreshToken(null)
+                .tokenExpirationTime(LocalDateTime.now().plus(REFRESH_TOKEN_DURATION))
                 .build()
         );
 
@@ -66,6 +69,18 @@ public class MemberService {
         String accessToken = jwtTokenProvider.generateToken(member, ACCESS_TOKEN_DURATION);
 
         return MemberResponse.AccessToken.of(member,accessToken);
+    }
+
+    public void logout(String accessToken){
+        System.out.println(accessToken);
+        Long memberId = jwtTokenProvider.getUserId(accessToken);
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 회원입니다.")); // 추후 수정*/
+
+        //현재시간으로 RefreshToken 업데이트
+        member.updateTokenExpirationTime(LocalDateTime.now());
+        memberRepository.save(member);
     }
 
 
