@@ -3,8 +3,8 @@ package com.web.baebaeBE.login.application;
 import com.web.baebaeBE.global.jwt.JwtTokenProvider;
 import com.web.baebaeBE.login.dao.MemberRepository;
 import com.web.baebaeBE.login.domain.Member;
-import com.web.baebaeBE.login.dto.LoginRequest;
-import com.web.baebaeBE.login.dto.LoginResponse;
+import com.web.baebaeBE.login.dto.MemberRequest;
+import com.web.baebaeBE.login.dto.MemberResponse;
 import com.web.baebaeBE.token.dto.KakaoUserInfoDto;
 import com.web.baebaeBE.token.service.TokenService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ import java.time.Duration;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 @Slf4j
 public class MemberService {
     private final MemberRepository memberRepository;
@@ -26,7 +26,7 @@ public class MemberService {
     public static final Duration ACCESS_TOKEN_DURATION = Duration.ofDays(1); // 액세스 토큰 유효기간.
 
 
-    public LoginResponse.SignUp signUp(String KakaoAccessToken, LoginRequest.SignUp signUpRequest) {
+    public MemberResponse.SignUp signUp(String KakaoAccessToken, MemberRequest.SignUp signUpRequest) {
 
         // accessToken을 사용하여 사용자 정보를 가져옴
         KakaoUserInfoDto kakaoUserInfo = tokenService.getUserInfo(KakaoAccessToken);
@@ -53,9 +53,22 @@ public class MemberService {
         String accessToken = jwtTokenProvider.generateToken(member, ACCESS_TOKEN_DURATION);
 
 
-
-        return LoginResponse.SignUp.of(member, accessToken);
+        return MemberResponse.SignUp.of(member, accessToken);
     }
+
+
+    // 새로운 AccessToken 발급
+    public MemberResponse.AccessToken newAccessToken(String refreshToken){
+        Member member = memberRepository.findByRefreshToken(refreshToken)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 회원입니다.")); // 추후 수정*/
+
+        // 새로운 액세스 토큰 생성
+        String accessToken = jwtTokenProvider.generateToken(member, ACCESS_TOKEN_DURATION);
+
+        return MemberResponse.AccessToken.of(member,accessToken);
+    }
+
+
 
 
 
