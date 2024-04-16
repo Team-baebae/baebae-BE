@@ -46,9 +46,10 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests()
             // 해당 API에 대해서는 모든 요청을 허가
-            .requestMatchers("/api/kakao").permitAll()
+            .requestMatchers("/api/oauth/kakao").permitAll()
             .requestMatchers("/oauth/kakao/callback").permitAll()
-            .requestMatchers("/api/oauth2/sign-up").permitAll()
+            .requestMatchers("/api/oauth/sign-up").permitAll()
+                //.requestMatchers("/api/oauth/access-token/issue").permitAll()
             // 이 밖에 모든 요청에 대해서 인증 필요
             .anyRequest().authenticated();
 

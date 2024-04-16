@@ -8,15 +8,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@RequestMapping
+@RequestMapping()
 public class TokenController {
 
     private final TokenService tokenService;
@@ -27,7 +24,7 @@ public class TokenController {
     private String clientSecret;
 
 
-    @GetMapping("/api/kakao")
+    @GetMapping("/api/oauth/kakao")
     public String login(){
         return "oauthLogin";
     }
@@ -39,6 +36,8 @@ public class TokenController {
         TokenDto.Response kakaoToken = tokenService.loginCallback(code);
         return ResponseEntity.ok(kakaoToken);
     }
+
+
 
     @GetMapping("/test")
     @ResponseBody

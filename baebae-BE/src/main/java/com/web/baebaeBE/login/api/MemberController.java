@@ -2,17 +2,12 @@ package com.web.baebaeBE.login.api;
 
 
 import com.web.baebaeBE.login.application.MemberService;
-import com.web.baebaeBE.login.application.OAuth2UserCustomService;
-import com.web.baebaeBE.login.domain.Member;
-import com.web.baebaeBE.login.dto.LoginRequest;
-import com.web.baebaeBE.login.dto.LoginResponse;
+import com.web.baebaeBE.login.dto.MemberRequest;
+import com.web.baebaeBE.login.dto.MemberResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 /**
@@ -28,15 +23,15 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/oauth2")
-public class LoginController {
+@RequestMapping("/api/oauth")
+public class MemberController {
 
     private final MemberService memberService;
 
     //회원가입
     @PostMapping("/sign-up")
-    public ResponseEntity<LoginResponse.SignUp> oauthSignUp(
-            @RequestBody LoginRequest.SignUp signUpRequest,
+    public ResponseEntity<MemberResponse.SignUp> oauthSignUp(
+            @RequestBody MemberRequest.SignUp signUpRequest,
             HttpServletRequest httpServletRequest
     ) {
         // KaKao accessToken 검증 및 추출
@@ -49,6 +44,21 @@ public class LoginController {
         return ResponseEntity.ok(memberService.signUp(accessToken,signUpRequest));
     }
 
+
+    // Access Token 재발급
+    @GetMapping("/access-token/issue")
+    public ResponseEntity<MemberResponse.AccessToken> refreshToken(HttpServletRequest httpServletRequest
+    ) {
+        // Refresh Token 검증 및 추출
+        String authorizationHeader = httpServletRequest.getHeader("Authorization");
+        String refreshToken = null;
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer "))
+            refreshToken = authorizationHeader.substring(7); // "Bearer " 이후의 토큰 값만 추출
+
+
+        // Access Token 재발급
+        return ResponseEntity.ok(memberService.newAccessToken(refreshToken));
+    }
 
 
 
