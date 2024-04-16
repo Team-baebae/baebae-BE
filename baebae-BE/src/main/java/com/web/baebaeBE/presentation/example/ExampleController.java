@@ -1,6 +1,6 @@
-package com.web.baebaeBE.domain.example.api;
+package com.web.baebaeBE.presentation.example;
 
-import com.web.baebaeBE.domain.example.application.ExampleService;
+import com.web.baebaeBE.application.example.ExampleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;

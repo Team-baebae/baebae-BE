@@ -1,6 +1,6 @@
-package com.web.baebaeBE.domain.example.application;
+package com.web.baebaeBE.application.example;
 
-import com.web.baebaeBE.domain.example.dao.ExampleRepository;
+import com.web.baebaeBE.infra.example.repository.ExampleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

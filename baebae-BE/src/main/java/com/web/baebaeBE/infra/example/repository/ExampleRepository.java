@@ -1,6 +1,6 @@
-package com.web.baebaeBE.domain.example.dao;
+package com.web.baebaeBE.infra.example.repository;
 
-import com.web.baebaeBE.domain.example.domain.Example;
+import com.web.baebaeBE.infra.example.entity.Example;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

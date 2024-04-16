@@ -1,4 +1,4 @@
-package com.web.baebaeBE.domain.example.domain;
+package com.web.baebaeBE.infra.example.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
