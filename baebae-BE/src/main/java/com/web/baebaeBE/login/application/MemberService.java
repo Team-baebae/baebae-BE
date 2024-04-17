@@ -1,5 +1,6 @@
 package com.web.baebaeBE.login.application;
 
+import com.web.baebaeBE.global.error.BusinessException;
 import com.web.baebaeBE.global.jwt.JwtTokenProvider;
 import com.web.baebaeBE.login.dao.MemberRepository;
 import com.web.baebaeBE.login.domain.Member;
@@ -7,6 +8,7 @@ import com.web.baebaeBE.login.dto.MemberRequest;
 import com.web.baebaeBE.login.dto.MemberResponse;
 import com.web.baebaeBE.kakao.dto.KakaoUserInfoDto;
 import com.web.baebaeBE.kakao.service.KakaoService;
+import com.web.baebaeBE.login.exception.MemberError;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -34,8 +36,8 @@ public class MemberService {
 
 
         // email 중복 검사
-        /*memberRepository.findByEmail(kakaoUserInfo.getKakaoAccount().getEmail())
-                .orElseThrow(() -> new DuplicateEmailException("이미 존재하는 이메일입니다.")); // 추후 수정*/
+        memberRepository.findByEmail(kakaoUserInfo.getKakaoAccount().getEmail())
+                .orElseThrow(() -> new BusinessException(MemberError.DUPLICATE_MEMBER));
 
         // Member 객체 생성
         Member member = memberRepository.save(Member.builder()
@@ -62,7 +64,7 @@ public class MemberService {
     // 새로운 AccessToken 발급
     public MemberResponse.AccessToken newAccessToken(String refreshToken){
         Member member = memberRepository.findByRefreshToken(refreshToken)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 회원입니다.")); // 추후 수정*/
+                .orElseThrow(() -> new BusinessException(MemberError.NOT_EXIST_MEMBER));
 
         // 새로운 액세스 토큰 생성
         String accessToken = jwtTokenProvider.generateToken(member, ACCESS_TOKEN_DURATION);
@@ -75,7 +77,7 @@ public class MemberService {
         Long memberId = jwtTokenProvider.getUserId(accessToken);
 
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 회원입니다.")); // 추후 수정*/
+                .orElseThrow(() -> new BusinessException(MemberError.NOT_EXIST_MEMBER));
 
         //현재시간으로 RefreshToken 업데이트
         member.updateTokenExpirationTime(LocalDateTime.now());
