@@ -1,19 +1,24 @@
 package com.web.baebaeBE.token.service;
 
 
+import com.web.baebaeBE.global.error.BusinessException;
 import com.web.baebaeBE.token.client.TokenClient;
 import com.web.baebaeBE.token.dto.KakaoUserInfoDto;
 import com.web.baebaeBE.token.dto.TokenDto;
+import com.web.baebaeBE.token.exception.TokenError;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class TokenService {
 
@@ -51,13 +56,19 @@ public class TokenService {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + accessToken);
         HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<KakaoUserInfoDto> response;
 
-        ResponseEntity<KakaoUserInfoDto> response = restTemplate.exchange(
-                "https://kapi.kakao.com/v2/user/me",
-                HttpMethod.GET,
-                entity,
-                KakaoUserInfoDto.class
-        );
+        try {
+             response = restTemplate.exchange(
+                    "https://kapi.kakao.com/v2/user/me",
+                    HttpMethod.GET,
+                    entity,
+                    KakaoUserInfoDto.class
+            );
+        } catch(RestClientException e){
+            log.error(String.valueOf(e));
+            throw new BusinessException(TokenError.NOT_FOUND_KAKAO_INFO);
+        }
 
         return response.getBody();
     }
