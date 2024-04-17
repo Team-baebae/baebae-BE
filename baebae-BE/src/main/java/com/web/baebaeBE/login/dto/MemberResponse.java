@@ -18,8 +18,8 @@ public class MemberResponse {
         private String email;
         private String nickname;
         private MemberType memberType;
-        private String refreshToken;
         private String accessToken;
+        private String refreshToken;
 
 
         public static SignUp of(Member member, String accessToken) {

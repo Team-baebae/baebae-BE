@@ -32,8 +32,8 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    //회원가입
-    @PostMapping("/sign-up")
+    //로그인
+    @PostMapping("/login")
     public ResponseEntity<MemberResponse.SignUp> oauthSignUp(
             @RequestBody MemberRequest.SignUp signUpRequest,
             HttpServletRequest httpServletRequest
@@ -69,10 +69,4 @@ public class MemberController {
 
         return ResponseEntity.ok().build();
     }
-
-
-
-
-
-
 }

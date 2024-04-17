@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -41,30 +42,42 @@ public class MemberService {
             new BusinessException(KakaoError.INVALID_KAKAO_TOKEN); // Kakao 토큰이 유효하지않을 시 예외처리
         }
 
-        // email 중복 검사
-        if(memberRepository.findByEmail(kakaoUserInfo.getKakaoAccount().getEmail()).isPresent())
-            throw new BusinessException(MemberError.DUPLICATE_MEMBER);
+        //카카오 토큰에 있는 Email 정보를 바탕으로 탐색
+        Optional<Member> member
+                = memberRepository.findByEmail(kakaoUserInfo.getKakaoAccount().getEmail());
 
+        // 기존회원정보가 있을시, 로그인
+        if(member.isPresent()) {
 
-        // Member 객체 생성
-        Member member = memberRepository.save(Member.builder()
-                .email(kakaoUserInfo.getKakaoAccount().getEmail())
-                .nickname(signUpRequest.getNickname())
-                .memberType(signUpRequest.getMemberType())
-                .refreshToken(null)
-                .tokenExpirationTime(LocalDateTime.now().plus(REFRESH_TOKEN_DURATION))
-                .build()
-        );
+            // 리프레시 토큰 및 액세스 토큰 업데이트
+            String refreshToken = jwtTokenProvider.generateToken(member.get(), REFRESH_TOKEN_DURATION);
+            String accessToken = jwtTokenProvider.generateToken(member.get(), ACCESS_TOKEN_DURATION);
 
-        // 리프레시 토큰 생성 및 DB 업데이트
-        String refreshToken = jwtTokenProvider.generateToken(member, REFRESH_TOKEN_DURATION);
-        member.updateRefreshToken(refreshToken);
+            //리프레시 토큰 DB 업데이트
+            member.get().updateRefreshToken(refreshToken);
+            return MemberResponse.SignUp.of(memberRepository.save(member.get()), accessToken);
+        }
 
-        // 액세스 토큰 생성
-        String accessToken = jwtTokenProvider.generateToken(member, ACCESS_TOKEN_DURATION);
+        else{ // 회원정보가 없을시, 초기 회원가입
+            if(signUpRequest.getMemberType() == null || signUpRequest.getNickname() == null)
+                new BusinessException(MemberError.NOT_EXIST_DATA);
 
+            Member newMember = memberRepository.save(Member.builder()
+                    .email(kakaoUserInfo.getKakaoAccount().getEmail())
+                    .nickname(signUpRequest.getNickname())
+                    .memberType(signUpRequest.getMemberType())
+                    .refreshToken(null)
+                    .tokenExpirationTime(LocalDateTime.now().plus(REFRESH_TOKEN_DURATION))
+                    .build()
+            );
 
-        return MemberResponse.SignUp.of(member, accessToken);
+            // 리프레시 토큰 생성 및 DB 업데이트
+            String refreshToken = jwtTokenProvider.generateToken(newMember, REFRESH_TOKEN_DURATION);
+            newMember.updateRefreshToken(refreshToken);
+            // 액세스 토큰 생성
+            String accessToken = jwtTokenProvider.generateToken(newMember, ACCESS_TOKEN_DURATION);
+            return MemberResponse.SignUp.of(newMember, accessToken);
+        }
     }
 
 
