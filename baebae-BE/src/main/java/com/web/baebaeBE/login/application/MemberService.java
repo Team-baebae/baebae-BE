@@ -39,7 +39,7 @@ public class MemberService {
             String kakaoAccessToken = httpServletRequest.getHeader("Authorization").substring(7); // "Bearer " 이후의 토큰 값만 추출
             kakaoUserInfo = kakaoService.getUserInfo(kakaoAccessToken); // accessToken을 사용하여 사용자 정보를 가져옴
         } catch(Exception e) {
-            new BusinessException(KakaoError.INVALID_KAKAO_TOKEN); // Kakao 토큰이 유효하지않을 시 예외처리
+            throw new BusinessException(KakaoError.INVALID_KAKAO_TOKEN); // Kakao 토큰이 유효하지않을 시 예외처리
         }
 
         //카카오 토큰에 있는 Email 정보를 바탕으로 탐색
@@ -48,7 +48,6 @@ public class MemberService {
 
         // 기존회원정보가 있을시, 로그인
         if(member.isPresent()) {
-
             // 리프레시 토큰 및 액세스 토큰 업데이트
             String refreshToken = jwtTokenProvider.generateToken(member.get(), REFRESH_TOKEN_DURATION);
             String accessToken = jwtTokenProvider.generateToken(member.get(), ACCESS_TOKEN_DURATION);
@@ -60,7 +59,7 @@ public class MemberService {
 
         else{ // 회원정보가 없을시, 초기 회원가입
             if(signUpRequest.getMemberType() == null || signUpRequest.getNickname() == null)
-                new BusinessException(MemberError.NOT_EXIST_DATA);
+                throw new BusinessException(MemberError.NOT_EXIST_DATA);
 
             Member newMember = memberRepository.save(Member.builder()
                     .email(kakaoUserInfo.getKakaoAccount().getEmail())
