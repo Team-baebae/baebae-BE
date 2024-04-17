@@ -1,11 +1,11 @@
-package com.web.baebaeBE.token.dto;
+package com.web.baebaeBE.kakao.dto;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-public class TokenDto {
+public class KakaoDto {
 
     @Builder
     @Getter

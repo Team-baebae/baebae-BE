@@ -5,9 +5,8 @@ import com.web.baebaeBE.login.dao.MemberRepository;
 import com.web.baebaeBE.login.domain.Member;
 import com.web.baebaeBE.login.dto.MemberRequest;
 import com.web.baebaeBE.login.dto.MemberResponse;
-import com.web.baebaeBE.token.dto.KakaoUserInfoDto;
-import com.web.baebaeBE.token.service.TokenService;
-import io.jsonwebtoken.Claims;
+import com.web.baebaeBE.kakao.dto.KakaoUserInfoDto;
+import com.web.baebaeBE.kakao.service.KakaoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,7 +21,7 @@ import java.time.LocalDateTime;
 @Slf4j
 public class MemberService {
     private final MemberRepository memberRepository;
-    private final TokenService tokenService;
+    private final KakaoService kakaoService;
     private final JwtTokenProvider jwtTokenProvider;
     public static final Duration REFRESH_TOKEN_DURATION = Duration.ofDays(14); // 리프레시 토큰 유효기간.
     public static final Duration ACCESS_TOKEN_DURATION = Duration.ofDays(1); // 액세스 토큰 유효기간.
@@ -31,7 +30,7 @@ public class MemberService {
     public MemberResponse.SignUp signUp(String KakaoAccessToken, MemberRequest.SignUp signUpRequest) {
 
         // accessToken을 사용하여 사용자 정보를 가져옴
-        KakaoUserInfoDto kakaoUserInfo = tokenService.getUserInfo(KakaoAccessToken);
+        KakaoUserInfoDto kakaoUserInfo = kakaoService.getUserInfo(KakaoAccessToken);
 
 
         // email 중복 검사

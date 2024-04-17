@@ -1,6 +1,5 @@
 package com.web.baebaeBE.global.error;
 
-import com.web.baebaeBE.token.exception.TokenError;
 import lombok.Getter;
 
 @Getter

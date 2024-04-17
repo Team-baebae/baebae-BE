@@ -1,6 +1,6 @@
-package com.web.baebaeBE.token.client;
+package com.web.baebaeBE.kakao.client;
 
-import com.web.baebaeBE.token.dto.TokenDto;
+import com.web.baebaeBE.kakao.dto.KakaoDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,11 +20,11 @@ import org.springframework.web.bind.annotation.RequestHeader;
  */
 
 @FeignClient(url = "https://kauth.kakao.com", name = "kakaoTokenClient")
-public interface TokenClient {
+public interface KakaoClient {
 
     @PostMapping(value = "/oauth/token", consumes = "application/json")
-    TokenDto.Response requestKakaoToken(@RequestHeader("Content-Type") String contentType,
-                                        @SpringQueryMap TokenDto.Request request
+    KakaoDto.Response requestKakaoToken(@RequestHeader("Content-Type") String contentType,
+                                        @SpringQueryMap KakaoDto.Request request
     );
 
 }

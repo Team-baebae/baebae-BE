@@ -1,7 +1,7 @@
-package com.web.baebaeBE.token.api;
+package com.web.baebaeBE.kakao.api;
 
-import com.web.baebaeBE.token.dto.TokenDto;
-import com.web.baebaeBE.token.service.TokenService;
+import com.web.baebaeBE.kakao.dto.KakaoDto;
+import com.web.baebaeBE.kakao.service.KakaoService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping()
-public class TokenController {
+public class KakaoController {
 
-    private final TokenService tokenService;
+    private final KakaoService kakaoService;
 
     @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
     private String clientId;
@@ -32,8 +32,8 @@ public class TokenController {
 
 
     @GetMapping("/oauth/kakao/callback")
-    public ResponseEntity<TokenDto.Response> loginCallback(@RequestParam("code")String code) {
-        TokenDto.Response kakaoToken = tokenService.loginCallback(code);
+    public ResponseEntity<KakaoDto.Response> loginCallback(@RequestParam("code")String code) {
+        KakaoDto.Response kakaoToken = kakaoService.loginCallback(code);
         return ResponseEntity.ok(kakaoToken);
     }
 

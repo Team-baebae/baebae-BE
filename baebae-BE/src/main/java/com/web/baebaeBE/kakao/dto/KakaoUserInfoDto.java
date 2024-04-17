@@ -1,4 +1,4 @@
-package com.web.baebaeBE.token.dto;
+package com.web.baebaeBE.kakao.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
