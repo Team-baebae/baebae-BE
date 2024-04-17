@@ -38,10 +38,7 @@ public class MemberController {
             @RequestBody MemberRequest.SignUp signUpRequest,
             HttpServletRequest httpServletRequest
     ) {
-        // KaKao accessToken 추출
-        String accessToken = httpServletRequest.getHeader("Authorization").substring(7); // "Bearer " 이후의 토큰 값만 추출
-
-        return ResponseEntity.ok(memberService.signUp(accessToken,signUpRequest));
+        return ResponseEntity.ok(memberService.signUp(httpServletRequest,signUpRequest));
     }
 
 

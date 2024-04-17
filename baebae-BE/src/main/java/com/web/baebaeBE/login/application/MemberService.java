@@ -2,6 +2,7 @@ package com.web.baebaeBE.login.application;
 
 import com.web.baebaeBE.global.error.BusinessException;
 import com.web.baebaeBE.global.jwt.JwtTokenProvider;
+import com.web.baebaeBE.kakao.exception.KakaoError;
 import com.web.baebaeBE.login.dao.MemberRepository;
 import com.web.baebaeBE.login.domain.Member;
 import com.web.baebaeBE.login.dto.MemberRequest;
@@ -9,6 +10,7 @@ import com.web.baebaeBE.login.dto.MemberResponse;
 import com.web.baebaeBE.kakao.dto.KakaoUserInfoDto;
 import com.web.baebaeBE.kakao.service.KakaoService;
 import com.web.baebaeBE.login.exception.MemberError;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,15 +31,20 @@ public class MemberService {
     public static final Duration ACCESS_TOKEN_DURATION = Duration.ofDays(1); // 액세스 토큰 유효기간.
 
 
-    public MemberResponse.SignUp signUp(String KakaoAccessToken, MemberRequest.SignUp signUpRequest) {
+    public MemberResponse.SignUp signUp(HttpServletRequest httpServletRequest, MemberRequest.SignUp signUpRequest) {
 
-        // accessToken을 사용하여 사용자 정보를 가져옴
-        KakaoUserInfoDto kakaoUserInfo = kakaoService.getUserInfo(KakaoAccessToken);
-
+        KakaoUserInfoDto kakaoUserInfo = null;
+        try {
+            String kakaoAccessToken = httpServletRequest.getHeader("Authorization").substring(7); // "Bearer " 이후의 토큰 값만 추출
+            kakaoUserInfo = kakaoService.getUserInfo(kakaoAccessToken); // accessToken을 사용하여 사용자 정보를 가져옴
+        } catch(Exception e) {
+            new BusinessException(KakaoError.INVALID_KAKAO_TOKEN); // Kakao 토큰이 유효하지않을 시 예외처리
+        }
 
         // email 중복 검사
-        memberRepository.findByEmail(kakaoUserInfo.getKakaoAccount().getEmail())
-                .orElseThrow(() -> new BusinessException(MemberError.DUPLICATE_MEMBER));
+        if(memberRepository.findByEmail(kakaoUserInfo.getKakaoAccount().getEmail()).isPresent())
+            throw new BusinessException(MemberError.DUPLICATE_MEMBER);
+
 
         // Member 객체 생성
         Member member = memberRepository.save(Member.builder()
@@ -73,7 +80,6 @@ public class MemberService {
     }
 
     public void logout(String accessToken){
-        System.out.println(accessToken);
         Long memberId = jwtTokenProvider.getUserId(accessToken);
 
         Member member = memberRepository.findById(memberId)

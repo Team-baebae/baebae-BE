@@ -67,7 +67,7 @@ public class KakaoService {
             );
         } catch(RestClientException e){
             log.error(String.valueOf(e));
-            throw new BusinessException(KakaoError.NOT_FOUND_KAKAO_INFO);
+            throw new BusinessException(KakaoError.INVALID_KAKAO_TOKEN);
         }
 
         return response.getBody();

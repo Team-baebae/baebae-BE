@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum KakaoError implements ErrorCode {
 
-    NOT_FOUND_KAKAO_INFO(HttpStatus.NOT_FOUND,"K-001", "해당 유저의 카카오 정보를 가져올 수 없습니다.");
+    INVALID_KAKAO_TOKEN(HttpStatus.NOT_FOUND,"K-001", "유효하지않은 KaKao Token 입니다.");
 
     private final HttpStatus httpStatus;
     private final String errorCode;
