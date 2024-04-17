@@ -46,10 +46,12 @@ public class SecurityConfig {
                     "/api/oauth/kakao",
                             "/favicon.ico",
                             "/oauth/kakao/callback",
-                            "/api/oauth/sign-up"
+                            "/api/oauth/sign-up",
+                            "swagger-ui.html",
+                            "/swagger-ui/**"
                     )
-                    //.antMatchers("/api/oauth/kakao", "/oauth/kakao/callback", "/api/oauth/sign-up")
-                    .requestMatchers("/img/**", "/css/**", "/js/**"); // 해당 URL 보안검사 무시.
+                    //.requestMatchers("/img/**", "/css/**", "/js/**") // 해당 URL 보안검사 무시.
+                    .requestMatchers("/**");
         };
     }
 
@@ -83,6 +85,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    //H2 Security 제외 설정
     @Bean
     @ConditionalOnProperty(name = "spring.h2.console.enabled",havingValue = "true")
     public WebSecurityCustomizer configureH2ConsoleEnable() {

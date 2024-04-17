@@ -30,7 +30,6 @@ public class KakaoController {
     }
 
 
-
     @GetMapping("/oauth/kakao/callback")
     public ResponseEntity<KakaoDto.Response> loginCallback(@RequestParam("code")String code) {
         KakaoDto.Response kakaoToken = kakaoService.loginCallback(code);
@@ -38,8 +37,7 @@ public class KakaoController {
     }
 
 
-
-    @GetMapping("/test")
+    @GetMapping("api/test")
     @ResponseBody
     public void test(HttpServletRequest request) {
         //System.out.println(request.getAttribute("id"));
