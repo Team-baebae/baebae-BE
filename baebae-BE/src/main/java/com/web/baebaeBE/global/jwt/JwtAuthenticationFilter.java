@@ -1,6 +1,8 @@
 package com.web.baebaeBE.global.jwt;
 
 
+import com.web.baebaeBE.global.error.BusinessException;
+import com.web.baebaeBE.global.jwt.exception.TokenError;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -35,15 +37,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String authorizationHeader = request.getHeader(HEADER_AUTHORIZATION);
         String token = getAccessToken(authorizationHeader); // 헤더에서 토큰 정보를 가지고 옴
 
-        System.out.println("doFileterInternal");
-
-
-
         // 토큰 값 존재 확인
         if (token != null && tokenProvider.validToken(token)) {
             Authentication authentication = tokenProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            // 추후 에러처리
         }
 
 
@@ -53,11 +50,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     //Authorization 헤더에서 토큰 정보를 가져오는 메서드.
     private String getAccessToken(String authorizationHeader) {
-        if (authorizationHeader != null && authorizationHeader.startsWith(TOKEN_PREFIX)) {
-            return authorizationHeader.substring(TOKEN_PREFIX.length()); // 토큰 접두사 제외함
-        }
 
-        return null;
+        if(authorizationHeader == null) // AuthorizationHeader가 NULL일 경우
+            throw new BusinessException(TokenError.NOT_EXISTS_AUTHORIZATION);
+
+        else if(!authorizationHeader.startsWith(TOKEN_PREFIX)) // 토큰 인증타입이 Bearer가 아닌경우
+            throw new BusinessException(TokenError.NOT_VALID_BEARER_GRANT_TYPE);
+
+        else
+            return authorizationHeader.substring(TOKEN_PREFIX.length()); // 토큰 추출
     }
 }
 

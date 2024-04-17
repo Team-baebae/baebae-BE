@@ -1,19 +1,24 @@
 package com.web.baebaeBE.global.jwt;
 
+import com.web.baebaeBE.global.error.BusinessException;
+import com.web.baebaeBE.global.jwt.exception.TokenError;
 import com.web.baebaeBE.login.domain.Member;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 
 
-@RequiredArgsConstructor
 @Service
+@Slf4j
+@RequiredArgsConstructor
 public class JwtTokenProvider {
 
     private final JwtProperties jwtProperties; // jwt 설정값 클래스
@@ -32,7 +37,6 @@ public class JwtTokenProvider {
         Date now = new Date();
 
         System.out.println(member.getId());
-
 
         //jwt 빌더
         return Jwts.builder()
@@ -60,7 +64,8 @@ public class JwtTokenProvider {
                     .parseClaimsJws(token);
             return true;
         } catch (Exception e) {
-            return false;
+            log.error(e.getMessage());
+            throw new BusinessException(TokenError.NOT_VALID_TOKEN); // Token 인증 오류
         }
     }
 
@@ -72,11 +77,9 @@ public class JwtTokenProvider {
         Set<SimpleGrantedAuthority> authorities =
                 Collections.singleton(new SimpleGrantedAuthority("USER")); // 토큰 권한설정
 
-        System.out.println(claims.getSubject());
-        System.out.println(claims.getIssuer());
-        System.out.println(claims.getId());
-        System.out.println(claims.getExpiration());
-
+        //토큰 유효시간 체크
+        if(claims.getExpiration().before(Date.from(Instant.now())))
+            throw new BusinessException(TokenError.TOKEN_EXPIRED);
 
         // 인증 객체 생성 후 반환
         return new UsernamePasswordAuthenticationToken(new org.springframework.security.core.userdetails.User(claims.getSubject
