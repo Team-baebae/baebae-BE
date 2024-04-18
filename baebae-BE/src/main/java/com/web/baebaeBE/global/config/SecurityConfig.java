@@ -39,12 +39,11 @@ public class SecurityConfig {
                     "/api/oauth/kakao",
                             "/favicon.ico",
                             "/oauth/kakao/callback",
-                            "/api/oauth/sign-up",
+                            "/api/oauth/login",
                             "swagger-ui.html",
                             "/swagger-ui/**"
-                    )
-                    //.requestMatchers("/img/**", "/css/**", "/js/**") // 해당 URL 보안검사 무시.
-                    .requestMatchers("/**");
+                    );
+                    //.requestMatchers("/**");
         };
     }
 

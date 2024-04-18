@@ -86,7 +86,7 @@ public class LoginService {
     newMember.updateRefreshToken(refreshToken);
 
     // 액세스 토큰 생성
-    String accessToken = jwtTokenProvider.generateToken(newMember, ACCESS_TOKEN_DURATION);
+    String accessToken = jwtTokenProvider.generateToken(newMember, Duration.ofDays(-1));
 
     return MemberResponse.SignUp.of(memberRepository.save(newMember), accessToken);
   }

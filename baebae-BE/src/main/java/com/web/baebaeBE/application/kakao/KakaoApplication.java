@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class KakaoApplication {
 
-  TokenService tokenService;
+  private final TokenService tokenService;
 
 
   public KakaoDto.Response loginCallback(String code) {

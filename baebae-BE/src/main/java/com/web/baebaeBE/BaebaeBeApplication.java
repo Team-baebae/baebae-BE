@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
-@EnableFeignClients(basePackages = "com.web.baebaeBE.kakao.client")
+@EnableFeignClients(basePackages = "com.web.baebaeBE.domain.kakao.service")
 public class BaebaeBeApplication {
 
 	public static void main(String[] args) {
