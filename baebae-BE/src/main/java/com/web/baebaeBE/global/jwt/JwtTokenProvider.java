@@ -1,17 +1,17 @@
 package com.web.baebaeBE.global.jwt;
 
-import com.web.baebaeBE.global.error.BusinessException;
+import com.web.baebaeBE.global.error.exception.BusinessException;
+import com.web.baebaeBE.global.error.exception.JwtAuthenticationException;
 import com.web.baebaeBE.global.jwt.exception.TokenError;
 import com.web.baebaeBE.infra.member.entity.Member;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Header;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
+
 import java.time.Duration;
-import java.time.Instant;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
+
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,6 +28,7 @@ public class JwtTokenProvider {
   private final JwtProperties jwtProperties; // jwt 설정값 클래스
 
 
+
   //토큰 생성 메서드
   public String generateToken(Member member, Duration expiredAt) { // User , 만료시간을 입력받음.
     Date now = new Date(); // 현재시간을 가져옴.
@@ -39,8 +40,6 @@ public class JwtTokenProvider {
   //토큰 제작 메서드
   private String makeToken(Date expiry, Member member) {
     Date now = new Date();
-
-    System.out.println(member.getId());
 
     //jwt 빌더
     return Jwts.builder()
@@ -63,14 +62,16 @@ public class JwtTokenProvider {
   public boolean validToken(String token) {
     try {
       Jwts.parserBuilder()
-          .setSigningKey(jwtProperties.getSecretKey())
-          .build()
-          .parseClaimsJws(token);
+              .setSigningKey(jwtProperties.getSecretKey())
+              .build()
+              .parseClaimsJws(token);
       return true;
+    } catch (ExpiredJwtException e) {
+        throw new JwtAuthenticationException(TokenError.TOKEN_EXPIRED);
     } catch (Exception e) {
-      log.error(e.getMessage());
-      throw new BusinessException(TokenError.NOT_VALID_TOKEN); // Token 인증 오류
+        throw new JwtAuthenticationException(TokenError.NOT_VALID_TOKEN);
     }
+
   }
 
 
@@ -80,11 +81,6 @@ public class JwtTokenProvider {
     //클레인 = 토큰의 식별자, 권한, 만료시간이 포함.
     Set<SimpleGrantedAuthority> authorities =
         Collections.singleton(new SimpleGrantedAuthority("USER")); // 토큰 권한설정
-
-    //토큰 유효시간 체크
-      if (claims.getExpiration().before(Date.from(Instant.now()))) {
-          throw new BusinessException(TokenError.TOKEN_EXPIRED);
-      }
 
     // 인증 객체 생성 후 반환
     return new UsernamePasswordAuthenticationToken(

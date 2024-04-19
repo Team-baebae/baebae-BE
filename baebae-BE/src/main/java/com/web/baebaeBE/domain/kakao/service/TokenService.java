@@ -1,7 +1,7 @@
 package com.web.baebaeBE.domain.kakao.service;
 
 import com.web.baebaeBE.domain.kakao.exception.KakaoError;
-import com.web.baebaeBE.global.error.BusinessException;
+import com.web.baebaeBE.global.error.exception.BusinessException;
 import com.web.baebaeBE.presentation.kakao.dto.KakaoDto;
 import com.web.baebaeBE.presentation.kakao.dto.KakaoUserInfoDto;
 import lombok.RequiredArgsConstructor;

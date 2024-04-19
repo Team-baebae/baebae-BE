@@ -1,5 +1,6 @@
-package com.web.baebaeBE.global.error;
+package com.web.baebaeBE.global.error.exception;
 
+import com.web.baebaeBE.global.error.ErrorCode;
 import lombok.Getter;
 
 @Getter

@@ -1,26 +1,22 @@
 package com.web.baebaeBE.global.jwt;
 
 
-import com.web.baebaeBE.global.error.BusinessException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.web.baebaeBE.global.error.ErrorResponse;
+import com.web.baebaeBE.global.error.exception.BusinessException;
+import com.web.baebaeBE.global.error.exception.JwtAuthenticationException;
 import com.web.baebaeBE.global.jwt.exception.TokenError;
-import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.util.StringUtils;
-import org.springframework.web.filter.GenericFilterBean;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
 
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -36,31 +32,55 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             HttpServletResponse response, // 응답
             FilterChain filterChain)  throws ServletException, IOException { // 필터체인
 
-        String authorizationHeader = request.getHeader(HEADER_AUTHORIZATION);
-        String token = getAccessToken(authorizationHeader); // 헤더에서 토큰 정보를 가지고 옴
 
-        // 토큰 값 존재 확인
-        if (token != null && tokenProvider.validToken(token)) {
-            Authentication authentication = tokenProvider.getAuthentication(token);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+        try {
+            String authorizationHeader = request.getHeader(HEADER_AUTHORIZATION);
+            String token = getToken(authorizationHeader, response); // 헤더에서 토큰 정보를 가지고 옴
+            // 토큰 값 존재 확인
+            if (token != null && tokenProvider.validToken(token)) {
+                Authentication authentication = tokenProvider.getAuthentication(token);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+        } catch(JwtAuthenticationException e){
+            setErrorResponse(response, e.getTokenError());
+            return; // Exception 발생시, 필터체인 종료
         }
-
 
         //필터 체인 계속 실행
         filterChain.doFilter(request, response);
     }
 
+
     //Authorization 헤더에서 토큰 정보를 가져오는 메서드.
-    private String getAccessToken(String authorizationHeader) {
+    private String getToken(String authorizationHeader, HttpServletResponse response) {
 
-        if(authorizationHeader == null) // AuthorizationHeader가 NULL일 경우
-            throw new BusinessException(TokenError.NOT_EXISTS_AUTHORIZATION);
 
-        else if(!authorizationHeader.startsWith(TOKEN_PREFIX)) // 토큰 인증타입이 Bearer가 아닌경우
-            throw new BusinessException(TokenError.NOT_VALID_BEARER_GRANT_TYPE);
-
+        if (authorizationHeader == null) { // AuthorizationHeader가 NULL일 경우
+            throw new JwtAuthenticationException(TokenError.NOT_EXISTS_AUTHORIZATION);
+        } else if (!authorizationHeader.startsWith(TOKEN_PREFIX)) // 토큰 인증타입이 Bearer가 아닌경우
+            throw new JwtAuthenticationException(TokenError.NOT_VALID_BEARER_GRANT_TYPE);
         else
             return authorizationHeader.substring(TOKEN_PREFIX.length()); // 토큰 추출
+
     }
+
+    //Exception 정보를 바탕으로 직접 사용자에게 반환
+    private void setErrorResponse(
+            HttpServletResponse response,
+            TokenError tokenError
+    ){
+        ObjectMapper objectMapper = new ObjectMapper();
+        response.setCharacterEncoding("UTF-8"); // 응답 인코딩 설정
+        response.setStatus(tokenError.getHttpStatus().value());
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        ErrorResponse errorResponse = ErrorResponse.of(tokenError.getErrorCode(), tokenError.getMessage());
+        try{
+            response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+
 }
 

@@ -1,7 +1,7 @@
 package com.web.baebaeBE.domain.member.service;
 
 import com.web.baebaeBE.domain.member.exception.MemberError;
-import com.web.baebaeBE.global.error.BusinessException;
+import com.web.baebaeBE.global.error.exception.BusinessException;
 import com.web.baebaeBE.global.jwt.JwtTokenProvider;
 import com.web.baebaeBE.infra.member.entity.Member;
 import com.web.baebaeBE.infra.member.repository.MemberRepository;
