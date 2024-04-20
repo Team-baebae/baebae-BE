@@ -36,12 +36,10 @@ public class SecurityConfig {
             web.ignoring()
                     .requestMatchers(toH2Console())
                     .requestMatchers(
-                    "/api/oauth/kakao",
-                            "/favicon.ico",
-                            "/oauth/kakao/callback",
-                            "/api/oauth/login",
-                            "swagger-ui.html",
-                            "/swagger-ui/**"
+                            // oAuth2 인증 제외
+                    "/api/oauth/kakao", "/favicon.ico", "/oauth/kakao/callback", "/api/oauth/login",
+                            // Swagger 제외 과정
+                            "/v3/**", "/swagger-ui/**"
                     );
                     //.requestMatchers("/**");
         };
