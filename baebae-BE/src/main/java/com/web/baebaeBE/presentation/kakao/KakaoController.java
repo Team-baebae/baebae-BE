@@ -2,6 +2,7 @@ package com.web.baebaeBE.presentation.kakao;
 
 import com.web.baebaeBE.application.kakao.KakaoApplication;
 import com.web.baebaeBE.presentation.kakao.dto.KakaoDto;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +41,7 @@ public class KakaoController {
   }
 
 
+  @Operation(summary = "백엔드용 TEST API입니다.")
   @GetMapping("api/test")
   @ResponseBody
   public void test(HttpServletRequest request) {
