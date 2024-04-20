@@ -2,9 +2,9 @@ package com.web.baebaeBE.presentation.member;
 
 
 import com.web.baebaeBE.application.member.MemberApplication;
+import com.web.baebaeBE.presentation.member.api.MemberApi;
 import com.web.baebaeBE.presentation.member.dto.MemberRequest;
-import com.web.baebaeBE.presentation.member.dto.MemberResponse.AccessToken;
-import com.web.baebaeBE.presentation.member.dto.MemberResponse.SignUp;
+import com.web.baebaeBE.presentation.member.dto.MemberResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,14 +27,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/oauth")
-public class MemberController {
+public class MemberController implements MemberApi {
 
 
   private final MemberApplication memberApplication;
 
   //로그인
   @PostMapping("/login")
-  public ResponseEntity<SignUp> oauthSignUp(
+  public ResponseEntity<MemberResponse.SignUpResponse> oauthSignUp(
       @RequestBody MemberRequest.SignUp signUpRequest,
       HttpServletRequest httpServletRequest
   ) {
@@ -44,7 +44,7 @@ public class MemberController {
 
   // Access Token 재발급
   @GetMapping("/token/refresh")
-  public ResponseEntity<AccessToken> refreshToken(
+  public ResponseEntity<MemberResponse.AccessTokenResponse> refreshToken(
       HttpServletRequest httpServletRequest
   ) {
     // Refresh Token 검증 및 추출

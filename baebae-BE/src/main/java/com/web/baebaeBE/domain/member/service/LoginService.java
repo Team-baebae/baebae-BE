@@ -48,7 +48,7 @@ public class LoginService {
    * -기존 회원 로그인 처리를 수행합니다.
    * -리프레시 토큰과 액세스 토큰을 새로 생성하여 업데이트
    */
-  public MemberResponse.SignUp loginWithExistingUser(KakaoUserInfoDto kakaoUserInfo,
+  public MemberResponse.SignUpResponse loginWithExistingUser(KakaoUserInfoDto kakaoUserInfo,
       MemberRequest.SignUp signUpRequest) {
     Member member = memberRepository.findByEmail(kakaoUserInfo.getKakaoAccount().getEmail())
         .orElseThrow(() -> new BusinessException(MemberError.NOT_EXIST_MEMBER));
@@ -59,7 +59,7 @@ public class LoginService {
 
     // 리프레시 토큰 DB 업데이트
     member.updateRefreshToken(refreshToken);
-    return MemberResponse.SignUp.of(memberRepository.save(member), accessToken);
+    return MemberResponse.SignUpResponse.of(memberRepository.save(member), accessToken);
   }
 
   /**
@@ -69,7 +69,7 @@ public class LoginService {
    *
    * -리프레시 토큰과 액세스 토큰을 새로 생성하여 업데이트
    */
-  public MemberResponse.SignUp signUpNewUser(KakaoUserInfoDto kakaoUserInfo,
+  public MemberResponse.SignUpResponse signUpNewUser(KakaoUserInfoDto kakaoUserInfo,
       MemberRequest.SignUp signUpRequest) {
     validateSignUpRequest(signUpRequest);
 
@@ -88,7 +88,7 @@ public class LoginService {
     // 액세스 토큰 생성
     String accessToken = jwtTokenProvider.generateToken(newMember, Duration.ofDays(-1));
 
-    return MemberResponse.SignUp.of(memberRepository.save(newMember), accessToken);
+    return MemberResponse.SignUpResponse.of(memberRepository.save(newMember), accessToken);
   }
 
   /**

@@ -20,7 +20,7 @@ public class MemberApplication {
   private final LoginService loginService;
   private final ManageTokenService manageTokenService;
 
-  public MemberResponse.SignUp login(HttpServletRequest httpServletRequest,
+  public MemberResponse.SignUpResponse login(HttpServletRequest httpServletRequest,
       MemberRequest.SignUp signUpRequest) {
     //카카오 토큰으로 정보 가져옴
     KakaoUserInfoDto kakaoUserInfo = loginService.getKakaoUserInfo(httpServletRequest);
@@ -34,7 +34,7 @@ public class MemberApplication {
   }
 
 
-  public MemberResponse.AccessToken newAccessToken(String refreshToken) {
+  public MemberResponse.AccessTokenResponse newAccessToken(String refreshToken) {
     return manageTokenService.issueNewAccessToken(refreshToken); // 함수 호출
   }
 

@@ -27,13 +27,13 @@ public class ManageTokenService {
    * -리프레시 토큰을 이용하여 새로운 액세스 토큰을 발급합니다.
    * -사용자의 액세스 토큰이 만료가 되었을 때 수행됩니다.
    */
-  public MemberResponse.AccessToken issueNewAccessToken(String refreshToken) {
+  public MemberResponse.AccessTokenResponse issueNewAccessToken(String refreshToken) {
     Member member = memberRepository.findByRefreshToken(refreshToken)
         .orElseThrow(() -> new BusinessException(MemberError.NOT_EXIST_MEMBER));
 
     String accessToken = jwtTokenProvider.generateToken(member, ACCESS_TOKEN_DURATION);
 
-    return MemberResponse.AccessToken.of(member, accessToken);
+    return MemberResponse.AccessTokenResponse.of(member, accessToken);
   }
 
 
