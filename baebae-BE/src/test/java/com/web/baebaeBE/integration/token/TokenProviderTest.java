@@ -1,4 +1,4 @@
-package com.web.baebaeBE.unit.token;
+package com.web.baebaeBE.integration.token;
 
 import com.web.baebaeBE.config.jwt.JwtFactory;
 import com.web.baebaeBE.global.error.exception.JwtAuthenticationException;
@@ -13,6 +13,7 @@ import io.jsonwebtoken.Jwts;
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,6 @@ class TokenProviderTest {
 
     @Autowired
     private JwtProperties jwtProperties;
-
 
     @Test
     @DisplayName("토큰 생성 테스트(): 테스트용 유저정보와 만료기간을 전달해 새로운 토큰을 생성할 수 있다.")
