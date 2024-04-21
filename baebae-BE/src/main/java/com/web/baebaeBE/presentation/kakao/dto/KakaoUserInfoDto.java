@@ -1,11 +1,13 @@
 package com.web.baebaeBE.presentation.kakao.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class KakaoUserInfoDto {
 
   private String id;
@@ -13,9 +15,15 @@ public class KakaoUserInfoDto {
   @JsonProperty("kakao_account")
   private KakaoAccount kakaoAccount;
 
+  public KakaoUserInfoDto(String id, String email, String nickname) {
+    this.id = id;
+    this.kakaoAccount = new KakaoAccount(email, new KakaoAccount.Profile(nickname));
+  }
+
   //카카오 계정 정보
   @Getter
   @Setter
+  @AllArgsConstructor
   public static class KakaoAccount {
 
     private String email;
@@ -25,13 +33,11 @@ public class KakaoUserInfoDto {
     // 프로필 정보
     @Getter
     @Setter
+    @AllArgsConstructor
     public static class Profile {
 
       private String nickname;
       //닉네임
-      @JsonProperty("thumbnail_image_url")
-      private String thumbnailImageUrl;
-      //썸네일 이미지 Url
 
     }
 

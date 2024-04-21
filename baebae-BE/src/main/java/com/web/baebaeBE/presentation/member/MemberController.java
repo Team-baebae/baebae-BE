@@ -15,15 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
-/**
- * 클라이언트로부터 소셜 로그인을 받는 컨트롤러 localhost:8080/api/oauth/login { Body : "memberType" : "KAKAO"만 있고
- * Authorization 안붙이는 경우 -> "Authorization Member가 빈값입니다" Authrorization과 같이 보내는데 앞에 Bearer 안붙이는 경우
- * -> "인증 타입이 Bearer 타입이 아닙니다"
- * <p>
- * grantType, accessToken, accessTokenExpireTime, refreshToken, refreshTokenExpireTime 반환
- * <p>
- * }
- */
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/oauth")
@@ -43,7 +35,7 @@ public class MemberController implements MemberApi {
 
 
   // Access Token 재발급
-  @GetMapping("/token/refresh")
+  @PostMapping("/token/refresh")
   public ResponseEntity<MemberResponse.AccessTokenResponse> refreshToken(
       HttpServletRequest httpServletRequest
   ) {
@@ -59,7 +51,7 @@ public class MemberController implements MemberApi {
   }
 
   //로그아웃
-  @GetMapping("/logout")
+  @PostMapping("/logout")
   public ResponseEntity<Void> logout(HttpServletRequest httpServletRequest) {
     String authorizationHeader = httpServletRequest.getHeader("Authorization");
     String accessToken = null;
