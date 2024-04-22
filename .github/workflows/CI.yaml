@@ -23,11 +23,15 @@ jobs:
           distribution: 'adopt'
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: |
+          ls
+          cd baebae-Be 
+          ls
+          ./gradlew build
 
       - name: Create deployment package
         run: |
-          zip -r deployment-package.zip build/libs/*.jar your-script.sh your-config.yml static/
+          zip -r deployment-package.zip build/libs/*.jar
 
       - name: Upload deployment package
         uses: actions/upload-artifact@v2
