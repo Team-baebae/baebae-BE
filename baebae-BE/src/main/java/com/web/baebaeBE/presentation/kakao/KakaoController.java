@@ -26,11 +26,17 @@ public class KakaoController {
   private String clientId;
   @Value("${spring.security.oauth2.client.registration.kakao.client-secret}")
   private String clientSecret;
+  @Value("${spring.profiles.active}")
+  private String version;
 
 
   @GetMapping("/api/oauth/kakao")
   public String login() {
-    return "oauthLogin";
+    if(version.equals("local")) {
+      return "oauthLogin-local"; // 로컬용 oauth2 로그인
+    } else {
+      return "oauthLogin-deploy"; // 배포용 oauth2 로그인
+    }
   }
 
 
