@@ -1,0 +1,52 @@
+name: Feature Branch CI
+
+on:
+  push:
+    branches:
+      - feature/**
+      - fix
+      - hotfix
+  pull_request:
+    branches:
+      - main
+      - develop
+      - fix
+      - hotfix
+
+jobs:
+  build-and-package:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+
+      - name: Create and configure application.yml
+        run: |
+          echo "${{ secrets.APPLICATION_YML }}" > baebae-BE/src/main/resources/application.yml
+          echo "${{ secrets.APPLICATION_DEPLOY_YML }}" > baebae-BE/src/main/resources/application-deploy.yml
+
+      - name: Build with Gradle
+        run: |
+          cd baebae-BE
+          chmod +x ./gradlew
+          ./gradlew build
+
+      - name: Create deployment package
+        run: |
+          zip -r test-package.zip baebae-BE/build/libs/baebae-BE-0.0.1-SNAPSHOT.jar
+
+      - name: Configure AWS CLI && Upload file to Object Storage
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.NAVER_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.NAVER_SECRET_KEY }}
+          AWS_DEFAULT_REGION: 'us-east-2'
+        run: |
+          aws --endpoint-url=https://kr.object.ncloudstorage.com s3 cp test-package.zip s3://baebae-bucket/test-package
+
