@@ -3,11 +3,13 @@ package com.web.baebaeBE.presentation.kakao.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class KakaoUserInfoDto {
 
   private String id;
@@ -24,6 +26,7 @@ public class KakaoUserInfoDto {
   @Getter
   @Setter
   @AllArgsConstructor
+  @NoArgsConstructor
   public static class KakaoAccount {
 
     private String email;
@@ -34,6 +37,7 @@ public class KakaoUserInfoDto {
     @Getter
     @Setter
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class Profile {
 
       private String nickname;
