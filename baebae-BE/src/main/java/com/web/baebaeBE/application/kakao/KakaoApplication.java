@@ -18,8 +18,8 @@ public class KakaoApplication {
   private final TokenService tokenService;
 
 
-  public KakaoDto.Response loginCallback(String code) {
-    KakaoDto.Response kakaoToken = tokenService.requestKakaoToken(code);
+  public KakaoDto.Response loginCallback(String code, String redirectUri) {
+    KakaoDto.Response kakaoToken = tokenService.requestKakaoToken(code, redirectUri);
 
     KakaoUserInfoDto kakaoUserInfo = tokenService.requestKakaoInfo(kakaoToken.getAccess_token());
 

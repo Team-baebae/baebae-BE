@@ -28,7 +28,7 @@ public class TokenService {
   @Value("${spring.security.oauth2.client.registration.kakao.client-secret}")
   private String clientSecret;
   @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
-  private String redirectUri;
+  private String defaultRedirectUri;
 
 
   /**
@@ -36,7 +36,10 @@ public class TokenService {
    * -카카오 로그인 요청 정보 생성 -카카오 서버에 POST 요청 전송
    * -카카오 토큰 응답 정보 객체 반환
    */
-  public KakaoDto.Response requestKakaoToken(String code) {
+  public KakaoDto.Response requestKakaoToken(String code, String redirectUri) {
+    if(redirectUri == null)
+      redirectUri = defaultRedirectUri; // 만약 로컬 테스트용일 경우, 직접 리다이렉트 URI 주입
+
     String contentType = "application/x-www-form-urlencoded;charset=utf-8";
     KakaoDto.Request kakaoTokenRequestDto = KakaoDto.Request.builder()
         .client_id(clientId)

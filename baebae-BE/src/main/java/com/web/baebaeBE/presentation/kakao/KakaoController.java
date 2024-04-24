@@ -1,6 +1,7 @@
 package com.web.baebaeBE.presentation.kakao;
 
 import com.web.baebaeBE.application.kakao.KakaoApplication;
+import com.web.baebaeBE.presentation.kakao.api.KakaoApi;
 import com.web.baebaeBE.presentation.kakao.dto.KakaoDto;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping()
-public class KakaoController {
+public class KakaoController implements KakaoApi {
 
   private final KakaoApplication kakaoApplication;
 
@@ -28,6 +29,7 @@ public class KakaoController {
   private String clientSecret;
   @Value("${spring.profiles.active}")
   private String version;
+
 
 
   @GetMapping("/api/oauth/kakao")
@@ -41,8 +43,10 @@ public class KakaoController {
 
 
   @GetMapping("/oauth/kakao/callback")
-  public ResponseEntity<KakaoDto.Response> loginCallback(@RequestParam("code") String code) {
-    KakaoDto.Response kakaoToken = kakaoApplication.loginCallback(code);
+  public ResponseEntity<KakaoDto.Response> loginCallback(
+          @RequestParam("code") String code,
+          @RequestParam(value = "redirectUri", required = false) String redirectUri) { // 프론트만 필수, 로컬테스트는 필수 x
+    KakaoDto.Response kakaoToken = kakaoApplication.loginCallback(code, redirectUri);
     return ResponseEntity.ok(kakaoToken);
   }
 
