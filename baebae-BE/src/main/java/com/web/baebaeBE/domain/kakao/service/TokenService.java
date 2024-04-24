@@ -27,6 +27,9 @@ public class TokenService {
   private String clientId;
   @Value("${spring.security.oauth2.client.registration.kakao.client-secret}")
   private String clientSecret;
+  @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
+  private String redirectUri;
+
 
   /**
    * -카카오 로그인 인가 코드를 이용하여 카카오 토큰을 발급받습니다.
@@ -40,7 +43,7 @@ public class TokenService {
         .client_secret(clientSecret)
         .grant_type("authorization_code")
         .code(code)
-        .redirect_uri("http://localhost:8080/oauth/kakao/callback") // 추후 수정
+        .redirect_uri(redirectUri) // 추후 수정
         .build();
     return kakaoClient.requestKakaoToken(contentType, kakaoTokenRequestDto);
   }
