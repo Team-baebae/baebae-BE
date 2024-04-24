@@ -48,7 +48,12 @@ public class TokenService {
         .code(code)
         .redirect_uri(redirectUri) // 추후 수정
         .build();
-    return kakaoClient.requestKakaoToken(contentType, kakaoTokenRequestDto);
+    try {
+      return kakaoClient.requestKakaoToken(contentType, kakaoTokenRequestDto);
+    } catch (Exception e) {
+      log.error(String.valueOf(e));
+      throw new BusinessException(KakaoError.INVALID_CODE_OR_URL);
+    }
   }
 
   /**

@@ -4,6 +4,7 @@ import com.web.baebaeBE.application.kakao.KakaoApplication;
 import com.web.baebaeBE.presentation.kakao.api.KakaoApi;
 import com.web.baebaeBE.presentation.kakao.dto.KakaoDto;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,7 +52,8 @@ public class KakaoController implements KakaoApi {
   }
 
 
-  @Operation(summary = "백엔드용 TEST API입니다.")
+
+  @Operation(summary = "백엔드용 TEST API입니다. (사용X)")
   @GetMapping("api/test")
   @ResponseBody
   public void test(HttpServletRequest request) {
