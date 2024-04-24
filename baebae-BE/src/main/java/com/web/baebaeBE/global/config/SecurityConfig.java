@@ -3,6 +3,7 @@ package com.web.baebaeBE.global.config;
 import com.web.baebaeBE.global.jwt.JwtAuthenticationFilter;
 import com.web.baebaeBE.global.jwt.JwtTokenProvider;
 import com.web.baebaeBE.domain.member.service.OAuth2UserCustomService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -17,6 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static com.web.baebaeBE.global.security.SecurityConstants.NO_AUTH_LIST;
 import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
 
 @Configuration
@@ -35,12 +37,7 @@ public class SecurityConfig {
         return web -> {
             web.ignoring()
                     .requestMatchers(toH2Console())
-                    .requestMatchers(
-                            // oAuth2 인증 제외
-                    "/api/oauth/kakao", "/favicon.ico", "/oauth/kakao/callback", "/api/oauth/login",
-                            // Swagger 제외 과정
-                            "/v3/**", "/swagger-ui/**"
-                    );
+                    .requestMatchers(NO_AUTH_LIST);
                     //.requestMatchers("/**");
         };
     }
@@ -58,10 +55,10 @@ public class SecurityConfig {
 
 
         http.authorizeHttpRequests()
-            // 해당 API에 대해서는 모든 요청을 허가
+                // 해당 API에 대해서는 모든 요청을 허가
                 //**//
-            // 이 밖에 모든 요청에 대해서 인증 필요
-            .anyRequest().authenticated();
+                // 이 밖에 모든 요청에 대해서 인증 필요
+                .anyRequest().authenticated();
 
         //JWT 검증 필터 등록
         http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
