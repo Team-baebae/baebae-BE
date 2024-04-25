@@ -8,7 +8,9 @@ public final class SecurityConstants {
             // Swagger 제외 과정
             "/v3/**", "/swagger-ui/**",
             // Error 페이지
-            "/error"
+            "/error",
+            // 로드밸런스 헬스체크
+            "/healthcheck"
     };
 
     public static final String[] AUTHENTICATED_LIST = {
