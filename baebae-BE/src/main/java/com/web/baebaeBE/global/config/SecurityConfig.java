@@ -51,11 +51,13 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable() // csrf, http로그인, form로그인, 로그아웃 비활성화. (토큰방식으로 인증)
+        http
+            .cors().configurationSource(corsConfigurationSource()) // cors 활성화
+            .and()
+            .csrf().disable() // csrf, http로그인, form로그인, 로그아웃 비활성화. (토큰방식으로 인증)
             .httpBasic().disable()
             .formLogin().disable()
-            .logout().disable()
-            .cors().configurationSource(corsConfigurationSource()); // cors 활성화
+            .logout().disable();
 
         http.sessionManagement() // 세션관리 설정 (Stateless로 설정 -> 세션 사용X)
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
