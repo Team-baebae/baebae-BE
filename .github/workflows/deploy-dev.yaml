@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - develop
-      - feature/cd/#20
 
 jobs:
   build-and-package:

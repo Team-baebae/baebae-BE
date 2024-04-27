@@ -42,9 +42,15 @@ jobs:
         run: |
           aws --endpoint-url=https://kr.object.ncloudstorage.com s3 cp deploy-package.zip s3://baebae-bucket/deploy-package --content-type application/zip
 
-      - name : Start Deploy Using SourceDeploy
+      - name: Start Deploy Using SourceDeploy
+        env:
+          PROJECT_ID: ${{ secrets.PROJECT_ID }}
+          STAGE_ID: ${{ secrets.STAGE_ID }}
+          SCENARIO_ID: ${{ secrets.SCENARIO_ID }}
+          ACCESS_KEY: ${{ secrets.NAVER_ACCESS_KEY }}
+          SECRET_KEY: ${{ secrets.NAVER_SECRET_KEY }}
         run: |
-          echo "${{ secrets.NAVER_SOURCE_DEPLOY_START }}" > request_deploy_start.sh
-          chmod +x request_deploy_start.sh
-          ./request_deploy_start.sh
+          cd baebae-BE
+          chmod +x request_source_deploy_start.sh
+          ./request_source_deploy_start.sh
 
