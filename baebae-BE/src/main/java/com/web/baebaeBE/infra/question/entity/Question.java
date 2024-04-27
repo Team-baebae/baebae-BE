@@ -3,6 +3,8 @@ package com.web.baebaeBE.infra.question.entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @AllArgsConstructor
 
@@ -10,10 +12,6 @@ public class Question {
     private Long questionId;
     private Long memberId;
     private String content;
-    public Question(Long questionId, Long memberId, String content) {
-        this.questionId = questionId;
-        this.memberId = memberId;
-        this.content = content;
-    }
+    private LocalDateTime createdDate;
 }
 

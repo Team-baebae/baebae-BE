@@ -4,7 +4,6 @@ import com.web.baebaeBE.infra.member.entity.Member;
 import com.web.baebaeBE.infra.member.repository.MemberRepository;
 import com.web.baebaeBE.infra.question.entity.Question;
 import com.web.baebaeBE.infra.question.entity.QuestionEntity;
-import com.web.baebaeBE.presentation.question.dto.QuestionDetailResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +12,7 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 public class QuestionMapper {
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
     public QuestionEntity toEntity(Question question, String email) {
         Optional<Member> optionalMember = memberRepository.findByEmail(email);
@@ -25,12 +24,21 @@ public class QuestionMapper {
                 .build();
     }
 
-    public QuestionDetailResponse toDomain(QuestionEntity questionEntity) {
-        return new QuestionDetailResponse(
+    public QuestionEntity toEntity(Question question, Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("No member found with id: " + memberId));
+
+        return QuestionEntity.builder()
+                .content(question.getContent())
+                .member(member)
+                .build();
+    }
+
+    public Question toDomain(QuestionEntity questionEntity) {
+        return new Question(
                 questionEntity.getId(),
-                questionEntity.getContent(),
-                questionEntity.getMember().getNickname(),
-                questionEntity.getCreatedDate()
+                questionEntity.getMember().getId(),
+                questionEntity.getContent()
         );
     }
 }

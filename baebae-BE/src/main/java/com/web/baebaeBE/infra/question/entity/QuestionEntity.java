@@ -29,12 +29,6 @@ public class QuestionEntity {
     @Column(name = "created_date", nullable = false, length = 30)
     private LocalDateTime createdDate;
 
-    public QuestionEntity(Long id, String content, Member member, LocalDateTime createdDate) {
-        this.id = id;
-        this.content = content;
-        this.member = member;
-        this.createdDate = createdDate;
-    }
     public void updateContent(String content) {
         this.content = content;
     }

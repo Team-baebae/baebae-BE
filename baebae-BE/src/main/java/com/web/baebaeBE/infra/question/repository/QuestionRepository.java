@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface QuestionRepository{
     Optional<Question> findById(Long questionId);
-    Question save(QuestionEntity questionEntity, Long memberId);
+    Question save(Question question, Long memberId);
     Page<Question> findAllByMemberId(Long memberId, Pageable pageable);
 }
 
