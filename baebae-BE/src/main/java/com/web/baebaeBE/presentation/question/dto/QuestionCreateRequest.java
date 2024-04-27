@@ -14,3 +14,4 @@ public class QuestionCreateRequest {
     public static QuestionCreateRequest of(String content) {return new QuestionCreateRequest(content);
     }
 }
+

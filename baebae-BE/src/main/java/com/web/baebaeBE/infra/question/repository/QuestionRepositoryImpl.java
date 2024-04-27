@@ -39,3 +39,4 @@ public class QuestionRepositoryImpl implements QuestionRepository{
         return questionEntitiesPage.map(questionMapper::toDomain);
     }
 }
+

@@ -13,3 +13,4 @@ public interface QuestionRepository{
     Question save(QuestionEntity questionEntity, Long memberId);
     Page<Question> findAllByMemberId(Long memberId, Pageable pageable);
 }
+

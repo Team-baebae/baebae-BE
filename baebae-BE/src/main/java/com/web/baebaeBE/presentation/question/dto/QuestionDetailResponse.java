@@ -23,3 +23,4 @@ public class QuestionDetailResponse {
         return new QuestionDetailResponse(questionId, content, userEmail, createdDate);
     }
 }
+
