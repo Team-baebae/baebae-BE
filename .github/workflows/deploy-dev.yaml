@@ -3,7 +3,7 @@ name: Feature Branch CI
 on:
   push:
     branches:
-      - main
+      - develop
 
 jobs:
   build-and-package:
@@ -32,7 +32,7 @@ jobs:
 
       - name: Create deployment package
         run: |
-          zip -r deploy-package.zip baebae-BE/build/libs/baebae-BE-0.0.1-SNAPSHOT.jar
+          zip -r test-package.zip baebae-BE/build/libs/baebae-BE-0.0.1-SNAPSHOT.jar
 
       - name: Configure AWS CLI && Upload file to Object Storage
         env:
@@ -40,5 +40,10 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.NAVER_SECRET_KEY }}
           AWS_DEFAULT_REGION: 'us-east-2'
         run: |
-          aws --endpoint-url=https://kr.object.ncloudstorage.com s3 cp deploy-package.zip s3://baebae-bucket/deploy-package --content-type application/zip
+          aws --endpoint-url=https://kr.object.ncloudstorage.com s3 cp test-package.zip s3://baebae-bucket/test-package --content-type application/zip
 
+      - name : Start Deploy Using SourceDeploy
+        run: |
+          echo "${{ secrets.NAVER_SOURCE_DEPLOY_START }}" > request_deploy_start.sh
+          chmod +x request_deploy_start.sh
+          ./request_deploy_start.sh
