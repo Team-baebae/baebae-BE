@@ -52,5 +52,5 @@ jobs:
           SECRET_KEY: ${{ secrets.NAVER_SECRET_KEY }}
         run: |
           cd baebae-BE
-          chmod +x request_source_deploy.sh
-          ./request_source_deploy.sh
+          chmod +x request_source_deploy_start.sh
+          ./request_source_deploy_start.sh
