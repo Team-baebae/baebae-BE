@@ -45,5 +45,6 @@ jobs:
       - name : Start Deploy Using SourceDeploy
         run: |
           echo "${{ secrets.NAVER_SOURCE_DEPLOY_START }}" > request_deploy_start.sh
+          cat request_deploy_start.sh
           chmod +x request_deploy_start.sh
           ./request_deploy_start.sh
