@@ -2,7 +2,6 @@ package com.web.baebaeBE.domain.question.service;
 
 import com.web.baebaeBE.infra.member.entity.Member;
 import com.web.baebaeBE.infra.member.repository.MemberRepository;
-import com.web.baebaeBE.infra.question.entity.Question;
 import com.web.baebaeBE.infra.question.entity.QuestionEntity;
 import com.web.baebaeBE.infra.question.repository.QuestionRepository;
 import com.web.baebaeBE.presentation.question.dto.QuestionCreateRequest;
@@ -52,8 +51,8 @@ public class QuestionService {
 
     @Transactional(readOnly = true)
     public Page<QuestionDetailResponse> getAllQuestions(Long memberId, Pageable pageable) {
-        Page<Question> questionsPage = questionRepository.findAllByMemberId(memberId, pageable);
-        return questionsPage.map(question -> QuestionDetailResponse.of(question.getQuestionId(), question.getContent(),
+        Page<QuestionEntity> questionsPage = questionRepository.findAllByMemberId(memberId, pageable);
+        return questionsPage.map(question -> QuestionDetailResponse.of(question.getId(), question.getContent(),
                 question.getMember().getEmail(),
                 question.getCreatedDate()));
     }
@@ -81,7 +80,6 @@ public class QuestionService {
     public void deleteQuestion(Long questionId) {
         QuestionEntity questionEntity = questionRepository.findById(questionId)
                 .orElseThrow(() -> new IllegalArgumentException("No question found with id"));
-
         questionRepository.delete(questionEntity);
     }
 

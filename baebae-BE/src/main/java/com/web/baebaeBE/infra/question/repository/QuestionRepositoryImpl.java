@@ -1,6 +1,5 @@
 package com.web.baebaeBE.infra.question.repository;
 
-import com.web.baebaeBE.infra.question.entity.Question;
 import com.web.baebaeBE.infra.question.entity.QuestionEntity;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
@@ -13,30 +12,31 @@ import java.util.Optional;
 @Primary
 public class QuestionRepositoryImpl implements QuestionRepository{
     private final QuestionJpaRepository questionJpaRepository;
-    private final QuestionMapper questionMapper;
+//    private final QuestionMapper questionMapper;
 
-    public QuestionRepositoryImpl(QuestionJpaRepository questionJpaRepository, QuestionMapper questionMapper) {
+    public QuestionRepositoryImpl(QuestionJpaRepository questionJpaRepository /*, QuestionMapper questionMapper*/) {
         this.questionJpaRepository = questionJpaRepository;
-        this.questionMapper = questionMapper;
+//        this.questionMapper = questionMapper;
     }
 
     @Override
-    public Optional<Question> findById(Long questionId) {
-        return questionJpaRepository.findById(questionId)
-                .map(questionMapper::toDomain);
+    public Optional<QuestionEntity> findById(Long questionId) {
+        return questionJpaRepository.findById(questionId);
     }
 
     @Override
-    public Question save(Question question, Long memberId) {
-        QuestionEntity questionEntity = questionMapper.toEntity(question, memberId);
-        questionEntity = questionJpaRepository.save(questionEntity);
-        return questionMapper.toDomain(questionEntity);
+    public QuestionEntity save(QuestionEntity questionEntity) {
+        return questionJpaRepository.save(questionEntity);
     }
 
     @Override
-    public Page<Question> findAllByMemberId(Long memberId, Pageable pageable) {
-        Page<QuestionEntity> questionEntitiesPage = questionJpaRepository.findAllByMemberId(memberId, pageable);
-        return questionEntitiesPage.map(questionMapper::toDomain);
+    public Page<QuestionEntity> findAllByMemberId(Long memberId, Pageable pageable) {
+        return questionJpaRepository.findAllByMemberId(memberId, pageable);
+    }
+
+    @Override
+    public void delete(QuestionEntity questionEntity) {
+        questionJpaRepository.delete(questionEntity);
     }
 }
 
