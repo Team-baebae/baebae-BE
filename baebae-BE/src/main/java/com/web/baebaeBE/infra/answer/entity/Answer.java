@@ -6,7 +6,6 @@ import com.web.baebaeBE.infra.member.entity.Member;
 import com.web.baebaeBE.infra.question.entity.Question;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Type;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -50,5 +49,12 @@ public class Answer {
 
     @Column(name = "like_count", nullable = false)
     private Integer likeCount;
+
+    public static Answer of(Long id, Question question, Member member, String content,
+                            String linkAttachment, String musicSearch, List<String> imageFiles,
+                            LocalDateTime createdDate, Integer likeCount) {
+        return new Answer(id, question, member, content,linkAttachment, musicSearch, imageFiles,
+                createdDate, likeCount);
+    }
 
 }

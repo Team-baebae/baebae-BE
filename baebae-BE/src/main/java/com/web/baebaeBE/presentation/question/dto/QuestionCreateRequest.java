@@ -10,7 +10,6 @@ public class QuestionCreateRequest {
     public QuestionCreateRequest(String content) {
         this.content = content;
     }
-
     public static QuestionCreateRequest of(String content) {return new QuestionCreateRequest(content);
     }
 }

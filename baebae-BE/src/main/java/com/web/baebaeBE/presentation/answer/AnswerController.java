@@ -1,7 +1,6 @@
 package com.web.baebaeBE.presentation.answer;
 
 import com.web.baebaeBE.domain.answer.service.AnswerService;
-import com.web.baebaeBE.infra.answer.entity.Answer;
 import com.web.baebaeBE.presentation.answer.dto.AnswerCreateRequest;
 import com.web.baebaeBE.presentation.answer.dto.AnswerDetailResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,8 +25,8 @@ public class AnswerController {
 
     @Operation(summary = "피드 생성")
     @PostMapping("/member/{memberId}")
-    public ResponseEntity<Answer> createAnswer(@RequestBody AnswerCreateRequest request) {
-        Answer createdAnswer = answerService.createAnswer(request);
+    public ResponseEntity<AnswerDetailResponse> createAnswer(@RequestBody AnswerCreateRequest answerDTO,@PathVariable Long memberId) {
+        AnswerDetailResponse createdAnswer = answerService.createAnswer(answerDTO, memberId);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdAnswer);
     }
 

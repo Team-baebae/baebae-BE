@@ -1,7 +1,6 @@
 package com.web.baebaeBE.infra.answer.repository;
 
 import com.web.baebaeBE.infra.answer.entity.Answer;
-import com.web.baebaeBE.infra.question.entity.Question;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

@@ -1,6 +1,7 @@
 package com.web.baebaeBE.infra.answer.repository;
 
 import com.web.baebaeBE.infra.answer.entity.Answer;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
