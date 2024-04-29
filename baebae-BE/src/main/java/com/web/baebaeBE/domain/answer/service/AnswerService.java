@@ -1,5 +1,7 @@
 package com.web.baebaeBE.domain.answer.service;
 
+import com.web.baebaeBE.domain.answer.exception.AnswerError;
+import com.web.baebaeBE.global.error.exception.BusinessException;
 import com.web.baebaeBE.infra.answer.entity.Answer;
 import com.web.baebaeBE.infra.answer.repository.AnswerRepository;
 import com.web.baebaeBE.presentation.answer.dto.AnswerCreateRequest;
@@ -28,7 +30,7 @@ public class AnswerService {
     @Transactional
     public Answer updateAnswer(Long answerId, AnswerCreateRequest request) {
         Answer answer = answerRepository.findByAnswerId(answerId)
-                .orElseThrow(() -> new IllegalArgumentException("No answer found with id: " + answerId));
+                .orElseThrow(() -> new BusinessException(AnswerError.NO_EXIST_ANSWER));
 
         answer.setContent(request.getContent());
         answer.setLinkAttachment(request.getLinkAttachment());

@@ -1,5 +1,8 @@
 package com.web.baebaeBE.domain.question.service;
 
+import com.web.baebaeBE.domain.answer.exception.AnswerError;
+import com.web.baebaeBE.domain.question.exception.QuestionError;
+import com.web.baebaeBE.global.error.exception.BusinessException;
 import com.web.baebaeBE.infra.member.repository.MemberRepository;
 import com.web.baebaeBE.infra.question.entity.Question;
 import com.web.baebaeBE.infra.question.repository.QuestionMapper;
@@ -28,7 +31,7 @@ public class QuestionService {
     @Transactional
     public Question updateQuestion(Long questionId, String content) {
         Question questionEntity = questionRepository.findById(questionId)
-                .orElseThrow(() -> new IllegalArgumentException("No question found with id " ));
+                .orElseThrow(() -> new BusinessException(QuestionError.NO_EXIST_QUESTION));
         questionEntity.updateContent(content);
         return questionRepository.save(questionEntity);
     }

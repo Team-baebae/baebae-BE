@@ -1,6 +1,9 @@
 package com.web.baebaeBE.application.answer;
 
+import com.web.baebaeBE.domain.answer.exception.AnswerError;
 import com.web.baebaeBE.domain.answer.service.AnswerService;
+import com.web.baebaeBE.domain.member.exception.MemberError;
+import com.web.baebaeBE.global.error.exception.BusinessException;
 import com.web.baebaeBE.infra.answer.entity.Answer;
 import com.web.baebaeBE.infra.answer.repository.AnswerMapper;
 import com.web.baebaeBE.infra.member.entity.Member;
@@ -24,9 +27,9 @@ public class AnswerApplication {
 
     public AnswerDetailResponse createAnswer(AnswerCreateRequest request, Long memberId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("No member found with id " ));
+                .orElseThrow(() -> new BusinessException(MemberError.NOT_EXIST_MEMBER));
         Question question = questionRepository.findById(request.getQuestionId())
-                .orElseThrow(() -> new IllegalArgumentException("No question found with id "));
+                .orElseThrow(() -> new BusinessException(AnswerError.NO_EXIST_QUESTION));
         Answer answerEntity = answerMapper.toEntity(request, question, member);
         Answer savedAnswerEntity = answerService.createAnswer(answerEntity);
         return answerMapper.toDomain(savedAnswerEntity);

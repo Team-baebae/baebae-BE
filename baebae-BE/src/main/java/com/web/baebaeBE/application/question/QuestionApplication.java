@@ -1,6 +1,8 @@
 package com.web.baebaeBE.application.question;
 
+import com.web.baebaeBE.domain.member.exception.MemberError;
 import com.web.baebaeBE.domain.question.service.QuestionService;
+import com.web.baebaeBE.global.error.exception.BusinessException;
 import com.web.baebaeBE.infra.member.entity.Member;
 import com.web.baebaeBE.infra.member.repository.MemberRepository;
 import com.web.baebaeBE.infra.question.entity.Question;
@@ -24,7 +26,7 @@ public class QuestionApplication {
 
     public QuestionDetailResponse createQuestion(QuestionCreateRequest request, Long memberId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("No member found with id " + memberId));
+                .orElseThrow(() -> new BusinessException(MemberError.NOT_EXIST_MEMBER));
 
         Question questionEntity = questionMapper.toEntity(request, member);
         Question savedQuestionEntity = questionService.createQuestion(questionEntity);
