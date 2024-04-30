@@ -14,6 +14,7 @@ import com.web.baebaeBE.infra.member.enums.MemberType;
 import com.web.baebaeBE.infra.member.repository.MemberRepository;
 import com.web.baebaeBE.presentation.kakao.dto.KakaoUserInfoDto;
 import com.web.baebaeBE.presentation.member.dto.MemberRequest;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.Duration;
+import java.util.Optional;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.hamcrest.Matchers.is;
@@ -60,7 +62,7 @@ public class MemberIntegrationTest {
     @BeforeEach
     void setup() {
         Member testMember = memberRepository.save(Member.builder()
-                .email("user@gmail.com")
+                .email("test@gmail.com")
                 .nickname("김예찬")
                 .memberType(MemberType.KAKAO)
                 .refreshToken("null")
@@ -71,6 +73,14 @@ public class MemberIntegrationTest {
 
         testMember.updateRefreshToken(refreshToken);
         memberRepository.save(testMember);
+    }
+
+    //각 테스트 후마다 실행
+    @AfterEach
+    void tearDown() {
+        Optional<Member> member = memberRepository.findByEmail("test@gmail.com");
+        if(member.isPresent())
+            memberRepository.delete(member.get());
     }
 
 

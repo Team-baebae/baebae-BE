@@ -13,6 +13,7 @@ import io.jsonwebtoken.Jwts;
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatRuntimeException;
@@ -39,40 +41,49 @@ class TokenProviderTest {
     private JwtTokenProvider tokenProvider;
 
     @Autowired
-    private MemberRepository userRepository;
+    private MemberRepository memberRepository;
 
     @Autowired
     private JwtProperties jwtProperties;
+
+
+    //각 테스트 후마다 실행
+    @AfterEach
+    void tearDown() {
+        Optional<Member> member = memberRepository.findByEmail("test@gmail.com");
+        if(member.isPresent())
+            memberRepository.delete(member.get());
+    }
 
     @Test
     @DisplayName("토큰 생성 테스트(): 테스트용 유저정보와 만료기간을 전달해 새로운 토큰을 생성할 수 있다.")
     void generateTokenTest() {
         // given
-        Member testMember = userRepository.save(Member.builder()
-                .email("user@gmail.com")
+        Member testMember = memberRepository.save(Member.builder()
+                .email("test@gmail.com")
                 .memberType(MemberType.KAKAO)
                 .refreshToken("null")
                 .build());
 
         // when
         String token = tokenProvider.generateToken(testMember, Duration.ofDays(14));
-        Long userId = Long.valueOf(Jwts.parserBuilder()
+        String email = Jwts.parserBuilder()
                 .setSigningKey(jwtProperties.getSecretKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
-                .getId());
+                .getId();
 
         // then
-        assertThat(userId).isEqualTo(testMember.getId());
+        assertThat(email).isEqualTo(testMember.getEmail());
     }
 
     @Test
     @DisplayName("토큰 검증 실패 테스트(): 만료된 토큰인 경우에 유효성 검증에 실패한다.")
     void invalidTokenTest1() {
         // given
-        Member testMember = userRepository.save(Member.builder()
-                .email("user@gmail.com")
+        Member testMember = memberRepository.save(Member.builder()
+                .email("test@gmail.com")
                 .memberType(MemberType.KAKAO)
                 .refreshToken("null")
                 .build());
@@ -103,8 +114,8 @@ class TokenProviderTest {
     @DisplayName("토큰 검증 성공 테스트(): 유효한 토큰인 경우에 유효성 검증에 성공한다.")
     void validToken_validToken() {
         // given
-        Member testMember = userRepository.save(Member.builder()
-                .email("user@gmail.com")
+        Member testMember = memberRepository.save(Member.builder()
+                .email("test@gmail.com")
                 .memberType(MemberType.KAKAO)
                 .refreshToken("null")
                 .build());
@@ -122,8 +133,8 @@ class TokenProviderTest {
     @DisplayName("토큰 인증정보 테스트(): 토큰 기반으로 인증정보를 가져올 수 있다.")
     void getAuthentication() {
         // given
-        Member testMember = userRepository.save(Member.builder()
-                .email("user@gmail.com")
+        Member testMember = memberRepository.save(Member.builder()
+                .email("test@gmail.com")
                 .memberType(MemberType.KAKAO)
                 .refreshToken("null")
                 .build());
