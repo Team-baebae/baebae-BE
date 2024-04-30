@@ -1,6 +1,6 @@
 # 💻 시스템 아키텍처
 
-<img width="1065" alt="image" src="https://github.com/Team-baebae/baebae-BE/assets/59834576/20af9c41-8780-4b1a-a205-17f4e8355e3b">
+![image](https://github.com/Team-baebae/baebae-BE/assets/59834576/f9485a07-f390-4070-aa08-a02050267da9)
 
 
 
@@ -95,14 +95,15 @@
  • 질문자들의 랜덤 질문 생성시에 CLOVA AI 활용  
  • 다양한 질문 프롬프트를 통해 선택옵션 다양화
 
-### __```AWS Lambda```__ 
+### __```AWS Lambda```__ (이 부분은 아직 미정입니다..!)
  • FireBase와 연동시켜, 사용자에게 실시간 알림 전송  
  • 간단한 환경 구축 및 높은 안정성 확보
+ • 추후 기능 다른 기능 업데이트시, 높은 확장성 확보
 
 ### __```FireBase```__ 
  • 사용자에게 실시간 알림을 보내기 위한 기술  
  • FCM을 통해 사용자에게 푸시 메세지 전송가능  
- • Message Queue로도 구현할 수도 있겠지만, 유저가 많지 않은 상황에서 Message Queue 도입은 무의미하고, 시스템 불안정성을 야기할 수 있다 판단하여 FireBase + Lambda 도입
+ • Message Queue 도입을 고민했지만, 유저가 많지 않은 상황에서 Message Queue 도입은 무의미하고, 시스템 불안정성을 야기할 수 있다 판단하여 FireBase도입
 
 ### __```nGrinder```__ 
  • 오픈소스 기반 부하테스트 소프트웨어  
