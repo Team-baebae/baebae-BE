@@ -34,7 +34,7 @@ public class Member implements UserDetails {
   @Column(name = "member_id", updatable = false, unique = true, nullable = false)
   private Long id;
 
-  @Column(nullable = false)
+  @Column(nullable = false, unique = true)
   private String email;
 
   private String nickname;

@@ -43,9 +43,9 @@ public class ManageTokenService {
    * -해당 member의 refresh 토큰의 만료시간을 현재 시각으로 설정합니다.
    */
   public void logoutMember(String accessToken) {
-    Long memberId = jwtTokenProvider.getUserId(accessToken);
+    String memberEmail = jwtTokenProvider.getUserEmail(accessToken);
 
-    Member member = memberRepository.findById(memberId)
+    Member member = memberRepository.findByEmail(memberEmail)
         .orElseThrow(() -> new BusinessException(MemberError.NOT_EXIST_MEMBER));
 
     member.updateTokenExpirationTime(LocalDateTime.now());
