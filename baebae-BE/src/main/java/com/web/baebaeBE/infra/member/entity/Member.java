@@ -46,6 +46,7 @@ public class Member implements UserDetails {
   @Column(name = "refresh_token")
   private String refreshToken;
 
+  @Column(name = "token_expiration_time")
   private LocalDateTime tokenExpirationTime;
 
 
