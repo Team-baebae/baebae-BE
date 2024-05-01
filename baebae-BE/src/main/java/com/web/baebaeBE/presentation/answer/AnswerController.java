@@ -19,8 +19,8 @@ public class AnswerController {
     private final AnswerApplication answerApplication;
 
     @Operation(summary = "피드 생성")
-    @PostMapping("/member/{memberId}")
-    public ResponseEntity<AnswerDetailResponse> createAnswer(@RequestBody AnswerCreateRequest request, @PathVariable Long memberId) {
+    @PostMapping(value = "/member/{memberId}", consumes = "multipart/form-data")
+    public ResponseEntity<AnswerDetailResponse> createAnswer(@ModelAttribute AnswerCreateRequest request, @PathVariable Long memberId) {
         AnswerDetailResponse createdAnswer = answerApplication.createAnswer(request, memberId);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdAnswer);
     }
@@ -33,9 +33,9 @@ public class AnswerController {
     }
 
     @Operation(summary = "피드 수정")
-    @PutMapping("/{answerId}")
-    public ResponseEntity<AnswerDetailResponse> updateAnswer(@PathVariable Long answerId, @RequestBody AnswerCreateRequest request) {
-        AnswerDetailResponse updatedAnswer = answerApplication.updateAnswer(answerId, request);
+    @PutMapping(value = "/{answerId}", consumes = "multipart/form-data")
+    public ResponseEntity<AnswerDetailResponse> updateAnswer(@PathVariable Long answerId, @ModelAttribute AnswerCreateRequest request) {
+        AnswerDetailResponse updatedAnswer = answerApplication.updateAnswer(answerId, request, request.getImageFiles());
         return ResponseEntity.ok(updatedAnswer);
     }
 

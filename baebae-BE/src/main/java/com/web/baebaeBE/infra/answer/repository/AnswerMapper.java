@@ -20,7 +20,7 @@ public class AnswerMapper {
                 .content(request.getContent())
                 .linkAttachment(request.getLinkAttachment())
                 .musicSearch(request.getMusicSearch())
-                .imageFiles(request.getImageFiles())
+                .imageFiles(request.getImageUrls())
                 .createdDate(LocalDateTime.now())
                 .likeCount(0)
                 .build();

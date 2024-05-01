@@ -1,11 +1,8 @@
 package com.web.baebaeBE.domain.question.service;
 
-import com.web.baebaeBE.domain.answer.exception.AnswerError;
 import com.web.baebaeBE.domain.question.exception.QuestionError;
 import com.web.baebaeBE.global.error.exception.BusinessException;
-import com.web.baebaeBE.infra.member.repository.MemberRepository;
 import com.web.baebaeBE.infra.question.entity.Question;
-import com.web.baebaeBE.infra.question.repository.QuestionMapper;
 import com.web.baebaeBE.infra.question.repository.QuestionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
