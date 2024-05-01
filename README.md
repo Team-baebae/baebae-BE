@@ -2,6 +2,9 @@
 
 ![image](https://github.com/Team-baebae/baebae-BE/assets/59834576/3bc9448e-0afc-4b90-a235-36037720e934)
 
+# 💻 ERD 설계도
+
+![image](https://github.com/Team-baebae/baebae-FE/assets/59834576/94236c95-0baa-42d0-bfd5-35854999f96f)
 
 
 # 💻 기술 스택
