@@ -31,7 +31,7 @@ public class SwaggerConfig {
                 .bearerFormat("JWT")
                 .scheme("Bearer");
 
-        Components components = new Components().addSecuritySchemes("token", securityScheme);
+        Components components = new Components().addSecuritySchemes("bearerAuth", securityScheme);
 
         return new OpenAPI()
                 .info(info)

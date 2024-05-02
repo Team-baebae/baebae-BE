@@ -82,5 +82,12 @@ public class MemberResponse {
 
   }
 
-
+  @Getter
+  @Setter
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
+  public static class isExistingUserResponse {
+    private Boolean isExisting;
+  }
 }
