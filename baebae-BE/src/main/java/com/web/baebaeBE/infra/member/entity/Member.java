@@ -39,6 +39,9 @@ public class Member implements UserDetails {
 
   private String nickname;
 
+  @Column(name="profile_image")
+  private String profileImage;
+
   @Column(name = "member_type", nullable = false)
   @Enumerated(EnumType.STRING)
   private MemberType memberType;
@@ -47,6 +50,9 @@ public class Member implements UserDetails {
   private String refreshToken;
 
   private LocalDateTime tokenExpirationTime;
+
+  @Column(name = "fcm_token")
+  private String fcmToken;
 
 
   public Member update(String nickname) {
@@ -57,6 +63,7 @@ public class Member implements UserDetails {
   public void updateRefreshToken(String refreshToken) {
     this.refreshToken = refreshToken;
   }
+
 
   public void updateTokenExpirationTime(LocalDateTime time) {
     this.tokenExpirationTime = time;
