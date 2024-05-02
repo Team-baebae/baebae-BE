@@ -63,6 +63,12 @@ public class Member implements UserDetails {
   public void updateRefreshToken(String refreshToken) {
     this.refreshToken = refreshToken;
   }
+  public void updateProfileImage(String profileImageKey){
+    this.profileImage = profileImageKey;
+  }
+  public void updateFcmToken(String fcmToken){
+    this.fcmToken = fcmToken;
+  }
 
 
   public void updateTokenExpirationTime(LocalDateTime time) {
