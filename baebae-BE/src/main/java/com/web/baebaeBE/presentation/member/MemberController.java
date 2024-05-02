@@ -33,6 +33,14 @@ public class MemberController implements MemberApi {
     return ResponseEntity.ok(memberApplication.login(httpServletRequest, signUpRequest));
   }
 
+  //회원가입 유무 판별
+  @GetMapping("/isExisting")
+  public ResponseEntity<MemberResponse.isExistingUserResponse> isExistingUser(
+          HttpServletRequest httpServletRequest
+  ) {
+    return ResponseEntity.ok(memberApplication.checkIsExisting(httpServletRequest));
+  }
+
 
   // Access Token 재발급
   @PostMapping("/token/refresh")
@@ -64,4 +72,8 @@ public class MemberController implements MemberApi {
 
     return ResponseEntity.ok().build();
   }
+
+
+
+
 }

@@ -54,6 +54,33 @@ public interface MemberApi {
             HttpServletRequest httpServletRequest
     );
 
+    @Operation(
+            summary = "회원가입 유무 체크",
+            security = @SecurityRequirement(name = "bearerAuth")
+    )
+    @Parameter(
+            in = ParameterIn.HEADER,
+            name = "Authorization", required = true,
+            schema = @Schema(type = "string"),
+            description = "Bearer [카카오 Access 토큰]")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "기존 회원",
+                    content = @Content(mediaType = "application/json",
+                            examples = @ExampleObject(value = "{\n" +
+                                    "  \"isExisting\": \"true\"\n" +
+                                    "}"))
+            ),
+            @ApiResponse(responseCode = "200", description = "새로운 회원",
+                    content = @Content(mediaType = "application/json",
+                            examples = @ExampleObject(value = "{\n" +
+                                    "  \"isExisting\": \"false\"\n" +
+                                    "}"))
+            )
+    })
+    public ResponseEntity<MemberResponse.isExistingUserResponse> isExistingUser(
+            HttpServletRequest httpServletRequest
+    );
+
 
 
     @Operation(summary = "Access Token 재발급")
