@@ -45,6 +45,13 @@ public class LoginService {
   }
 
   /**
+   * -Nickname 정보를 기반으로 중복되는 Nickname이 있는지 확인합니다.
+   */
+  public boolean isExistingNickname(String nickname) {
+    return memberRepository.existsByNickname(nickname);
+  }
+
+  /**
    * -기존 회원 로그인 처리를 수행합니다.
    * -리프레시 토큰과 액세스 토큰을 새로 생성하여 업데이트
    */

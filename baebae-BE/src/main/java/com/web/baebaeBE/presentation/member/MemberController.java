@@ -36,6 +36,13 @@ public class MemberController implements MemberApi {
     return ResponseEntity.ok(memberApplication.checkIsExisting(httpServletRequest));
   }
 
+  //닉네임 중복 유무 확인
+  @GetMapping("/nickname/isExisting")
+  public ResponseEntity<MemberResponse.isExistingUserResponse> isExistingNickname(
+          @RequestParam String nickname
+  ) {
+    return ResponseEntity.ok(memberApplication.checkNicknameIsExisting(nickname));
+  }
 
   // Access Token 재발급
   @PostMapping("/token/refresh")
