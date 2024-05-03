@@ -22,4 +22,13 @@ public class MemberRequest {
     private String nickname;
   }
 
+  @Getter
+  @Setter
+  @NoArgsConstructor
+  @AllArgsConstructor
+  public static class CheckNickname{
+    @Schema(example = "김예찬")
+    private String nickname;
+  }
+
 }

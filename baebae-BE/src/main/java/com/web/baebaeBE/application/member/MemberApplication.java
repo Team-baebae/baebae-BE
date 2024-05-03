@@ -44,6 +44,14 @@ public class MemberApplication {
       return new MemberResponse.isExistingUserResponse(false);
   }
 
+  public MemberResponse.isExistingUserResponse checkNicknameIsExisting(String nickname){
+    // 이미 회원이 존재하면 true, 아니면 false
+    if(loginService.isExistingNickname(nickname))
+       return new MemberResponse.isExistingUserResponse(true);
+     else
+       return new MemberResponse.isExistingUserResponse(false);
+  }
+
 
   public MemberResponse.AccessTokenResponse newAccessToken(String refreshToken) {
     return manageTokenService.issueNewAccessToken(refreshToken); // 함수 호출

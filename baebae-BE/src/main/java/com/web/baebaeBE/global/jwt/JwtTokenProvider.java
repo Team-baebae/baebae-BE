@@ -41,8 +41,6 @@ public class JwtTokenProvider {
   //토큰 제작 메서드
   private String makeToken(Date expiry, Member member) {
     Date now = new Date();
-
-    System.out.println(member.getId());
     //jwt 빌더
     return Jwts.builder()
         // Header

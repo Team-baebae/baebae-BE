@@ -84,6 +84,29 @@ public interface MemberApi {
     );
 
 
+    @Operation(
+            summary = "닉네임 중복 유무 확인",
+            description = "다른 사용자와 닉네임이 중복되는지 확인합니다."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "이미 존재하는 닉네임",
+                    content = @Content(mediaType = "application/json",
+                            examples = @ExampleObject(value = "{\n" +
+                                    "  \"isExisting\": \"true\"\n" +
+                                    "}"))
+            ),
+            @ApiResponse(responseCode = "200", description = "사용가능한 닉네임",
+                    content = @Content(mediaType = "application/json",
+                            examples = @ExampleObject(value = "{\n" +
+                                    "  \"isExisting\": \"false\"\n" +
+                                    "}"))
+            )
+    })
+    public ResponseEntity<MemberResponse.isExistingUserResponse> isExistingNickname(
+            String nickname
+    );
+
+
 
     @Operation(
             summary = "Access Token 재발급",
