@@ -103,7 +103,7 @@ public class NotificationSelectTest {
 
 
     @Test
-    @DisplayName("단일 알림 조회 테스트(): 해당 알림의 정보를 조회한다.")
+    @DisplayName("단일 알림 조회 테스트(): 해당 알림의 정보를 조회 한다.")
     void deleteNotificationTest() throws Exception{
         // given
         NotificationRequest.create createRequest1 = new NotificationRequest.create(
