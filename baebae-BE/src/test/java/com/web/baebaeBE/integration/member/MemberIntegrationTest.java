@@ -26,6 +26,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.*;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.Duration;
@@ -38,6 +39,7 @@ import static org.hamcrest.Matchers.notNullValue;
 @SpringBootTest()
 @AutoConfigureMockMvc
 @WithMockUser
+@Transactional
 public class MemberIntegrationTest {
 
     @Autowired
