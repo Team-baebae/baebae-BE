@@ -63,7 +63,7 @@ public class MemberIntegrationTest {
     void setup() {
         Member testMember = memberRepository.save(Member.builder()
                 .email("test@gmail.com")
-                .nickname("김예찬")
+                .nickname("test")
                 .memberType(MemberType.KAKAO)
                 .refreshToken("null")
                 .build());
