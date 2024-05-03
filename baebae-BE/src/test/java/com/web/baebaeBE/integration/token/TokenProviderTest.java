@@ -61,6 +61,7 @@ class TokenProviderTest {
         // given
         Member testMember = memberRepository.save(Member.builder()
                 .email("test@gmail.com")
+                .nickname("테스트유저")
                 .memberType(MemberType.KAKAO)
                 .refreshToken("null")
                 .build());
@@ -84,6 +85,7 @@ class TokenProviderTest {
         // given
         Member testMember = memberRepository.save(Member.builder()
                 .email("test@gmail.com")
+                .nickname("테스트유저")
                 .memberType(MemberType.KAKAO)
                 .refreshToken("null")
                 .build());
@@ -116,6 +118,7 @@ class TokenProviderTest {
         // given
         Member testMember = memberRepository.save(Member.builder()
                 .email("test@gmail.com")
+                .nickname("테스트유저")
                 .memberType(MemberType.KAKAO)
                 .refreshToken("null")
                 .build());
@@ -135,6 +138,7 @@ class TokenProviderTest {
         // given
         Member testMember = memberRepository.save(Member.builder()
                 .email("test@gmail.com")
+                .nickname("테스트유저")
                 .memberType(MemberType.KAKAO)
                 .refreshToken("null")
                 .build());
