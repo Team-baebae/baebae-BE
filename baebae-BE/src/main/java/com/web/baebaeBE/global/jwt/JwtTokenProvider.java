@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -89,6 +90,9 @@ public class JwtTokenProvider {
             (), "", authorities), token, authorities);
   }
 
+  public String getToken(HttpServletRequest httpServletRequest){
+    return httpServletRequest.getHeader("Authorization").substring(7);
+  }
 
   //토큰에서 사용자 ID 가져오는 메서드
   public String getUserEmail(String token) {

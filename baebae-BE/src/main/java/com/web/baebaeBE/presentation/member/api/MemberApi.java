@@ -17,11 +17,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 
-@Tag(name = "Member", description = "유저 관리 API")
+@Tag(name = "Login", description = "로그인 관련 API")
 public interface MemberApi {
 
     @Operation(
             summary = "로그인",
+            description = "기존 회원일 경우 로그인, 새로운 회원일 경우 회원가입을 진행합니다.",
             security = @SecurityRequirement(name = "bearerAuth")
     )
     @Parameter(
@@ -56,6 +57,7 @@ public interface MemberApi {
 
     @Operation(
             summary = "회원가입 유무 체크",
+            description = "카카오 토큰을 기반으로 회원가입 유무를 체크합니다.",
             security = @SecurityRequirement(name = "bearerAuth")
     )
     @Parameter(
@@ -83,7 +85,10 @@ public interface MemberApi {
 
 
 
-    @Operation(summary = "Access Token 재발급")
+    @Operation(
+            summary = "Access Token 재발급",
+            description = "Refresh Token을 기반으로, 새로운 Access Token을 발급합니다."
+    )
     @Parameter(
             in = ParameterIn.HEADER,
             name = "Authorization", required = true,
@@ -114,7 +119,10 @@ public interface MemberApi {
 
 
 
-    @Operation(summary = "로그아웃")
+    @Operation(
+            summary = "로그아웃",
+            description = "Refresh Token 만료시간을 현재시간으로 설정해 로그아웃 시킵니다."
+    )
     @Parameter(
             in = ParameterIn.HEADER,
             name = "Authorization", required = true,
