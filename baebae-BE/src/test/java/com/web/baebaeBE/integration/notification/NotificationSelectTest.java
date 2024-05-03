@@ -74,7 +74,7 @@ public class NotificationSelectTest {
 
     @Test
     @DisplayName("알림 리스트 조회 테스트(): 해당 유저의 알림 리스트를 조회한다.")
-    void createNotificationTest() throws Exception{
+    void FindAllNotificationTest() throws Exception{
         // given
         NotificationRequest.create createRequest1 = new NotificationRequest.create(
                 testMember.getId(),
@@ -104,7 +104,7 @@ public class NotificationSelectTest {
 
     @Test
     @DisplayName("단일 알림 조회 테스트(): 해당 알림의 정보를 조회 한다.")
-    void deleteNotificationTest() throws Exception{
+    void FindNotificationTest() throws Exception{
         // given
         NotificationRequest.create createRequest1 = new NotificationRequest.create(
                 testMember.getId(),

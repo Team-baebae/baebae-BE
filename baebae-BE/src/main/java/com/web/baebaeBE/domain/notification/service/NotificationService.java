@@ -47,10 +47,6 @@ public class NotificationService {
 
     // 알림 세부정보 조회
     public NotificationResponse.NotificationContentResponse getNotificationById(Long notificationId) {
-        Member member = memberRepository.findById(notificationId)
-                .orElseThrow(() -> new BusinessException(MemberError.NOT_EXIST_MEMBER));
-
-
         return NotificationResponse.NotificationContentResponse
                 .of(notificationRepository.findById(notificationId).get());
     }
