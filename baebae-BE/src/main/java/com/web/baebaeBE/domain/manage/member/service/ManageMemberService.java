@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +35,12 @@ public class ManageMemberService {
 
         member.updateProfileImage(profileImage);
         memberRepository.save(member);
+    }
+
+    // 이미지 파일을 Object Storage에 저장하고 키파일을 반환하는 메서드
+    // 추후 수정할 예정
+    public String convertImageToObject(Long memberId, MultipartFile image){
+        return image.getName();
     }
 
     public void updateFcmToken(Long memberId, String fcmToken) {

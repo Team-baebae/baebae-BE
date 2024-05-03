@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Slf4j
@@ -24,8 +25,9 @@ public class ManageMemberApplication {
         return manageMemberService.getMember(memberId);
     }
 
-    public void updateProfileImage(Long memberId, ManageMemberRequest.UpdateProfileImageDto updateProfileImageDto) {
-        manageMemberService.updateProfileImage(memberId, updateProfileImageDto.getProfileImage());
+    public void updateProfileImage(Long memberId, MultipartFile image) {
+        String fileKey = manageMemberService.convertImageToObject(memberId, image);
+        manageMemberService.updateProfileImage(memberId, fileKey);
     }
 
     public void updateFcmToken(Long memberId, ManageMemberRequest.UpdateFcmTokenDto updateFcmTokenDto) {

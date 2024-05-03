@@ -7,8 +7,10 @@ import com.web.baebaeBE.presentation.manage.member.dto.ManageMemberRequest;
 import com.web.baebaeBE.presentation.manage.member.dto.ManageMemberResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @RestController
@@ -30,12 +32,12 @@ public class ManageMemberController implements ManageMemberApi {
     return ResponseEntity.ok(memberInformation);
   }
 
-  @PatchMapping("/profile-image/{memberId}")
+  @PatchMapping(value = "/profile-image/{memberId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<Void> updateProfileImage(
           @PathVariable Long memberId,
-          @RequestBody ManageMemberRequest.UpdateProfileImageDto updateProfileImageDto
+          @RequestPart(value = "image") MultipartFile image
   ) {
-    manageMemberApplication.updateProfileImage(memberId, updateProfileImageDto);
+    manageMemberApplication.updateProfileImage(memberId, image);
     return ResponseEntity.ok().build();
   }
 

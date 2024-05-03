@@ -15,9 +15,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Tag(name = "Member", description = "회원 관리 API")
 public interface ManageMemberApi {
@@ -85,7 +84,7 @@ public interface ManageMemberApi {
     })
     @RequestMapping(method = RequestMethod.PATCH, value = "/profile-image/{id}")
     ResponseEntity<Void> updateProfileImage(@PathVariable Long id,
-                                            @RequestBody ManageMemberRequest.UpdateProfileImageDto updateProfileImageDto);
+                                            @RequestPart("image") MultipartFile image);
 
 
 

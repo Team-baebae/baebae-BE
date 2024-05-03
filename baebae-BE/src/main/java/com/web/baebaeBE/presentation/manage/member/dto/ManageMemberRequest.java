@@ -10,13 +10,7 @@ import lombok.Setter;
 
 public class ManageMemberRequest {
 
-  @Getter
-  @Setter
-  @NoArgsConstructor
-  @AllArgsConstructor
-  public static class UpdateProfileImageDto {
-    private String profileImage;
-  }
+
 
   @Getter
   @Setter
