@@ -51,7 +51,7 @@ public interface ManageMemberApi {
             )
     })
     @RequestMapping(method = RequestMethod.GET, value = "/{id}")
-    ResponseEntity<ManageMemberResponse.MemberInformationResponse> getMember(@PathVariable Long id);
+    ResponseEntity<ManageMemberResponse.MemberInformationResponse> getMemberInformation(@PathVariable Long id);
 
 
 
@@ -83,7 +83,7 @@ public interface ManageMemberApi {
             )
     })
     @RequestMapping(method = RequestMethod.PATCH, value = "/profile-image/{id}")
-    ResponseEntity<Void> updateProfileImage(@PathVariable Long id,
+    ResponseEntity<ManageMemberResponse.ObjectUrlResponse> updateProfileImage(@PathVariable Long id,
                                             @RequestPart("image") MultipartFile image);
 
 

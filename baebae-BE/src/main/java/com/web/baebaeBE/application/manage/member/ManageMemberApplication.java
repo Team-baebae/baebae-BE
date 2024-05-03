@@ -25,9 +25,10 @@ public class ManageMemberApplication {
         return manageMemberService.getMember(memberId);
     }
 
-    public void updateProfileImage(Long memberId, MultipartFile image) {
+    public ManageMemberResponse.ObjectUrlResponse updateProfileImage(Long memberId, MultipartFile image) {
         String fileKey = manageMemberService.convertImageToObject(memberId, image);
         manageMemberService.updateProfileImage(memberId, fileKey);
+        return ManageMemberResponse.ObjectUrlResponse.of(fileKey);
     }
 
     public void updateFcmToken(Long memberId, ManageMemberRequest.UpdateFcmTokenDto updateFcmTokenDto) {

@@ -33,6 +33,21 @@ public class ManageMemberResponse {
     }
   }
 
+  @Getter
+  @Setter
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
+  public static class ObjectUrlResponse{
+    private String imageUrl;
+
+    public static ObjectUrlResponse of (String imageUrl){
+      return ObjectUrlResponse.builder()
+              .imageUrl(imageUrl)
+              .build();
+    }
+  }
+
 
 
 

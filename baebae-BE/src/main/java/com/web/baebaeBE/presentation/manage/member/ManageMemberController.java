@@ -23,7 +23,7 @@ public class ManageMemberController implements ManageMemberApi {
 
 
   @GetMapping("/{memberId}")
-  public ResponseEntity<ManageMemberResponse.MemberInformationResponse> getMember(
+  public ResponseEntity<ManageMemberResponse.MemberInformationResponse> getMemberInformation(
           @PathVariable Long memberId
   ) {
     ManageMemberResponse.MemberInformationResponse memberInformation
@@ -33,12 +33,13 @@ public class ManageMemberController implements ManageMemberApi {
   }
 
   @PatchMapping(value = "/profile-image/{memberId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  public ResponseEntity<Void> updateProfileImage(
+  public ResponseEntity<ManageMemberResponse.ObjectUrlResponse> updateProfileImage(
           @PathVariable Long memberId,
           @RequestPart(value = "image") MultipartFile image
   ) {
-    manageMemberApplication.updateProfileImage(memberId, image);
-    return ResponseEntity.ok().build();
+    ManageMemberResponse.ObjectUrlResponse objectUrlResponse
+            = manageMemberApplication.updateProfileImage(memberId, image);
+    return ResponseEntity.ok(objectUrlResponse);
   }
 
   @PatchMapping("/fcm-token/{memberId}")
