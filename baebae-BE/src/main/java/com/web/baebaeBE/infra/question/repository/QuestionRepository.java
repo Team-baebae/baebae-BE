@@ -8,10 +8,10 @@ import java.util.Optional;
 
 
 public interface QuestionRepository{
-//    Optional<Question> findById(Long questionId);
     Optional<Question> findById(Long questionId);
     Question save(Question questionEntity);
-    Page<Question> findAllByMemberId(Long memberId, Pageable pageable);
+    Page<Question> findAllBySenderId(Long senderId, Pageable pageable);
+    Page<Question> findAllByReceiverId(Long receiverId, Pageable pageable);
     void delete(Question questionEntity);
 
 }

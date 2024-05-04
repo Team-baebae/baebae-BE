@@ -10,12 +10,15 @@ import lombok.Setter;
 @NoArgsConstructor
 public class QuestionCreateRequest {
     private String content;
-    public QuestionCreateRequest(String content) {
-
+    private String nickname;
+    private Boolean profileOnOff;
+    public QuestionCreateRequest(String content,String nickname, Boolean profileOnOff) {
         this.content = content;
+        this.nickname = nickname;
+        this.profileOnOff = profileOnOff;
     }
-    public static QuestionCreateRequest of(String content) {
-        return new QuestionCreateRequest(content);
+    public static QuestionCreateRequest of(String content, String nickname, Boolean profileOnOff) {
+        return new QuestionCreateRequest(content, nickname, profileOnOff);
     }
 }
 

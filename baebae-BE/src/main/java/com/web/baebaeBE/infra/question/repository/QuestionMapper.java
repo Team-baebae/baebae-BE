@@ -12,20 +12,25 @@ import java.time.LocalDateTime;
 @Component
 @RequiredArgsConstructor
 public class QuestionMapper {
-    public Question toEntity(QuestionCreateRequest request, Member member) {
+    public Question toEntity(QuestionCreateRequest request, Member sender, Member receiver) {
         return Question.builder()
-                .member(member)
+                .sender(sender)
+                .receiver(receiver)
                 .content(request.getContent())
+                .nickname(request.getNickname())
+                .profileOnOff(request.getProfileOnOff())
                 .createdDate(LocalDateTime.now())
                 .build();
     }
 
-    public QuestionDetailResponse toDomain(Question question) {
+    public QuestionDetailResponse toDomain(Question question, String token) {
         return QuestionDetailResponse.of(
                 question.getId(),
                 question.getContent(),
-                question.getMember().getNickname(),
-                question.getCreatedDate());
+                question.getNickname(),
+                question.getCreatedDate(),
+                token
+        );
     }
 }
 

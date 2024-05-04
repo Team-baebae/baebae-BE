@@ -20,20 +20,31 @@ public class Question {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
-    private Member member;
+    @JoinColumn(name = "sender_id", nullable = false)
+    private Member sender;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "receiver_id", nullable = false)
+    private Member receiver;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
-    @Column(name = "created_date", nullable = false, length = 30)
+    @Column(name = "nickname")
+    private String nickname;
+
+    @Column(name = "profile_onoff", nullable = false)
+    private Boolean profileOnOff;
+
+    @Column(name = "created_date", nullable = false)
     private LocalDateTime createdDate;
 
     public void updateContent(String content) {
         this.content = content;
     }
-    public static Question of(Long id, Member member, String content, LocalDateTime createdDate) {
-        return new Question(id, member, content, createdDate);
+    public static Question of(Long id, Member sender, Member receiver, String content, String nickname, Boolean profileOnOff,
+                              LocalDateTime createdDate) {
+        return new Question(id, sender, receiver, content, nickname, profileOnOff, createdDate);
     }
 
 }

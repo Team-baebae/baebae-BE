@@ -41,7 +41,7 @@ public class AnswerApplication {
                 .orElseThrow(() -> new BusinessException(AnswerError.NO_EXIST_QUESTION));
         List<String> imageUrls = uploadImages(request.getImageFiles());
         Answer answerEntity = answerMapper.toEntity(request, question, member);
-        Answer savedAnswerEntity = answerService.createAnswer(answerEntity, request.getImageFiles()); // 이미 배열이므로 직접 사용
+        Answer savedAnswerEntity = answerService.createAnswer(answerEntity, request.getImageFiles());
         return answerMapper.toDomain(savedAnswerEntity);
     }
 
@@ -55,9 +55,7 @@ public class AnswerApplication {
                 String url = s3ImageStorageService.uploadFile(path, fileName, inputStream, file.getSize(), file.getContentType());
                 urls.add(url);
             } catch (IOException e) {
-                // 로그 기록, 오류 처리 등
                 System.err.println("Error uploading file: " + e.getMessage());
-                // 선택적으로 예외를 다시 던지거나 특정 값을 반환
                 throw new RuntimeException("Failed to upload image files", e);
             }
         }

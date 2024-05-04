@@ -1,6 +1,7 @@
 package com.web.baebaeBE.presentation.question;
 
 import com.web.baebaeBE.application.question.QuestionApplication;
+import com.web.baebaeBE.global.jwt.JwtTokenProvider;
 import com.web.baebaeBE.presentation.question.dto.QuestionCreateRequest;
 import com.web.baebaeBE.presentation.question.dto.QuestionDetailResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,30 +18,41 @@ import java.util.List;
 @RequestMapping("/api/questions")
 public class QuestionController {
     private final QuestionApplication questionApplication;
+    private final JwtTokenProvider tokenProvider;
 
     @Autowired
-    public QuestionController(QuestionApplication questionApplication) {
+    public QuestionController(QuestionApplication questionApplication, JwtTokenProvider tokenProvider) {
         this.questionApplication = questionApplication;
+        this.tokenProvider = tokenProvider;
     }
 
     @Operation(summary = "질문 생성")
     @PostMapping("/member/{memberId}")
-    public ResponseEntity<QuestionDetailResponse> createQuestion(@RequestBody QuestionCreateRequest questionDTO, @PathVariable Long memberId) {
-        QuestionDetailResponse createdQuestion = questionApplication.createQuestion(questionDTO, memberId);
+    public ResponseEntity<QuestionDetailResponse> createQuestion(
+            @RequestBody QuestionCreateRequest questionDTO, @PathVariable Long memberId, @RequestParam Long receiverId,
+            @RequestHeader("Authorization") String token) {
+
+        if (!tokenProvider.validToken(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        QuestionDetailResponse createdQuestion = questionApplication.createQuestion(questionDTO, memberId, receiverId, token);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdQuestion);
     }
 
     @Operation(summary = "질문 조회")
     @GetMapping()
-    public ResponseEntity<List<QuestionDetailResponse>> getAllQuestions(@RequestParam Long memberId, Pageable pageable) {
-        Page<QuestionDetailResponse> questions = questionApplication.getAllQuestions(memberId, pageable);
+    public ResponseEntity<List<QuestionDetailResponse>> getAllQuestions(
+            @RequestParam Long memberId,
+            @RequestParam boolean isSender,
+            Pageable pageable) {
+        Page<QuestionDetailResponse> questions = questionApplication.getAllQuestions(memberId, pageable, isSender);
         return ResponseEntity.ok(questions.getContent());
     }
 
     @Operation(summary = "질문 수정")
     @PutMapping("/{questionId}")
-    public ResponseEntity<Void> updateQuestion(@PathVariable Long questionId, @RequestParam String content) {
-        questionApplication.updateQuestion(questionId, content);
+    public ResponseEntity<Void> updateQuestion(@PathVariable Long questionId, @RequestParam String content, @RequestHeader("Authorization") String token) {
+        questionApplication.updateQuestion(questionId, content, token);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 

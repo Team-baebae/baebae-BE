@@ -21,8 +21,13 @@ public class QuestionService {
     }
 
     @Transactional(readOnly = true)
-    public Page<Question> getAllQuestions(Long memberId, Pageable pageable) {
-        return questionRepository.findAllByMemberId(memberId, pageable);
+    public Page<Question> getQuestionsBySenderId(Long senderId, Pageable pageable) {
+        return questionRepository.findAllBySenderId(senderId, pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Question> getQuestionsByReceiverId(Long receiverId, Pageable pageable) {
+        return questionRepository.findAllByReceiverId(receiverId, pageable);
     }
 
     @Transactional
@@ -36,7 +41,7 @@ public class QuestionService {
     @Transactional
     public void deleteQuestion(Long questionId) {
         Question questionEntity = questionRepository.findById(questionId)
-                .orElseThrow(() -> new IllegalArgumentException("No question found with id"));
+                .orElseThrow(() -> new BusinessException(QuestionError.NO_EXIST_QUESTION));
         questionRepository.delete(questionEntity);
     }
 
