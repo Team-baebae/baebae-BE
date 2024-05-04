@@ -34,10 +34,14 @@ public class Member implements UserDetails {
   @Column(name = "member_id", updatable = false, unique = true, nullable = false)
   private Long id;
 
-  @Column(nullable = false)
+  @Column(nullable = false, unique = true)
   private String email;
 
+  @Column(nullable = false, unique = true)
   private String nickname;
+
+  @Column(name="profile_image")
+  private String profileImage;
 
   @Column(name = "member_type", nullable = false)
   @Enumerated(EnumType.STRING)
@@ -46,7 +50,11 @@ public class Member implements UserDetails {
   @Column(name = "refresh_token")
   private String refreshToken;
 
+  @Column(name = "token_expiration_time")
   private LocalDateTime tokenExpirationTime;
+
+  @Column(name = "fcm_token")
+  private String fcmToken;
 
 
   public Member update(String nickname) {
@@ -57,6 +65,13 @@ public class Member implements UserDetails {
   public void updateRefreshToken(String refreshToken) {
     this.refreshToken = refreshToken;
   }
+  public void updateProfileImage(String profileImageKey){
+    this.profileImage = profileImageKey;
+  }
+  public void updateFcmToken(String fcmToken){
+    this.fcmToken = fcmToken;
+  }
+
 
   public void updateTokenExpirationTime(LocalDateTime time) {
     this.tokenExpirationTime = time;

@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +41,6 @@ public class JwtTokenProvider {
   //토큰 제작 메서드
   private String makeToken(Date expiry, Member member) {
     Date now = new Date();
-
     //jwt 빌더
     return Jwts.builder()
         // Header
@@ -51,7 +51,7 @@ public class JwtTokenProvider {
         .setIssuedAt(now) // 토큰 발행 시간
         .setExpiration(expiry) // 토큰 만료 시간
         .setSubject(member.getEmail()) //토큰 주제
-        .setId(String.valueOf(member.getId())) // member Id
+        .setId(member.getEmail()) // member Id
 
         // Signature
         .signWith(SignatureAlgorithm.HS256, jwtProperties.getSecretKey()) // 서명 알고리즘 및 키 설정
@@ -88,11 +88,14 @@ public class JwtTokenProvider {
             (), "", authorities), token, authorities);
   }
 
+  public String getToken(HttpServletRequest httpServletRequest){
+    return httpServletRequest.getHeader("Authorization").substring(7);
+  }
 
   //토큰에서 사용자 ID 가져오는 메서드
-  public Long getUserId(String token) {
+  public String getUserEmail(String token) {
     Claims claims = getClaims(token); // 토큰에서 클레임 가져옴.
-    return Long.valueOf(claims.getId()); // 사용자 ID반환
+    return claims.getId(); // 사용자 ID반환
   }
 
   //토큰을 파싱하여 클레임 가져오는 메서드

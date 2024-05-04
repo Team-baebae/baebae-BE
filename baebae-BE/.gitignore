@@ -38,5 +38,6 @@ out/
 
 
 ### application.yml ###
+application.yml
 application-deploy.yml
 application-local.yml

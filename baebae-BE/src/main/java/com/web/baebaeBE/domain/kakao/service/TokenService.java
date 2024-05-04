@@ -27,22 +27,33 @@ public class TokenService {
   private String clientId;
   @Value("${spring.security.oauth2.client.registration.kakao.client-secret}")
   private String clientSecret;
+  @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
+  private String defaultRedirectUri;
+
 
   /**
    * -카카오 로그인 인가 코드를 이용하여 카카오 토큰을 발급받습니다.
    * -카카오 로그인 요청 정보 생성 -카카오 서버에 POST 요청 전송
    * -카카오 토큰 응답 정보 객체 반환
    */
-  public KakaoDto.Response requestKakaoToken(String code) {
+  public KakaoDto.Response requestKakaoToken(String code, String redirectUri) {
+    if(redirectUri == null)
+      redirectUri = defaultRedirectUri; // 만약 로컬 테스트용일 경우, 직접 리다이렉트 URI 주입
+
     String contentType = "application/x-www-form-urlencoded;charset=utf-8";
     KakaoDto.Request kakaoTokenRequestDto = KakaoDto.Request.builder()
         .client_id(clientId)
         .client_secret(clientSecret)
         .grant_type("authorization_code")
         .code(code)
-        .redirect_uri("http://localhost:8080/oauth/kakao/callback") // 추후 수정
+        .redirect_uri(redirectUri) // 추후 수정
         .build();
-    return kakaoClient.requestKakaoToken(contentType, kakaoTokenRequestDto);
+    try {
+      return kakaoClient.requestKakaoToken(contentType, kakaoTokenRequestDto);
+    } catch (Exception e) {
+      log.error(String.valueOf(e));
+      throw new BusinessException(KakaoError.INVALID_CODE_OR_URL);
+    }
   }
 
   /**

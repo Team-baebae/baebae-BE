@@ -15,14 +15,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 
-@Tag(name = "Member", description = "유저 관리 API")
+@Tag(name = "Login", description = "로그인 관련 API")
 public interface MemberApi {
 
     @Operation(
             summary = "로그인",
+            description = "기존 회원일 경우 로그인, 새로운 회원일 경우 회원가입을 진행합니다.",
             security = @SecurityRequirement(name = "bearerAuth")
     )
     @Parameter(
@@ -55,9 +55,63 @@ public interface MemberApi {
             HttpServletRequest httpServletRequest
     );
 
+    @Operation(
+            summary = "회원가입 유무 체크",
+            description = "카카오 토큰을 기반으로 회원가입 유무를 체크합니다.",
+            security = @SecurityRequirement(name = "bearerAuth")
+    )
+    @Parameter(
+            in = ParameterIn.HEADER,
+            name = "Authorization", required = true,
+            schema = @Schema(type = "string"),
+            description = "Bearer [카카오 Access 토큰]")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "기존 회원",
+                    content = @Content(mediaType = "application/json",
+                            examples = @ExampleObject(value = "{\n" +
+                                    "  \"isExisting\": \"true\"\n" +
+                                    "}"))
+            ),
+            @ApiResponse(responseCode = "200", description = "새로운 회원",
+                    content = @Content(mediaType = "application/json",
+                            examples = @ExampleObject(value = "{\n" +
+                                    "  \"isExisting\": \"false\"\n" +
+                                    "}"))
+            )
+    })
+    public ResponseEntity<MemberResponse.isExistingUserResponse> isExistingUser(
+            HttpServletRequest httpServletRequest
+    );
 
 
-    @Operation(summary = "Access Token 재발급")
+    @Operation(
+            summary = "닉네임 중복 유무 확인",
+            description = "다른 사용자와 닉네임이 중복되는지 확인합니다."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "이미 존재하는 닉네임",
+                    content = @Content(mediaType = "application/json",
+                            examples = @ExampleObject(value = "{\n" +
+                                    "  \"isExisting\": \"true\"\n" +
+                                    "}"))
+            ),
+            @ApiResponse(responseCode = "200", description = "사용가능한 닉네임",
+                    content = @Content(mediaType = "application/json",
+                            examples = @ExampleObject(value = "{\n" +
+                                    "  \"isExisting\": \"false\"\n" +
+                                    "}"))
+            )
+    })
+    public ResponseEntity<MemberResponse.isExistingUserResponse> isExistingNickname(
+            String nickname
+    );
+
+
+
+    @Operation(
+            summary = "Access Token 재발급",
+            description = "Refresh Token을 기반으로, 새로운 Access Token을 발급합니다."
+    )
     @Parameter(
             in = ParameterIn.HEADER,
             name = "Authorization", required = true,
@@ -88,7 +142,10 @@ public interface MemberApi {
 
 
 
-    @Operation(summary = "로그아웃")
+    @Operation(
+            summary = "로그아웃",
+            description = "Refresh Token 만료시간을 현재시간으로 설정해 로그아웃 시킵니다."
+    )
     @Parameter(
             in = ParameterIn.HEADER,
             name = "Authorization", required = true,

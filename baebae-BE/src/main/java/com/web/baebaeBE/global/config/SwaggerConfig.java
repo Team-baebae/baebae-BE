@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Profile;
 
 import static io.swagger.v3.oas.models.security.SecurityScheme.In.HEADER;
 
+// http://<서버주소>:<포트번호>/swagger-ui/index.html로 접속
 @Configuration
 public class SwaggerConfig {
 
@@ -30,7 +31,7 @@ public class SwaggerConfig {
                 .bearerFormat("JWT")
                 .scheme("Bearer");
 
-        Components components = new Components().addSecuritySchemes("token", securityScheme);
+        Components components = new Components().addSecuritySchemes("bearerAuth", securityScheme);
 
         return new OpenAPI()
                 .info(info)

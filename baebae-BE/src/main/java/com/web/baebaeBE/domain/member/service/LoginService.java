@@ -25,7 +25,7 @@ public class LoginService {
   private final TokenService tokenService;
   private final JwtTokenProvider jwtTokenProvider;
   public static final Duration REFRESH_TOKEN_DURATION = Duration.ofDays(14); // 리프레시 토큰 유효기간.
-  public static final Duration ACCESS_TOKEN_DURATION = Duration.ofDays(1); // 액세스 토큰 유효기간.
+  public static final Duration ACCESS_TOKEN_DURATION = Duration.ofHours(1); // 액세스 토큰 유효기간.
 
 
   /**
@@ -42,6 +42,13 @@ public class LoginService {
    */
   public boolean isExistingUser(String email) {
     return memberRepository.existsByEmail(email);
+  }
+
+  /**
+   * -Nickname 정보를 기반으로 중복되는 Nickname이 있는지 확인합니다.
+   */
+  public boolean isExistingNickname(String nickname) {
+    return memberRepository.existsByNickname(nickname);
   }
 
   /**
@@ -86,7 +93,7 @@ public class LoginService {
     newMember.updateRefreshToken(refreshToken);
 
     // 액세스 토큰 생성
-    String accessToken = jwtTokenProvider.generateToken(newMember, Duration.ofDays(-1));
+    String accessToken = jwtTokenProvider.generateToken(newMember, ACCESS_TOKEN_DURATION);
 
     return MemberResponse.SignUpResponse.of(memberRepository.save(newMember), accessToken);
   }

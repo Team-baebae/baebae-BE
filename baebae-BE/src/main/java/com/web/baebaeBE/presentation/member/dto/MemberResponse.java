@@ -67,8 +67,6 @@ public class MemberResponse {
     private String accessToken;
     @Schema(example = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJiZWJlLXNlcnZlciIsImlhdCI6MTcxMzQxNjgyNSwiZXhwIjoxNzE0NjI2NDI1LCJzdWIiOiJ1amozOTAwQG5hdmVyLmNvbSIsImp0aSI6IjIifQ.BYrRkhwK1SSAe3nanmRIT_oSZkWyZlNnl3wFLI_nIqY")
     private String refreshToken;
-
-
     public static AccessTokenResponse of(Member member, String accessToken) {
       return AccessTokenResponse.builder()
           .id(member.getId())
@@ -82,5 +80,12 @@ public class MemberResponse {
 
   }
 
-
+  @Getter
+  @Setter
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
+  public static class isExistingUserResponse {
+    private Boolean isExisting;
+  }
 }
