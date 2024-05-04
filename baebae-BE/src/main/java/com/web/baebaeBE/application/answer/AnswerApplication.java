@@ -4,9 +4,9 @@ import com.web.baebaeBE.domain.answer.exception.AnswerError;
 import com.web.baebaeBE.domain.answer.service.AnswerService;
 import com.web.baebaeBE.domain.member.exception.MemberError;
 import com.web.baebaeBE.global.error.exception.BusinessException;
+import com.web.baebaeBE.global.image.s3.S3ImageStorageService;
 import com.web.baebaeBE.infra.answer.entity.Answer;
 import com.web.baebaeBE.infra.answer.repository.AnswerMapper;
-import com.web.baebaeBE.infra.image.s3.S3ImageStorageService;
 import com.web.baebaeBE.infra.member.entity.Member;
 import com.web.baebaeBE.infra.member.repository.MemberRepository;
 import com.web.baebaeBE.infra.question.entity.Question;
@@ -45,7 +45,7 @@ public class AnswerApplication {
         return answerMapper.toDomain(savedAnswerEntity);
     }
 
-    private List<String> uploadImages(MultipartFile[] files) {
+    private List<String> uploadImages(List<MultipartFile> files) {
         List<String> urls = new ArrayList<>();
         for (MultipartFile file : files) {
             try {
@@ -55,8 +55,7 @@ public class AnswerApplication {
                 String url = s3ImageStorageService.uploadFile(path, fileName, inputStream, file.getSize(), file.getContentType());
                 urls.add(url);
             } catch (IOException e) {
-                System.err.println("Error uploading file: " + e.getMessage());
-                throw new RuntimeException("Failed to upload image files", e);
+                throw new BusinessException(AnswerError.IMAGE_PROCESSING_ERROR);
             }
         }
         return urls;
@@ -72,8 +71,7 @@ public class AnswerApplication {
         return answerMapper.toDomain(updatedAnswer);
     }
 
-    public void deleteAnswer(Long answerId) { answerService.deleteAnswer(answerId);
+    public void deleteAnswer(Long answerId) {
+        answerService.deleteAnswer(answerId);
     }
-
-
 }
