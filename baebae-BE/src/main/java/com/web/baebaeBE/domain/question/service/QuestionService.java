@@ -21,13 +21,8 @@ public class QuestionService {
     }
 
     @Transactional(readOnly = true)
-    public Page<Question> getQuestionsBySenderId(Long senderId, Pageable pageable) {
-        return questionRepository.findAllBySenderId(senderId, pageable);
-    }
-
-    @Transactional(readOnly = true)
-    public Page<Question> getQuestionsByReceiverId(Long receiverId, Pageable pageable) {
-        return questionRepository.findAllByReceiverId(receiverId, pageable);
+    public Page<Question> getQuestionsByMemberId(Long memberId, Pageable pageable) {
+        return questionRepository.findAllByMemberId(memberId, pageable);
     }
 
     @Transactional
