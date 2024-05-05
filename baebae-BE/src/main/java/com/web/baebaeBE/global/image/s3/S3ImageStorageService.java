@@ -19,26 +19,41 @@ public class S3ImageStorageService implements ImageStorageService{
     private String bucketName;
 
     @Override
-    public String uploadFile(String path, String fileName, InputStream inputStream, long size, String contentType) {
-        String key = path + "/" + fileName;
+    public String uploadFile(String memberId, String answerId, String fileType, int index, InputStream inputStream, long size, String contentType) {
+        String key = generateFilePath(memberId, answerId, fileType, index);
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(size);
         metadata.setContentType(contentType);
         PutObjectRequest request = new PutObjectRequest(bucketName, key, inputStream, metadata)
-                .withCannedAcl(CannedAccessControlList.PublicRead); // 파일을 공개 읽기 가능하게 설정
+                .withCannedAcl(CannedAccessControlList.PublicRead);
         amazonS3Client.putObject(request);
-        return getFileUrl(path, fileName);
+        return getFileUrl(memberId, answerId, fileType, index);
     }
 
     @Override
-    public void deleteFile(String path, String fileName) {
-        String key = path + "/" + fileName;
+    public void deleteFile(String memberId, String answerId, String fileType, int index) {
+        String key = generateFilePath(memberId, answerId, fileType, index);
         amazonS3Client.deleteObject(bucketName, key);
     }
 
     @Override
-    public String getFileUrl(String path, String fileName) {
-        String key = path + "/" + fileName;
+    public String getFileUrl(String memberId, String answerId, String fileType, int index) {
+        String key = generateFilePath(memberId, answerId, fileType, index);
         return amazonS3Client.getUrl(bucketName, key).toExternalForm();
+    }
+
+    public String generateFilePath(String memberId, String answerId, String fileType, int index) {
+        switch (fileType) {
+            case "profile":
+                return memberId + "/profile.jpg";
+            case "image":
+                return memberId + "/" + answerId + "/image_" + index + ".jpg";
+            case "music":
+                return memberId + "/" + answerId + "/music.jpg";
+            case "audio":
+                return memberId + "/" + answerId + "/audio.mp3";
+            default:
+                throw new IllegalArgumentException("Unknown file type");
+        }
     }
 }

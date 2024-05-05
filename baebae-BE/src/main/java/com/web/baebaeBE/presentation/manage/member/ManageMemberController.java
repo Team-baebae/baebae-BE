@@ -5,6 +5,7 @@ import com.web.baebaeBE.application.manage.member.ManageMemberApplication;
 import com.web.baebaeBE.presentation.manage.member.api.ManageMemberApi;
 import com.web.baebaeBE.presentation.manage.member.dto.ManageMemberRequest;
 import com.web.baebaeBE.presentation.manage.member.dto.ManageMemberResponse;
+import io.jsonwebtoken.io.IOException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -35,11 +36,13 @@ public class ManageMemberController implements ManageMemberApi {
   @PatchMapping(value = "/profile-image/{memberId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<ManageMemberResponse.ObjectUrlResponse> updateProfileImage(
           @PathVariable Long memberId,
-          @RequestPart(value = "image") MultipartFile image
-  ) {
-    ManageMemberResponse.ObjectUrlResponse objectUrlResponse
-            = manageMemberApplication.updateProfileImage(memberId, image);
-    return ResponseEntity.ok(objectUrlResponse);
+          @RequestPart(value = "image") MultipartFile image) {
+    try {
+      ManageMemberResponse.ObjectUrlResponse objectUrlResponse
+              = manageMemberApplication.updateProfileImage(memberId, image);
+      return ResponseEntity.ok(objectUrlResponse);
+    } catch (IOException e) { return ResponseEntity.internalServerError().build();}
+      catch (Exception e) { return ResponseEntity.badRequest().build(); }
   }
 
   @PatchMapping("/fcm-token/{memberId}")

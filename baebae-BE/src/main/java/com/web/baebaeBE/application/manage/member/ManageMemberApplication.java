@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 @Service
 @Slf4j
 @Transactional
@@ -25,7 +27,7 @@ public class ManageMemberApplication {
         return manageMemberService.getMember(memberId);
     }
 
-    public ManageMemberResponse.ObjectUrlResponse updateProfileImage(Long memberId, MultipartFile image) {
+    public ManageMemberResponse.ObjectUrlResponse updateProfileImage(Long memberId, MultipartFile image) throws IOException {
         String fileKey = manageMemberService.convertImageToObject(memberId, image);
         manageMemberService.updateProfileImage(memberId, fileKey);
         return ManageMemberResponse.ObjectUrlResponse.of(fileKey);
