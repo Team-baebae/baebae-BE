@@ -21,4 +21,3 @@ public class QuestionCreateRequest {
         return new QuestionCreateRequest(content, nickname, profileOnOff);
     }
 }
-

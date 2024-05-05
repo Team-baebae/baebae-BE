@@ -46,6 +46,5 @@ public class Question {
                               LocalDateTime createdDate) {
         return new Question(id, sender, receiver, content, nickname, profileOnOff, createdDate);
     }
-
 }
 

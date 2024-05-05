@@ -9,4 +9,3 @@ public interface QuestionJpaRepository extends JpaRepository<Question, Long> {
     Page<Question> findAllBySenderId(Long senderId, Pageable pageable);
     Page<Question> findAllByReceiverId(Long receiverId, Pageable pageable);
 }
-
