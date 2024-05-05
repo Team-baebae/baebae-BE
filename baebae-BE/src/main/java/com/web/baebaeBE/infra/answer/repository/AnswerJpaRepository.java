@@ -8,4 +8,3 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface AnswerJpaRepository extends JpaRepository<Answer, Long> {
     Page<Answer> findAllByMemberId(Long memberId, Pageable pageable);
 }
-
