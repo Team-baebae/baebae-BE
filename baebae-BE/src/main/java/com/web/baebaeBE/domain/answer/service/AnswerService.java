@@ -75,7 +75,7 @@ public class AnswerService {
     @Transactional
     public void deleteAnswer(Long answerId) {
         Answer answer = answerRepository.findByAnswerId(answerId)
-                .orElseThrow(() -> new IllegalArgumentException("No answer found with id " + answerId));
+                .orElseThrow(() -> new BusinessException(AnswerError.NO_EXIST_QUESTION));
         answer.getImageFiles().forEach(url -> {
             String fileName = url.substring(url.lastIndexOf("/") + 1);
             s3ImageStorageService.deleteFile("answers/images", fileName);
