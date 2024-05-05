@@ -11,8 +11,8 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="baebae-BE.baebae-BE.main~1" target="17" />
-      <module name="baebae-BE.baebae-BE.test~1" target="17" />
+      <module name="baebae-BE.baebae-BE.main" target="17" />
+      <module name="baebae-BE.baebae-BE.test" target="17" />
     </bytecodeTargetLevel>
   </component>
 </project>
