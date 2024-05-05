@@ -27,11 +27,17 @@ public class AnswerService {
     public Answer createAnswer(Answer answer, List<MultipartFile> imageFiles) {
         List<String> urls = new ArrayList<>();
         try {
+            int index = 0;
+            String memberId = answer.getMember().getId().toString();
+            String answerId = answer.getId().toString();
+
             for (MultipartFile file : imageFiles) {
-                String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-                String path = "answers/images";
+                String fileType = "image";
+                String fileName = "image_" + index++ + ".jpg";
+                String path = memberId + "/" + answerId + "/" + fileName;
+
                 InputStream inputStream = file.getInputStream();
-                String url = s3ImageStorageService.uploadFile(path, fileName, inputStream, file.getSize(), file.getContentType());
+                String url = s3ImageStorageService.uploadFile(memberId, answerId, fileType, index, inputStream, file.getSize(), file.getContentType());
                 urls.add(url);
             }
         } catch (IOException e) {
@@ -53,12 +59,20 @@ public class AnswerService {
 
         List<String> urls = new ArrayList<>();
         try {
+            String memberId = answer.getMember().getId().toString();
+            String fileType = "image";
+            int index = 0;
+
             for (MultipartFile file : imageFiles) {
-                String fileName = file.getOriginalFilename();
-                String path = "answers/images";
+                String fileName = "image_" + index + ".jpg";
+                String path = memberId + "/" + answerId + "/" + fileName;
+
                 InputStream inputStream = file.getInputStream();
-                String url = s3ImageStorageService.uploadFile(path, fileName, inputStream, file.getSize(), file.getContentType());
+                long size = file.getSize();
+                String contentType = file.getContentType();
+                String url = s3ImageStorageService.uploadFile(memberId, answerId.toString(), fileType, index, inputStream, size, contentType);
                 urls.add(url);
+                index++;
             }
         } catch (IOException e) {
             throw new BusinessException(AnswerError.IMAGE_PROCESSING_ERROR);
@@ -71,14 +85,24 @@ public class AnswerService {
 
         return answerRepository.save(answer);
     }
-
     @Transactional
     public void deleteAnswer(Long answerId) {
         Answer answer = answerRepository.findByAnswerId(answerId)
                 .orElseThrow(() -> new IllegalArgumentException("No answer found with id " + answerId));
+
         answer.getImageFiles().forEach(url -> {
-            String fileName = url.substring(url.lastIndexOf("/") + 1);
-            s3ImageStorageService.deleteFile("answers/images", fileName);
+            String[] parts = url.split("/");
+            if (parts.length > 1) {
+                String fileKey = parts[parts.length - 1];
+                String[] keyParts = fileKey.split("_");
+                if (keyParts.length > 1) {
+                    int index = Integer.parseInt(keyParts[1].replace(".jpg", ""));
+                    String memberId = parts[parts.length - 4].split("_")[1];
+                    String fileType = keyParts[0];
+
+                    s3ImageStorageService.deleteFile(memberId, answerId.toString(), fileType, index);
+                }
+            }
         });
         answerRepository.delete(answer);
     }
