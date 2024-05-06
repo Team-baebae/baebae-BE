@@ -31,6 +31,12 @@ public class ManageMemberController implements ManageMemberApi {
 
     return ResponseEntity.ok(memberInformation);
   }
+  @GetMapping("/members/nickname/{nickname}")
+  public Long getMemberIdByNickname(
+          @PathVariable String nickname
+  ) {
+    return manageMemberApplication.getMemberIdByNickname(nickname);
+  }
 
   @PatchMapping(value = "/profile-image/{memberId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<ManageMemberResponse.ObjectUrlResponse> updateProfileImage(
@@ -67,6 +73,8 @@ public class ManageMemberController implements ManageMemberApi {
     manageMemberApplication.deleteMember(memberId, httpServletRequest);
     return ResponseEntity.ok().build();
   }
+
+
 }
 
 
