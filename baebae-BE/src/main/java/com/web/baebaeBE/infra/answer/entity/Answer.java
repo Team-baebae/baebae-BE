@@ -12,7 +12,7 @@ import java.util.List;
 @Table(name = "answer")
 @Getter
 @Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 public class Answer {
@@ -41,8 +41,8 @@ public class Answer {
     @Column(name = "music_name")
     private String musicName;
 
-    @Column(name = "music_singer")
-    private String musicSinger;
+    @Column(name = "music_picture")
+    private String musicPicture;
 
     @Column(name = "music_audio")
     private String musicAudio;
@@ -65,12 +65,12 @@ public class Answer {
     private LocalDateTime createdDate;
 
     public static Answer of(Long id, Question question, Member member, String content,
-                            List<String> imageFiles, String musicName, String musicSinger,
+                            List<String> imageFiles, String musicName, String musicPicture,
                             String musicAudio, List<String> linkAttachments, int heartCount,
                             int curiousCount, int sadCount, LocalDateTime createdDate) {
 
         return new Answer(id, question, member, imageFiles, content, musicName,
-                musicSinger, musicAudio, linkAttachments, heartCount,
+                musicPicture, musicAudio, linkAttachments, heartCount,
                 curiousCount, sadCount, createdDate);
     }
 }
