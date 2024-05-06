@@ -1,6 +1,7 @@
 package com.web.baebaeBE.presentation.answer;
 
 import com.web.baebaeBE.application.answer.AnswerApplication;
+import com.web.baebaeBE.presentation.answer.api.AnswerApi;
 import com.web.baebaeBE.presentation.answer.dto.AnswerCreateRequest;
 import com.web.baebaeBE.presentation.answer.dto.AnswerDetailResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/answers")
-public class AnswerController {
+public class AnswerController implements AnswerApi {
     private final AnswerApplication answerApplication;
 
     @Operation(summary = "피드 생성")

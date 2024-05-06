@@ -21,7 +21,7 @@ public class AnswerMapper {
                 .content(request.getContent())
                 .linkAttachments(request.getLinkAttachments()) // 링크 첨부 리스트 처리
                 .musicName(request.getMusicName())
-                .musicPicture(request.getMusicPicture())
+                .musicSinger(request.getMusicSinger())
                 .musicAudio(request.getMusicAudio())
                 .createdDate(LocalDateTime.now())
                 .heartCount(0) // 초기 감정 횟수 설정
@@ -38,7 +38,7 @@ public class AnswerMapper {
                 answer.getContent(),
                 answer.getLinkAttachments(),
                 answer.getMusicName(),
-                answer.getMusicPicture(),
+                answer.getMusicSinger(),
                 answer.getMusicAudio(),
                 answer.getImageFiles(),
                 answer.getCreatedDate(),
