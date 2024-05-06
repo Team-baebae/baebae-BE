@@ -21,9 +21,10 @@ public class CategoryController implements CategoryApi {
     @PostMapping("/{memberId}")
     public ResponseEntity<CategoryResponse.CategoryInformationResponse> createCategory(
             @PathVariable Long memberId,
+            @RequestPart("categoryImage") MultipartFile categoryImage,
             @RequestBody CategoryRequest.CreateCategory createCategory
     ) {
-        return ResponseEntity.ok(categoryApplication.createCategory(memberId, createCategory));
+        return ResponseEntity.ok(categoryApplication.createCategory(memberId, categoryImage, createCategory));
     }
 
     @GetMapping("/{memberId}")
@@ -41,7 +42,7 @@ public class CategoryController implements CategoryApi {
         categoryApplication.addAnswerToCategory(categoryId, answerId);
         return ResponseEntity.noContent().build();
     }
-    @PostMapping("/{categoryId}/image")
+    @PatchMapping("/{categoryId}/image")
     public ResponseEntity<Void> updateCategoryImage(
             @PathVariable Long categoryId,
             @RequestPart("imageFile") MultipartFile imageFile

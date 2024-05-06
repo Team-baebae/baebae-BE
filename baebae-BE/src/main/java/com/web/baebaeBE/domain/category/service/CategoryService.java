@@ -38,13 +38,19 @@ private final MemberRepository memberRepository;
 private final AnswerRepository answerRepository;
 private final EntityManager entityManager; // Answer 엔티티 프록시 가져오기 위함.
 
-    public Category createCategory(Long memberId, String categoryName) {
+    public Category createCategory(Long memberId, MultipartFile categoryImage, String categoryName) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(MemberError.NOT_EXIST_MEMBER));
+
+        String imagePath = "default_image_path";
+        if (categoryImage != null) {
+            //imagePath = imageStorageService.save(categoryImage); //추후 수정 예정
+        }
 
         Category category = Category.builder()
                 .member(member)
                 .categoryName(categoryName)
+                .categoryImage(imagePath)
                 .build();
 
         return categoryRepository.save(category);

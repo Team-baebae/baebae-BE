@@ -20,9 +20,9 @@ public class CategoryApplication{
 
     private final CategoryService categoryService;
 
-    public CategoryResponse.CategoryInformationResponse createCategory(Long memberId, CategoryRequest.CreateCategory createCategory) {
+    public CategoryResponse.CategoryInformationResponse createCategory(Long memberId, MultipartFile categoryImage, CategoryRequest.CreateCategory createCategory) {
         Category category =
-                categoryService.createCategory(memberId, createCategory.getCategoryName());
+                categoryService.createCategory(memberId, categoryImage, createCategory.getCategoryName());
 
         return categoryService.createAnswersToCategory(category.getCategoryId(), createCategory.getAnswerId());
     }

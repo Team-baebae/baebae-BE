@@ -18,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Tag(name = "Category", description = "카테고리 관련 API")
 public interface CategoryApi {
 
-    @Operation(summary = "카테고리 생성", description = "멤버 ID와 카테고리 정보를 받아 새로운 카테고리를 생성합니다.")
+    @Operation(summary = "카테고리 생성", description = "멤버 ID, 카테고리 이미지 파일, 카테고리 정보를 받아 새로운 카테고리를 생성합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "생성 성공",
                     content = @Content(mediaType = "application/json",
@@ -26,6 +26,7 @@ public interface CategoryApi {
     })
     ResponseEntity<CategoryResponse.CategoryInformationResponse> createCategory(
             @Parameter(description = "멤버의 ID", required = true) @PathVariable Long memberId,
+            @Parameter(description = "카테고리 이미지 파일", required = true) @RequestPart("categoryImage") MultipartFile categoryImage,
             @Parameter(description = "생성할 카테고리 정보", required = true) @RequestBody CategoryRequest.CreateCategory createCategory
     );
 
