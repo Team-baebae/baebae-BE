@@ -34,22 +34,21 @@ public class ManageMemberService {
         return ManageMemberResponse.MemberInformationResponse.of(member);
     }
 
-    public void updateProfileImage(Long memberId, String imageUrl) {
+    public void updateProfileImage(Long memberId, MultipartFile image) throws IOException {
+        String imageUrl = convertImageToObject(memberId, image);
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(MemberError.NOT_EXIST_MEMBER));
         member.updateProfileImage(imageUrl);
         memberRepository.save(member);
     }
 
-    // 이미지 파일을 Object Storage에 저장하고 키파일을 반환하는 메서드
-    // 추후 수정할 예정
     public String convertImageToObject(Long memberId, MultipartFile image) throws IOException {
         if (image.isEmpty()) {
             throw new BusinessException(ManageMemberError.INVAILD_IMAGE_FILE);
         }
         String fileType = "profile";
-        int index = 0;
-        String fileName = "profile.jpg";
+        int index = 0; // 프로필 이미지에는 인덱스가 필요 없으므로 사용하지 않음
+        String fileName = memberId + "_profile.jpg";
         String path = memberId + "/" + fileName;
 
         try (InputStream inputStream = image.getInputStream()) {
