@@ -8,6 +8,7 @@ import com.web.baebaeBE.presentation.category.dto.CategoryResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @RestController
@@ -32,12 +33,30 @@ public class CategoryController implements CategoryApi {
         return ResponseEntity.ok(categoryApplication.getCategoriesByMember(memberId));
     }
 
-    @PutMapping("/{categoryId}")
-    public ResponseEntity<CategoryResponse.CategoryInformationResponse> updateCategoryName(
+    @PostMapping("/{categoryId}/answers/{answerId}")
+    public ResponseEntity<Void> addAnswerToCategory(
             @PathVariable Long categoryId,
-            @RequestBody CategoryRequest.UpdateCategoryName updateCategoryName
+            @PathVariable Long answerId
     ) {
-        return ResponseEntity.ok(categoryApplication.updateCategoryName(categoryId, updateCategoryName));
+        categoryApplication.addAnswerToCategory(categoryId, answerId);
+        return ResponseEntity.noContent().build();
+    }
+    @PostMapping("/{categoryId}/image")
+    public ResponseEntity<Void> updateCategoryImage(
+            @PathVariable Long categoryId,
+            @RequestPart("imageFile") MultipartFile imageFile
+    ) {
+        categoryApplication.updateCategoryImage(categoryId, imageFile);
+        return ResponseEntity.noContent().build();
+    }
+
+
+    @PutMapping("/{categoryId}")
+    public ResponseEntity<CategoryResponse.CategoryInformationResponse> updateCategory(
+            @PathVariable Long categoryId,
+            @RequestBody CategoryRequest.UpdateCategory updateCategory
+    ) {
+        return ResponseEntity.ok(categoryApplication.updateCategory(categoryId, updateCategory));
     }
 
     @DeleteMapping("/{categoryId}")

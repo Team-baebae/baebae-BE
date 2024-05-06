@@ -19,16 +19,7 @@ public class CategoryRequest {
     @AllArgsConstructor
     public static class CreateCategory{
         private String categoryName;
-        private List<Long> answerIds;
-
-    }
-
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class UpdateCategoryName{
-        private String categoryName;
+        private Long answerId;
 
     }
 
@@ -38,6 +29,8 @@ public class CategoryRequest {
     @AllArgsConstructor
     public static class UpdateCategory{
         private Long categoryId;
+        private String categoryName;
         private List<Long> answerIds;
     }
+
 }

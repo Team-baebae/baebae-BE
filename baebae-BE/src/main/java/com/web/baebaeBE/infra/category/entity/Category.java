@@ -31,10 +31,16 @@ public class Category {
     @Column(name = "category_name", length = 30)
     private String categoryName;
 
+    @Column(name="category_image")
+    private String categoryImage;
+
     @OneToMany(mappedBy = "category")
     private List<CategorizedAnswer> categoryAnswers;
 
     public void updateCategoryName(String categoryName) {
         this.categoryName = categoryName;
+    }
+    public void updateCategoryImage(String categoryImage) {
+        this.categoryImage = categoryImage;
     }
 }
