@@ -1,5 +1,6 @@
 package com.web.baebaeBE.infra.answer.entity;
 
+import com.web.baebaeBE.infra.categorized.answer.entity.CategorizedAnswer;
 import com.web.baebaeBE.infra.member.entity.Member;
 import com.web.baebaeBE.infra.question.entity.Question;
 import jakarta.persistence.*;
@@ -64,6 +65,11 @@ public class Answer {
     @Column(name = "created_date", nullable = false)
     private LocalDateTime createdDate;
 
+    @OneToMany(mappedBy = "answer")
+    private List<CategorizedAnswer> categorizedAnswers;
+
+
+
     public static Answer of(Long id, Question question, Member member, String content,
                             List<String> imageFiles, String musicName, String musicPicture,
                             String musicAudio, List<String> linkAttachments, int heartCount,
@@ -71,7 +77,7 @@ public class Answer {
 
         return new Answer(id, question, member, imageFiles, content, musicName,
                 musicPicture, musicAudio, linkAttachments, heartCount,
-                curiousCount, sadCount, createdDate);
+                curiousCount, sadCount, createdDate,null);
     }
 }
 

@@ -31,9 +31,10 @@ public class Category {
     @Column(name = "category_name", length = 30)
     private String categoryName;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    private Answer answers;
-
     @OneToMany(mappedBy = "category")
     private List<CategorizedAnswer> categoryAnswers;
+
+    public void updateCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
 }
