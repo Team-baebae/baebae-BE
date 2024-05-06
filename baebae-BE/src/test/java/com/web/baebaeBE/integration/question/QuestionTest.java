@@ -1,11 +1,13 @@
 package com.web.baebaeBE.integration.question;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.web.baebaeBE.global.jwt.JwtTokenProvider;
 import com.web.baebaeBE.infra.member.entity.Member;
 import com.web.baebaeBE.infra.member.enums.MemberType;
 import com.web.baebaeBE.infra.member.repository.MemberRepository;
 import com.web.baebaeBE.infra.question.entity.Question;
 import com.web.baebaeBE.infra.question.repository.QuestionRepository;
+import com.web.baebaeBE.presentation.question.dto.QuestionCreateRequest;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,9 +20,11 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -36,8 +40,11 @@ public class QuestionTest {
     private MemberRepository memberRepository;
     @Autowired
     private QuestionRepository questionRepository;
+    @Autowired
+    private JwtTokenProvider tokenProvider;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private Member testMember;
+    private String refreshToken;
 
     @BeforeEach
     void setup() {
@@ -47,6 +54,11 @@ public class QuestionTest {
                 .memberType(MemberType.KAKAO)
                 .refreshToken("null")
                 .build());
+
+        refreshToken = tokenProvider.generateToken(testMember, Duration.ofDays(14)); // 임시 refreshToken 생성
+
+        testMember.updateRefreshToken(refreshToken);
+        memberRepository.save(testMember);
     }
 
     @AfterEach
@@ -56,49 +68,51 @@ public class QuestionTest {
     }
 
     @Test
-    @DisplayName("질문 생성 테스트(): 질문을 생성한다.")
     public void createQuestionTest() throws Exception {
-        // given
-        String content = "이것은 질문입니다.";
+        QuestionCreateRequest createRequest = new QuestionCreateRequest("이것은 질문입니다.", "장지효", true);
+        String jsonRequest = objectMapper.writeValueAsString(createRequest);
+        Long memberId = 1L;
 
-        // when
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/question")
+        mockMvc.perform(post("/api/questions/member/{memberId}", memberId)
+                        .header("Authorization", "Bearer "+ refreshToken)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new Question(null, testMember, content, "닉네임", true, LocalDateTime.now()))))
-
+                        .content(jsonRequest)) // 'content' 메소드는 여기서 사용
+                .andExpect(status().isCreated())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content").value(content));
+                .andExpect(jsonPath("$.content").value("이것은 질문입니다."))
+                .andExpect(jsonPath("$.nickname").value("장지효"))
+                .andExpect(jsonPath("$.profileOnOff").value(true));
+
     }
 
     @Test
     @DisplayName("회원별 질문 조회 테스트(): 해당 회원의 질문을 조회한다.")
     public void getQuestionsByMemberIdTest() throws Exception {
-
         String content = "이것은 회원의 질문입니다.";
         Question question = questionRepository.save(new Question(null, testMember, content, "닉네임", true, LocalDateTime.now()));
 
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/question/member/{memberId}", testMember.getId())
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/questions")
+                        .param("memberId", String.valueOf(testMember.getId()))
+                        .header("Authorization", "Bearer " + refreshToken)
                         .contentType(MediaType.APPLICATION_JSON))
-
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content").value(content));
+                .andExpect(jsonPath("$[0].content").value(content));
     }
 
     @Test
     @DisplayName("질문 수정 테스트(): 질문을 수정한다.")
     public void updateQuestionTest() throws Exception {
-
+        // 수정 전 질문 생성
         String content = "이것은 수정 전의 질문입니다.";
         Question question = questionRepository.save(new Question(null, testMember, content, "닉네임", true, LocalDateTime.now()));
         String updatedContent = "이것은 수정 후의 질문입니다.";
 
-
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/question/{questionId}", question.getId())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(updatedContent))
-
-                .andExpect(status().isOk());
+        // 질문 수정 요청을 보내고 응답을 확인
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/questions/{questionId}", question.getId())
+                        .param("content", updatedContent)
+                        .header("Authorization", "Bearer " + refreshToken)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
     }
 
     @Test
@@ -108,9 +122,10 @@ public class QuestionTest {
         String content = "이것은 삭제할 질문입니다.";
         Question question = questionRepository.save(new Question(null, testMember, content, "닉네임", true, LocalDateTime.now()));
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/question/{questionId}", question.getId())
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/questions/{questionId}", question.getId())
+                        .header("Authorization", "Bearer " + refreshToken)
                         .contentType(MediaType.APPLICATION_JSON))
 
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
     }
 }

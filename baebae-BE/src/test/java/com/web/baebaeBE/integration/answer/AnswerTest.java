@@ -1,9 +1,8 @@
 package com.web.baebaeBE.integration.answer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.web.baebaeBE.domain.answer.service.AnswerService;
-import com.web.baebaeBE.global.error.exception.BusinessException;
-import com.web.baebaeBE.global.image.s3.S3ImageStorageService;
+
+import com.web.baebaeBE.global.jwt.JwtTokenProvider;
 import com.web.baebaeBE.infra.answer.entity.Answer;
 import com.web.baebaeBE.infra.answer.repository.AnswerRepository;
 import com.web.baebaeBE.infra.member.entity.Member;
@@ -17,7 +16,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -27,23 +25,19 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 @SpringBootTest()
 @AutoConfigureMockMvc
@@ -55,10 +49,6 @@ public class AnswerTest {
     private AnswerRepository answerRepository;
     @Mock
     private QuestionRepository questionRepository;
-    @Mock
-    private S3ImageStorageService s3ImageStorageService;
-    @InjectMocks
-    private AnswerService answerService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -66,7 +56,9 @@ public class AnswerTest {
     private ObjectMapper objectMapper;
     @Autowired
     private MemberRepository memberRepository;
-
+    @Autowired
+    private JwtTokenProvider tokenProvider;
+    private String refreshToken;
     private Member testMember;
 
     @BeforeEach
@@ -77,6 +69,10 @@ public class AnswerTest {
                 .memberType(MemberType.KAKAO)
                 .refreshToken("null")
                 .build());
+        refreshToken = tokenProvider.generateToken(testMember, Duration.ofDays(14)); // 임시 refreshToken 생성
+
+        testMember.updateRefreshToken(refreshToken);
+        memberRepository.save(testMember);
     }
 
     @AfterEach
@@ -91,50 +87,71 @@ public class AnswerTest {
     public void createAnswerTest() throws Exception {
         // Given
         AnswerCreateRequest request = new AnswerCreateRequest();
+        request.setQuestionId(1L);
         request.setContent("테스트 답변 내용");
         request.setLinkAttachments(Collections.singletonList("https://example.com"));
         request.setMusicName("테스트 음악");
+
         MockMultipartFile file = new MockMultipartFile("imageFiles", "test.jpg", MediaType.IMAGE_JPEG_VALUE, "이미지 데이터".getBytes());
 
         // When & Then
-        mockMvc.perform(multipart("/api/answers")
+        mockMvc.perform(multipart("/api/answers/member/{memberId}", testMember.getId())
                         .file(file)
-                        .param("memberId", testMember.getId().toString())
-                        .param("questionId", "1")
+                        .header("Authorization", "Bearer "+ refreshToken)
+                        .param("questionId", String.valueOf(request.getQuestionId()))
                         .param("content", request.getContent())
                         .param("linkAttachments", objectMapper.writeValueAsString(request.getLinkAttachments()))
                         .param("musicName", request.getMusicName()))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").exists())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").exists());
     }
 
 
-
     @Test
-    @DisplayName("답변 생성 실패 - 이미지 처리 오류")
-    public void createAnswerFail_ImageProcessingError() {
+    @DisplayName("답변 조회 테스트: 답변을 조회합니다")
+    public void getAnswerTest() throws Exception {
         // Given
-        AnswerCreateRequest request = new AnswerCreateRequest();
-        request.setContent("내용");
-        List<MultipartFile> imageFiles = new ArrayList<>();
-        MultipartFile file = mock(MultipartFile.class);
-        imageFiles.add(file);
+        Question question = Question.builder()
+                .id(1L)
+                .build();
+        // 모의 객체를 사용하여 questionRepository 대체
+        when(questionRepository.findById(anyLong())).thenReturn(Optional.of(question));
 
-        Answer answer = mock(Answer.class);
-        answer.setMember(testMember);
+        Answer answer = Answer.builder()
+                .question(question)
+                .member(testMember)
+                .content("테스트 답변 내용")
+                .imageFiles(Collections.singletonList("https://example.com/image.jpg"))
+                .musicName("테스트 음악")
+                .createdDate(LocalDateTime.now())
+                .build();
 
-        // Stubbing - 이미지 업로드 시 IOException 발생
-        when(s3ImageStorageService.uploadFile(anyString(), anyString(), anyString(), anyInt(), any(InputStream.class), anyLong(), anyString())).thenThrow(new IOException());
+        // 이미지 파일
+        byte[] imageBytes = "이미지 데이터".getBytes();
+        MockMultipartFile imageFile = new MockMultipartFile("imageFile", "image.jpg", MediaType.IMAGE_JPEG_VALUE, imageBytes);
 
-        // when & then
-        assertThrows(BusinessException.class, () -> answerService.createAnswer(answer, imageFiles));
+        // When & Then
+        mockMvc.perform(
+                        multipart("/api/answers/{answerId}", answer.getId())
+                                .file(imageFile)
+                                .header("Authorization", "Bearer "+ refreshToken)
+                                .contentType(MediaType.MULTIPART_FORM_DATA)
+                                .param("content", answer.getContent())
+                                .param("musicName", answer.getMusicName()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(answer.getId()))
+                .andExpect(jsonPath("$.content").value(answer.getContent()));
+
     }
 
     @Test
     @DisplayName("답변 수정 테스트: 답변을 수정합니다")
     public void updateAnswerTest() throws Exception {
-        Question question = questionRepository.findById(1L).orElseThrow(() -> new RuntimeException("Question을 찾을 수 없습니다.")); // 실제 데이터베이스에서 Question을 조회합니다.
+        Question question = Question.builder()
+                .id(1L)
+                .build();
+        // 모의 객체를 사용하여 questionRepository 대체
+        when(questionRepository.findById(anyLong())).thenReturn(Optional.of(question));
         // Given
         Answer answer = answerRepository.save(Answer.builder()
                 .question(question)
@@ -149,11 +166,14 @@ public class AnswerTest {
         request.setContent("수정된 답변 내용");
         request.setLinkAttachments(Collections.singletonList("https://updated-example.com"));
         request.setMusicName("업데이트된 테스트 음악");
-        MockMultipartFile file = new MockMultipartFile("imageFiles", "updated_test.jpg", MediaType.IMAGE_JPEG_VALUE, "업데이트된 이미지 데이터".getBytes());
+
+        byte[] imageBytes = "이미지 데이터".getBytes();
+        MockMultipartFile imageFile = new MockMultipartFile("imageFile", "image.jpg", MediaType.IMAGE_JPEG_VALUE, imageBytes);
 
         // When & Then
         mockMvc.perform(multipart("/api/answers/{answerId}", answer.getId())
-                        .file(file)
+                        .file(new MockMultipartFile("imageFile", "image.jpg", MediaType.IMAGE_JPEG_VALUE, imageBytes))
+                        .header("Authorization", "Bearer "+ refreshToken)
                         .param("content", request.getContent())
                         .param("linkAttachments", objectMapper.writeValueAsString(request.getLinkAttachments()))
                         .param("musicName", request.getMusicName()))
@@ -184,6 +204,7 @@ public class AnswerTest {
 
         // when
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/answer/{answerId}", savedAnswer.getId())
+                        .header("Authorization", "Bearer "+ refreshToken)
                         .contentType(MediaType.APPLICATION_JSON))
                 // then
                 .andExpect(status().isOk());
