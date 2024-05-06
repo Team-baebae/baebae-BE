@@ -2,6 +2,7 @@ package com.web.baebaeBE.presentation.question;
 
 import com.web.baebaeBE.application.question.QuestionApplication;
 import com.web.baebaeBE.global.jwt.JwtTokenProvider;
+import com.web.baebaeBE.presentation.question.api.QuestionApi;
 import com.web.baebaeBE.presentation.question.dto.QuestionCreateRequest;
 import com.web.baebaeBE.presentation.question.dto.QuestionDetailResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/questions")
-public class QuestionController {
+public class QuestionController implements QuestionApi {
     private final QuestionApplication questionApplication;
     private final JwtTokenProvider tokenProvider;
 
