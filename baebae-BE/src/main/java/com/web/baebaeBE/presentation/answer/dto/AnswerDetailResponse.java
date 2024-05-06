@@ -15,7 +15,7 @@ public class AnswerDetailResponse {
     private String content;
     private List<String> linkAttachments;
     private String musicName;
-    private String musicPictureUrl;
+    private String musicSinger;
     private String musicAudioUrl;
     private List<String> imageUrls;
     private LocalDateTime createdDate;
@@ -24,7 +24,7 @@ public class AnswerDetailResponse {
     private Integer sadCount;
 
     public AnswerDetailResponse(Long answerId, Long questionId, Long memberId, String content,
-                                List<String> linkAttachments, String musicName, String musicPictureUrl,
+                                List<String> linkAttachments, String musicName, String musicSinger,
                                 String musicAudioUrl, List<String> imageUrls, LocalDateTime createdDate,
                                 Integer heartCount, Integer curiousCount, Integer sadCount) {
         this.answerId = answerId;
@@ -33,7 +33,7 @@ public class AnswerDetailResponse {
         this.content = content;
         this.linkAttachments = linkAttachments;
         this.musicName = musicName;
-        this.musicPictureUrl = musicPictureUrl;
+        this.musicSinger = musicSinger;
         this.musicAudioUrl = musicAudioUrl;
         this.imageUrls = imageUrls;
         this.createdDate = createdDate;
@@ -43,11 +43,11 @@ public class AnswerDetailResponse {
     }
 
     public static AnswerDetailResponse of(Long answerId, Long questionId, Long memberId, String content,
-                                          List<String> linkAttachments, String musicName, String musicPictureUrl,
+                                          List<String> linkAttachments, String musicName, String musicSinger,
                                           String musicAudioUrl, List<String> imageUrls, LocalDateTime createdDate,
                                           Integer heartCount, Integer curiousCount, Integer sadCount) {
         return new AnswerDetailResponse(answerId, questionId, memberId, content, linkAttachments, musicName,
-                musicPictureUrl, musicAudioUrl, imageUrls, createdDate,
+                musicSinger, musicAudioUrl, imageUrls, createdDate,
                 heartCount, curiousCount, sadCount);
     }
 }

@@ -41,8 +41,8 @@ public class Answer {
     @Column(name = "music_name")
     private String musicName;
 
-    @Column(name = "music_picture")
-    private String musicPicture;
+    @Column(name = "muic_singer")
+    private String musicSinger;
 
     @Column(name = "music_audio")
     private String musicAudio;

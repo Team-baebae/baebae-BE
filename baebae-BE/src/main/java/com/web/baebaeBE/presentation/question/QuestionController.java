@@ -29,13 +29,13 @@ public class QuestionController {
     @Operation(summary = "질문 생성")
     @PostMapping("/member/{memberId}")
     public ResponseEntity<QuestionDetailResponse> createQuestion(
-            @RequestBody QuestionCreateRequest questionDTO, @PathVariable Long memberId, @RequestParam Long receiverId,
+            @RequestBody QuestionCreateRequest questionDTO, @PathVariable Long memberId,
             @RequestHeader("Authorization") String token) {
 
         if (!tokenProvider.validToken(token)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        QuestionDetailResponse createdQuestion = questionApplication.createQuestion(questionDTO, memberId, receiverId, token);
+        QuestionDetailResponse createdQuestion = questionApplication.createQuestion(questionDTO, memberId, token);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdQuestion);
     }
 
@@ -43,15 +43,17 @@ public class QuestionController {
     @GetMapping()
     public ResponseEntity<List<QuestionDetailResponse>> getAllQuestions(
             @RequestParam Long memberId,
-            @RequestParam boolean isSender,
             Pageable pageable) {
-        Page<QuestionDetailResponse> questions = questionApplication.getAllQuestions(memberId, pageable, isSender);
+        Page<QuestionDetailResponse> questions = questionApplication.getAllQuestions(memberId, pageable);
         return ResponseEntity.ok(questions.getContent());
     }
 
     @Operation(summary = "질문 수정")
     @PutMapping("/{questionId}")
     public ResponseEntity<Void> updateQuestion(@PathVariable Long questionId, @RequestParam String content, @RequestHeader("Authorization") String token) {
+        if (!tokenProvider.validToken(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
         questionApplication.updateQuestion(questionId, content, token);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }

@@ -24,24 +24,17 @@ public class QuestionApplication {
     private final QuestionMapper questionMapper;
     private final MemberRepository memberRepository;
 
-    public QuestionDetailResponse createQuestion(QuestionCreateRequest request, Long senderId, Long receiverId, String token) {
-        Member sender = memberRepository.findById(senderId)
-                .orElseThrow(() -> new BusinessException(MemberError.NOT_EXIST_MEMBER));
-        Member receiver = memberRepository.findById(receiverId)
+    public QuestionDetailResponse createQuestion(QuestionCreateRequest request, Long memberId, String token) {
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(MemberError.NOT_EXIST_MEMBER));
 
-        Question questionEntity = questionMapper.toEntity(request, sender, receiver);
+        Question questionEntity = questionMapper.toEntity(request, member);
         Question savedQuestionEntity = questionService.createQuestion(questionEntity);
         return questionMapper.toDomain(savedQuestionEntity, token);
     }
 
-    public Page<QuestionDetailResponse> getAllQuestions(Long memberId, Pageable pageable, boolean isSender) {
-        Page<Question> questionPage;
-        if (isSender) {
-            questionPage = questionService.getQuestionsBySenderId(memberId, pageable);
-        } else {
-            questionPage = questionService.getQuestionsByReceiverId(memberId, pageable);
-        }
+    public Page<QuestionDetailResponse> getAllQuestions(Long memberId, Pageable pageable) {
+        Page<Question> questionPage = questionService.getQuestionsByMemberId(memberId, pageable);
         return questionPage.map(question -> questionMapper.toDomain(question, "appropriate token here"));
     }
 

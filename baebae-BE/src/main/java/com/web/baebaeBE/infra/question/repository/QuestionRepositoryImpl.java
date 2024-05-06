@@ -26,13 +26,8 @@ public class QuestionRepositoryImpl implements QuestionRepository{
     }
 
     @Override
-    public Page<Question> findAllBySenderId(Long senderId, Pageable pageable) {
-        return questionJpaRepository.findAllBySenderId(senderId, pageable);
-    }
-
-    @Override
-    public Page<Question> findAllByReceiverId(Long receiverId, Pageable pageable) {
-        return questionJpaRepository.findAllByReceiverId(receiverId, pageable);
+    public Page<Question> findAllByMemberId(Long memberId, Pageable pageable) {
+        return questionJpaRepository.findAllByMemberId(memberId, pageable);
     }
 
     @Override

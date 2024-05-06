@@ -20,12 +20,8 @@ public class Question {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sender_id", nullable = false)
-    private Member sender;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "receiver_id", nullable = false)
-    private Member receiver;
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
@@ -42,9 +38,9 @@ public class Question {
     public void updateContent(String content) {
         this.content = content;
     }
-    public static Question of(Long id, Member sender, Member receiver, String content, String nickname, Boolean profileOnOff,
+    public static Question of(Long id, Member member, String content, String nickname, Boolean profileOnOff,
                               LocalDateTime createdDate) {
-        return new Question(id, sender, receiver, content, nickname, profileOnOff, createdDate);
+        return new Question(id, member, content, nickname, profileOnOff, createdDate);
     }
 }
 
