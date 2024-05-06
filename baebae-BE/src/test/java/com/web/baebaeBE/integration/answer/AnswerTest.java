@@ -121,7 +121,7 @@ public class AnswerTest {
         MultipartFile file = mock(MultipartFile.class);
         imageFiles.add(file);
 
-        Answer answer = new Answer();
+        Answer answer = mock(Answer.class);
         answer.setMember(testMember);
 
         // Stubbing - 이미지 업로드 시 IOException 발생
