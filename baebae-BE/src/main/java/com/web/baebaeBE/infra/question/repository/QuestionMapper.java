@@ -27,6 +27,7 @@ public class QuestionMapper {
                 question.getId(),
                 question.getContent(),
                 question.getNickname(),
+                question.getProfileOnOff(),
                 question.getCreatedDate(),
                 token
         );

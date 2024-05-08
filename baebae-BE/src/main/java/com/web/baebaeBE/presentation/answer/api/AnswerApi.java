@@ -13,12 +13,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Tag(name = "Answer", description = "답변 관리 API")
 public interface AnswerApi {
 
     @Operation(
             summary = "답변 생성",
-            description = "새로운 답변을 생성합니다."
+            description = "새로운 답변을 생성합니다. 이미지 파일과 오디오 파일을 포함할 수 있습니다."
     )
     @ApiResponse(responseCode = "201", description = "답변 생성 성공",
             content = @Content(mediaType = "application/json",
@@ -26,6 +28,8 @@ public interface AnswerApi {
     @RequestMapping(method = RequestMethod.POST, value = "/member/{memberId}", consumes = "multipart/form-data")
     ResponseEntity<AnswerDetailResponse> createAnswer(
             @PathVariable Long memberId,
+            @RequestParam("imageFiles") List<MultipartFile> imageFiles,
+            @RequestParam("audioFile") MultipartFile audioFile,
             @ModelAttribute AnswerCreateRequest request);
 
     @Operation(
@@ -51,7 +55,8 @@ public interface AnswerApi {
     ResponseEntity<AnswerDetailResponse> updateAnswer(
             @PathVariable Long answerId,
             @ModelAttribute AnswerCreateRequest request,
-            @RequestParam("imageFiles") MultipartFile[] imageFiles);
+            @RequestParam("imageFiles") MultipartFile[] imageFiles,
+            @RequestParam("audioFile") MultipartFile audioFile);
 
     @Operation(
             summary = "답변 삭제",

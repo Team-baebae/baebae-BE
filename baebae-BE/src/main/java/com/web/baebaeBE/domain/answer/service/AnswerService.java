@@ -2,6 +2,7 @@ package com.web.baebaeBE.domain.answer.service;
 
 import com.web.baebaeBE.domain.answer.exception.AnswerError;
 import com.web.baebaeBE.global.error.exception.BusinessException;
+import com.web.baebaeBE.global.firebase.FirebaseNotificationService;
 import com.web.baebaeBE.global.image.s3.S3ImageStorageService;
 import com.web.baebaeBE.infra.answer.entity.Answer;
 import com.web.baebaeBE.infra.answer.repository.AnswerRepository;
@@ -22,28 +23,38 @@ import java.util.List;
 @Service
 public class AnswerService {
     private final AnswerRepository answerRepository;
+    private final FirebaseNotificationService firebaseNotificationService;
     private final S3ImageStorageService s3ImageStorageService;
 
-    public Answer createAnswer(Answer answer, List<MultipartFile> imageFiles) {
-        List<String> urls = new ArrayList<>();
+    @Transactional
+    public Answer createAnswer(Answer answer, List<MultipartFile> imageFiles, MultipartFile audioFile) {
+        List<String> imageUrls = new ArrayList<>();
+        String musicAudioUrl = null;
+
         try {
-            int index = 0;
             String memberId = answer.getMember().getId().toString();
             String answerId = answer.getId().toString();
 
+            // 이미지 파일 처리
+            int imageIndex = 0;
             for (MultipartFile file : imageFiles) {
-                String fileType = "image";
-                String fileName = "image_" + index++ + ".jpg";
-                String path = memberId + "/" + answerId + "/" + fileName;
-
                 InputStream inputStream = file.getInputStream();
-                String url = s3ImageStorageService.uploadFile(memberId, answerId, fileType, index, inputStream, file.getSize(), file.getContentType());
-                urls.add(url);
+                String fileType = "image";
+                imageUrls.add(s3ImageStorageService.uploadFile(memberId, answerId, fileType, imageIndex++, inputStream, file.getSize(), file.getContentType()));
             }
+            answer.setImageFiles(imageUrls);
+
+            // 오디오 파일 처리
+            if (audioFile != null && !audioFile.isEmpty()) {
+                InputStream inputStream = audioFile.getInputStream();
+                musicAudioUrl = s3ImageStorageService.uploadFile(memberId, answerId, "audio", 0, inputStream, audioFile.getSize(), audioFile.getContentType());
+                answer.setMusicAudio(musicAudioUrl);
+            }
+
         } catch (IOException e) {
             throw new BusinessException(AnswerError.IMAGE_PROCESSING_ERROR);
         }
-        answer.setImageFiles(urls);
+
         return answerRepository.save(answer);
     }
 
@@ -53,7 +64,7 @@ public class AnswerService {
     }
 
     @Transactional
-    public Answer updateAnswer(Long answerId, AnswerCreateRequest request, MultipartFile[] imageFiles) {
+    public Answer updateAnswer(Long answerId, AnswerCreateRequest request, MultipartFile[] imageFiles, MultipartFile audioFile) {
         Answer answer = answerRepository.findByAnswerId(answerId)
                 .orElseThrow(() -> new BusinessException(AnswerError.NO_EXIST_ANSWER));
 
@@ -63,10 +74,9 @@ public class AnswerService {
             String fileType = "image";
             int index = 0;
 
+            // 이미지 파일 처리
             for (MultipartFile file : imageFiles) {
                 String fileName = "image_" + index + ".jpg";
-                String path = memberId + "/" + answerId + "/" + fileName;
-
                 InputStream inputStream = file.getInputStream();
                 long size = file.getSize();
                 String contentType = file.getContentType();
@@ -74,17 +84,33 @@ public class AnswerService {
                 urls.add(url);
                 index++;
             }
+
+            // 오디오 파일 처리
+            if (audioFile != null && !audioFile.isEmpty()) {
+                InputStream inputStream = audioFile.getInputStream();
+                long size = audioFile.getSize();
+                String contentType = audioFile.getContentType();
+                String musicAudioUrl = s3ImageStorageService.uploadFile(memberId, answerId.toString(), "audio", 0, inputStream, size, contentType);
+                answer.setMusicAudio(musicAudioUrl);
+            }
+
         } catch (IOException e) {
             throw new BusinessException(AnswerError.IMAGE_PROCESSING_ERROR);
         }
+
+        // 이미지 URL 리스트 업데이트
         answer.setImageFiles(urls);
 
+        // 다른 필드 업데이트
         answer.setContent(request.getContent());
         answer.setLinkAttachments(request.getLinkAttachments());
         answer.setMusicName(request.getMusicName());
+        answer.setMusicSinger(request.getMusicSinger());
 
+        // 데이터베이스 저장
         return answerRepository.save(answer);
     }
+
     @Transactional
     public void deleteAnswer(Long answerId) {
         Answer answer = answerRepository.findByAnswerId(answerId)
@@ -105,5 +131,28 @@ public class AnswerService {
             }
         });
         answerRepository.delete(answer);
+    }
+
+    @Transactional
+    public void updateReactionCounts(Long answerId, int heartCount, int curiousCount, int sadCount) {
+        Answer answer = answerRepository.findByAnswerId(answerId)
+                .orElseThrow(() -> new BusinessException(AnswerError.NO_EXIST_ANSWER));
+
+        // 반응수 올라갈때마다 알림 전송
+        if (answer.getHeartCount() != heartCount) {
+            firebaseNotificationService.notifyReaction(answer.getMember(), answer.getContent(), "heart");
+        }
+        if (answer.getCuriousCount() != curiousCount) {
+            firebaseNotificationService.notifyReaction(answer.getMember(), answer.getContent(), "curious");
+        }
+        if (answer.getSadCount() != sadCount) {
+            firebaseNotificationService.notifyReaction(answer.getMember(), answer.getContent(), "sad");
+        }
+
+        // 반응 수 업데이트
+        answer.setHeartCount(heartCount);
+        answer.setCuriousCount(curiousCount);
+        answer.setSadCount(sadCount);
+        answerRepository.save(answer);
     }
 }

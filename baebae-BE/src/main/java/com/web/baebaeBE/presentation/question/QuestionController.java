@@ -33,9 +33,6 @@ public class QuestionController implements QuestionApi {
             @RequestBody QuestionCreateRequest questionDTO, @PathVariable Long memberId,
             @RequestHeader("Authorization") String token) {
 
-        if (!tokenProvider.validToken(token)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
         QuestionDetailResponse createdQuestion = questionApplication.createQuestion(questionDTO, memberId, token);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdQuestion);
     }
@@ -52,9 +49,7 @@ public class QuestionController implements QuestionApi {
     @Operation(summary = "질문 수정")
     @PutMapping("/{questionId}")
     public ResponseEntity<Void> updateQuestion(@PathVariable Long questionId, @RequestParam String content, @RequestHeader("Authorization") String token) {
-        if (!tokenProvider.validToken(token)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+
         questionApplication.updateQuestion(questionId, content, token);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }

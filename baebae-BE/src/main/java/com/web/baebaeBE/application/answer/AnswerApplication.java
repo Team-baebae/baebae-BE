@@ -18,6 +18,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class AnswerApplication {
@@ -26,14 +28,14 @@ public class AnswerApplication {
     private final MemberRepository memberRepository;
     private final QuestionRepository questionRepository;
 
-    public AnswerDetailResponse createAnswer(AnswerCreateRequest request, Long memberId) {
+    public AnswerDetailResponse createAnswer(AnswerCreateRequest request, Long memberId, List<MultipartFile> imageFiles, MultipartFile audioFile) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(MemberError.NOT_EXIST_MEMBER));
         Question question = questionRepository.findById(request.getQuestionId())
                 .orElseThrow(() -> new BusinessException(AnswerError.NO_EXIST_QUESTION));
 
         Answer answerEntity = answerMapper.toEntity(request, question, member);
-        Answer savedAnswerEntity = answerService.createAnswer(answerEntity, request.getImageFiles());
+        Answer savedAnswerEntity = answerService.createAnswer(answerEntity, imageFiles, audioFile);
         return answerMapper.toDomain(savedAnswerEntity);
     }
 
@@ -42,12 +44,16 @@ public class AnswerApplication {
         return answerPage.map(answerMapper::toDomain);
     }
 
-    public AnswerDetailResponse updateAnswer(Long answerId, AnswerCreateRequest request, MultipartFile[] imageFiles) {
-        Answer updatedAnswer = answerService.updateAnswer(answerId, request, imageFiles);
+    public AnswerDetailResponse updateAnswer(Long answerId, AnswerCreateRequest request, MultipartFile[] imageFiles, MultipartFile audioFile) {
+        Answer updatedAnswer = answerService.updateAnswer(answerId, request, imageFiles, audioFile);
         return answerMapper.toDomain(updatedAnswer);
     }
 
     public void deleteAnswer(Long answerId) {
         answerService.deleteAnswer(answerId);
+    }
+
+    public void updateReactionCounts(Long answerId, int heartCount, int curiousCount, int sadCount) {
+        answerService.updateReactionCounts(answerId, heartCount, curiousCount, sadCount);
     }
 }

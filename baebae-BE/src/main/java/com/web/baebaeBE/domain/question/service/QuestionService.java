@@ -2,6 +2,7 @@ package com.web.baebaeBE.domain.question.service;
 
 import com.web.baebaeBE.domain.question.exception.QuestionError;
 import com.web.baebaeBE.global.error.exception.BusinessException;
+import com.web.baebaeBE.global.firebase.FirebaseNotificationService;
 import com.web.baebaeBE.infra.question.entity.Question;
 import com.web.baebaeBE.infra.question.repository.QuestionRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,10 +15,14 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class QuestionService {
     private final QuestionRepository questionRepository;
+    private final FirebaseNotificationService firebaseNotificationService;
 
     @Transactional
     public Question createQuestion(Question question) {
-        return questionRepository.save(question);
+        Question savedQuestion = questionRepository.save(question);
+        // 질문 생성 후 알림 발송
+        firebaseNotificationService.notifyNewQuestion(savedQuestion.getMember(), savedQuestion);
+        return savedQuestion;
     }
 
     @Transactional(readOnly = true)
@@ -30,7 +35,10 @@ public class QuestionService {
         Question questionEntity = questionRepository.findById(questionId)
                 .orElseThrow(() -> new BusinessException(QuestionError.NO_EXIST_QUESTION));
         questionEntity.updateContent(content);
-        return questionRepository.save(questionEntity);
+        Question updatedQuestion = questionRepository.save(questionEntity);
+        // 질문 업데이트 후 알림 발송
+        firebaseNotificationService.notifyNewQuestion(updatedQuestion.getMember(), updatedQuestion);
+        return updatedQuestion;
     }
 
     @Transactional

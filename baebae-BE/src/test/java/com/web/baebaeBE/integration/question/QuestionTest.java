@@ -78,7 +78,6 @@ public class QuestionTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonRequest)) // 'content' 메소드는 여기서 사용
                 .andExpect(status().isCreated())
-                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content").value("이것은 질문입니다."))
                 .andExpect(jsonPath("$.nickname").value("장지효"))
                 .andExpect(jsonPath("$.profileOnOff").value(true));
