@@ -34,7 +34,7 @@ public class ManageMemberController implements ManageMemberApi {
 
     return ResponseEntity.ok(memberInformation);
   }
-  @GetMapping("/members/nickname/{nickname}")
+  @GetMapping("/nickname/{nickname}")
   public Long getMemberIdByNickname(
           @PathVariable String nickname
   ) {
