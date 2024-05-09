@@ -21,7 +21,6 @@ import java.util.List;
 public class AnswerController implements AnswerApi {
     private final AnswerApplication answerApplication;
 
-    @Operation(summary = "피드 생성")
     @PostMapping(value = "/member/{memberId}", consumes = "multipart/form-data")
     public ResponseEntity<AnswerDetailResponse> createAnswer(@PathVariable Long memberId,
                                                              @RequestParam("imageFiles") List<MultipartFile> imageFiles,
@@ -31,14 +30,12 @@ public class AnswerController implements AnswerApi {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdAnswer);
     }
 
-    @Operation(summary = "피드 조회")
     @GetMapping(value = "/{answerId}")
     public ResponseEntity<Page<AnswerDetailResponse>> getAllAnswers(@RequestParam Long memberId, Pageable pageable) {
         Page<AnswerDetailResponse> answers = answerApplication.getAllAnswers(memberId, pageable);
         return ResponseEntity.ok(answers);
     }
 
-    @Operation(summary = "피드 수정", description = "기존의 피드를 수정합니다. 이미지와 오디오 파일 모두 업데이트할 수 있습니다.")
     @PutMapping(value = "/{answerId}", consumes = "multipart/form-data")
     public ResponseEntity<AnswerDetailResponse> updateAnswer(
             @PathVariable Long answerId,
@@ -49,7 +46,6 @@ public class AnswerController implements AnswerApi {
         return ResponseEntity.ok(updatedAnswer);
     }
 
-    @Operation(summary = "피드 삭제")
     @DeleteMapping("/{answerId}")
     public ResponseEntity<Void> deleteAnswer( @PathVariable Long answerId) {
         answerApplication.deleteAnswer(answerId);
