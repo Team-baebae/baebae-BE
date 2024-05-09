@@ -1,5 +1,6 @@
 package com.web.baebaeBE.presentation.answer.api;
 
+import com.google.firebase.database.annotations.NotNull;
 import com.web.baebaeBE.presentation.answer.dto.AnswerCreateRequest;
 import com.web.baebaeBE.presentation.answer.dto.AnswerDetailResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,8 +11,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,12 +38,12 @@ public interface AnswerApi {
     @ApiResponse(responseCode = "201", description = "답변 생성 성공",
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = AnswerDetailResponse.class)))
-    @RequestMapping(method = RequestMethod.POST, value = "/member/{memberId}", consumes = "multipart/form-data")
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<AnswerDetailResponse> createAnswer(
             @PathVariable Long memberId,
-            @RequestParam("imageFiles") List<MultipartFile> imageFiles,
-            @RequestParam("audioFile") MultipartFile audioFile,
-            @ModelAttribute AnswerCreateRequest request);
+            @RequestPart(value = "imageFiles") List<MultipartFile> imageFiles,
+            @RequestPart(value = "audioFile") MultipartFile audioFile,
+            @RequestPart(name = "request") AnswerCreateRequest request);
 
     @Operation(
             summary = "모든 답변 조회",

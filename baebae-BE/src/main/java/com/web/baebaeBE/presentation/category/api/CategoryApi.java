@@ -34,7 +34,7 @@ public interface CategoryApi {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = CategoryResponse.CategoryInformationResponse.class)))
     })
-    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}) // 이 부분에 주목하세요, 이제 multipart/form-data를 소비한다고 명시합니다.
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE) // 이 부분에 주목하세요, 이제 multipart/form-data를 소비한다고 명시합니다.
     ResponseEntity<CategoryResponse.CategoryInformationResponse> createCategory(
             @Parameter(description = "멤버의 ID", required = true) @PathVariable Long memberId,
             @Parameter(description = "카테고리 이미지 파일", required = true, schema = @Schema(type = "string", format = "binary")) @RequestPart(value = "categoryImage", required = false) MultipartFile categoryImage,

@@ -10,22 +10,28 @@ import java.lang.reflect.Type;
 @Component
 public class MultipartJackson2HttpMessageConverter extends AbstractJackson2HttpMessageConverter {
 
-    protected MultipartJackson2HttpMessageConverter(ObjectMapper objectMapper) {
+    public MultipartJackson2HttpMessageConverter(ObjectMapper objectMapper) {
         super(objectMapper, MediaType.APPLICATION_OCTET_STREAM);
     }
 
+
+    /*@Override
+    public boolean canRead(Type type, Class<?> contextClass, MediaType mediaType) {
+        return false;  // 모든 타입에 대해 읽기를 막습니다.
+    }*/
+
     @Override
-    public boolean canWrite(Class<?> clazz, MediaType mediaType){
+    public boolean canWrite(Class<?> clazz, MediaType mediaType) {
         return false;
     }
 
     @Override
-    public boolean canWrite(Type type, Class<?> clazz, MediaType mediaType){
+    public boolean canWrite(Type type, Class<?> clazz, MediaType mediaType) {
         return false;
     }
 
     @Override
-    protected boolean canWrite(MediaType mediaType){
+    protected boolean canWrite(MediaType mediaType) {
         return false;
     }
 }
