@@ -6,6 +6,7 @@ import com.web.baebaeBE.presentation.category.api.CategoryApi;
 import com.web.baebaeBE.presentation.category.dto.CategoryRequest;
 import com.web.baebaeBE.presentation.category.dto.CategoryResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,12 +19,14 @@ public class CategoryController implements CategoryApi {
 
     private final CategoryApplication categoryApplication;
 
-    @PostMapping(value = "/{memberId}", consumes = {"multipart/form-data"})
+    @PostMapping(value = "/{memberId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<CategoryResponse.CategoryInformationResponse> createCategory(
             @PathVariable Long memberId,
             @RequestPart(value = "categoryImage", required = false) MultipartFile categoryImage,
             @RequestPart CategoryRequest.CreateCategory createCategory
     ) {
+        System.out.println("categoryImage: " + categoryImage);
+        System.out.println(createCategory.getCategoryName()+ " " + createCategory.getAnswerIds());
         return ResponseEntity.ok(categoryApplication.createCategory(memberId, categoryImage, createCategory));
     }
 
