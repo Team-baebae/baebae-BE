@@ -31,7 +31,6 @@ public class AnswerService {
         List<String> imageUrls = new ArrayList<>();
         String musicAudioUrl = null;
 
-
         answer = answerRepository.save(answer);
 
         try {

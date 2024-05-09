@@ -67,5 +67,4 @@ public class AnswerController implements AnswerApi {
         answerApplication.updateReactionCounts(answerId, heartCount, curiousCount, sadCount);
         return ResponseEntity.ok().build();
     }
-
 }

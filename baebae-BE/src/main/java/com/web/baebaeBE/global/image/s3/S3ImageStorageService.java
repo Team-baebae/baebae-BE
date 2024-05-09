@@ -62,7 +62,7 @@ public class S3ImageStorageService implements ImageStorageService {
     public void deleteFileByUrl(String fileUrl) {
         try {
             URL url = new URL(fileUrl);
-            String key = url.getPath().substring(1); // URL에서 키 추출
+            String key = url.getPath().substring(1);
             amazonS3Client.deleteObject(bucketName, key);
         } catch (MalformedURLException e) {
             throw new RuntimeException("Invalid file URL", e);
