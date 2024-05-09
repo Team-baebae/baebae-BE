@@ -51,7 +51,7 @@ public class AnswerController implements AnswerApi {
 
     @Operation(summary = "피드 삭제")
     @DeleteMapping("/{answerId}")
-    public ResponseEntity<Void> deleteAnswer(@PathVariable Long answerId) {
+    public ResponseEntity<Void> deleteAnswer( @PathVariable Long answerId) {
         answerApplication.deleteAnswer(answerId);
         return ResponseEntity.noContent().build();
     }

@@ -124,20 +124,38 @@ public class AnswerService {
         Answer answer = answerRepository.findByAnswerId(answerId)
                 .orElseThrow(() -> new IllegalArgumentException("No answer found with id " + answerId));
 
+        // S3 이미지 파일 삭제
+        // https://kr.object.ncloudstorage.com/baebae-bucket/1/1/image_1.jpg
         answer.getImageFiles().forEach(url -> {
             String[] parts = url.split("/");
+
             if (parts.length > 1) {
                 String fileKey = parts[parts.length - 1];
                 String[] keyParts = fileKey.split("_");
+
                 if (keyParts.length > 1) {
                     int index = Integer.parseInt(keyParts[1].replace(".jpg", ""));
-                    String memberId = parts[parts.length - 4].split("_")[1];
+                    String memberId = parts[parts.length - 3];
                     String fileType = keyParts[0];
-
                     s3ImageStorageService.deleteFile(memberId, answerId.toString(), fileType, index);
                 }
             }
         });
+
+        //S3 오디오 파일 삭제
+        // https://kr.object.ncloudstorage.com/baebae-bucket/1/2/audio.mp3
+        String url = answer.getMusicAudio();
+        String[] parts = url.split("/");
+
+        if (parts.length > 1) {
+            String[] file = parts[parts.length - 1].split("\\.");
+            String fileType = file[0];
+            String memberId = parts[parts.length - 3];
+
+            s3ImageStorageService.deleteFile(memberId, answerId.toString(), fileType, 0);
+        }
+
+        // answer 객체 삭제
         answerRepository.delete(answer);
     }
 
