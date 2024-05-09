@@ -16,13 +16,20 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Tag(name = "Notification", description = "알림 조회 API")
+@SecurityRequirement(name = "baererAuth")
 @RequestMapping("/api/notifications")
 public interface NotificationApi {
 
     @Operation(
             summary = "유저의 모든 알림 조회",
-            description = "지정된 멤버 ID에 대한 모든 알림을 조회합니다."
+            description = "지정된 멤버 ID에 대한 모든 알림을 조회합니다.",
+            security = @SecurityRequirement(name = "bearerAuth")
     )
+    @Parameter(
+            in = ParameterIn.HEADER,
+            name = "Authorization", required = true,
+            schema = @Schema(type = "string"),
+            description = "Bearer [Access 토큰]")
     @Parameter(
             in = ParameterIn.HEADER,
             name = "Authorization", required = true,
@@ -57,6 +64,11 @@ public interface NotificationApi {
             description = "지정된 알림 ID로 알림 세부정보를 조회합니다.",
             security = @SecurityRequirement(name = "bearerAuth")
     )
+    @Parameter(
+            in = ParameterIn.HEADER,
+            name = "Authorization", required = true,
+            schema = @Schema(type = "string"),
+            description = "Bearer [Access 토큰]")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(mediaType = "application/json",
