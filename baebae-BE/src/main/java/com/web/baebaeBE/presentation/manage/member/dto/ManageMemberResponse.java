@@ -48,6 +48,21 @@ public class ManageMemberResponse {
     }
   }
 
+  @Getter
+  @Setter
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
+  public static class MemberIdResponse{
+    private Long memberId;
+
+    public static MemberIdResponse of (Long memberId){
+      return MemberIdResponse.builder()
+              .memberId(memberId)
+              .build();
+    }
+  }
+
 
 
 

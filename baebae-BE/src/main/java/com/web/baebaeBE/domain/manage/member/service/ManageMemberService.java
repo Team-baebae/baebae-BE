@@ -90,9 +90,7 @@ public class ManageMemberService {
     }
 
     // 닉네임 기반으로 memberId를 찾아오는 메서드
-    public Long getMemberIdByNickname(String nickname) {
-        return memberRepository.findByNickname(nickname)
-                .map(Member::getId)
-                .orElseThrow(() -> new BusinessException(MemberError.NOT_EXIST_MEMBER));
+    public ManageMemberResponse.MemberIdResponse getMemberIdByNickname(String nickname) {
+        return ManageMemberResponse.MemberIdResponse.of(memberRepository.findByNickname(nickname).get().getId());
     }
 }
