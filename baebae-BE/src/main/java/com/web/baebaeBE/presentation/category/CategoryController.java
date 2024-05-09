@@ -18,11 +18,11 @@ public class CategoryController implements CategoryApi {
 
     private final CategoryApplication categoryApplication;
 
-    @PostMapping("/{memberId}")
+    @PostMapping(value = "/{memberId}", consumes = {"multipart/form-data"})
     public ResponseEntity<CategoryResponse.CategoryInformationResponse> createCategory(
             @PathVariable Long memberId,
-            @RequestPart("categoryImage") MultipartFile categoryImage,
-            @RequestBody CategoryRequest.CreateCategory createCategory
+            @RequestPart(value = "categoryImage", required = false) MultipartFile categoryImage,
+            @RequestPart CategoryRequest.CreateCategory createCategory
     ) {
         return ResponseEntity.ok(categoryApplication.createCategory(memberId, categoryImage, createCategory));
     }
