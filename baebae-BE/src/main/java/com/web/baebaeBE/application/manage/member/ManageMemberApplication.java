@@ -57,7 +57,7 @@ public class ManageMemberApplication {
         manageMemberService.deleteMember(memberId);
     }
 
-    public Long getMemberIdByNickname(String nickname) {
+    public ManageMemberResponse.MemberIdResponse getMemberIdByNickname(String nickname) {
         return manageMemberService.getMemberIdByNickname(nickname);
     }
 

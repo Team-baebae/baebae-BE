@@ -34,11 +34,11 @@ public class ManageMemberController implements ManageMemberApi {
 
     return ResponseEntity.ok(memberInformation);
   }
-  @GetMapping("/members/nickname/{nickname}")
-  public Long getMemberIdByNickname(
+  @GetMapping("/nickname/{nickname}")
+  public ResponseEntity<ManageMemberResponse.MemberIdResponse> getMemberIdByNickname(
           @PathVariable String nickname
   ) {
-    return manageMemberApplication.getMemberIdByNickname(nickname);
+    return ResponseEntity.ok(manageMemberApplication.getMemberIdByNickname(nickname));
   }
 
   @GetMapping("/profile-image/{memberId}")

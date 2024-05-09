@@ -56,14 +56,8 @@ public interface ManageMemberApi {
 
     @Operation(
             summary = "회원 id 조회",
-            description = "주어진 회원의 닉네임 정보를 바탕으로 회원의 id를 조회합니다. ",
-            security = @SecurityRequirement(name = "bearerAuth")
+            description = "주어진 회원의 닉네임 정보를 바탕으로 회원의 id를 조회합니다. "
     )
-    @Parameter(
-            in = ParameterIn.HEADER,
-            name = "Authorization", required = true,
-            schema = @Schema(type = "string"),
-            description = "Bearer [Access 토큰]")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(mediaType = "application/json",
@@ -83,8 +77,8 @@ public interface ManageMemberApi {
                                     "}"))
             )
     })
-    @GetMapping("/members/nickname/{nickname}")
-    Long getMemberIdByNickname(@PathVariable String nickname);
+    @GetMapping("/nickname/{nickname}")
+    ResponseEntity<ManageMemberResponse.MemberIdResponse> getMemberIdByNickname(@PathVariable String nickname);
 
     @Operation(
             summary = "프로필 이미지 조회",
