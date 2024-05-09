@@ -38,9 +38,9 @@ public interface AnswerApi {
     @RequestMapping(method = RequestMethod.POST, value = "/member/{memberId}", consumes = "multipart/form-data")
     ResponseEntity<AnswerDetailResponse> createAnswer(
             @PathVariable Long memberId,
-            @RequestParam("imageFiles") List<MultipartFile> imageFiles,
-            @RequestParam("audioFile") MultipartFile audioFile,
-            @ModelAttribute AnswerCreateRequest request);
+            @RequestPart("imageFiles") List<MultipartFile> imageFiles,
+            @RequestPart("audioFile") MultipartFile audioFile,
+            @RequestPart AnswerCreateRequest request);
 
     @Operation(
             summary = "모든 답변 조회",

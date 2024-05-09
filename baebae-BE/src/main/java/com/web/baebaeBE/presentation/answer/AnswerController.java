@@ -23,9 +23,9 @@ public class AnswerController implements AnswerApi {
 
     @PostMapping(value = "/member/{memberId}", consumes = "multipart/form-data")
     public ResponseEntity<AnswerDetailResponse> createAnswer(@PathVariable Long memberId,
-                                                             @RequestParam("imageFiles") List<MultipartFile> imageFiles,
-                                                             @RequestParam("audioFile") MultipartFile audioFile,
-                                                             @ModelAttribute AnswerCreateRequest request) {
+                                                             @RequestPart("imageFiles") List<MultipartFile> imageFiles,
+                                                             @RequestPart("audioFile") MultipartFile audioFile,
+                                                             @RequestPart AnswerCreateRequest request) {
         AnswerDetailResponse createdAnswer = answerApplication.createAnswer(request, memberId, imageFiles, audioFile);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdAnswer);
     }

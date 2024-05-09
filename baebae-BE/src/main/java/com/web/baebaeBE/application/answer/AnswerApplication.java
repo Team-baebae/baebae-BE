@@ -31,6 +31,7 @@ public class AnswerApplication {
     public AnswerDetailResponse createAnswer(AnswerCreateRequest request, Long memberId, List<MultipartFile> imageFiles, MultipartFile audioFile) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(MemberError.NOT_EXIST_MEMBER));
+        System.out.println(request.getQuestionId());
         Question question = questionRepository.findById(request.getQuestionId())
                 .orElseThrow(() -> new BusinessException(AnswerError.NO_EXIST_QUESTION));
 
