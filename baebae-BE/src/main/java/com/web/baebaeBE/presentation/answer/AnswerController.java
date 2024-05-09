@@ -24,7 +24,7 @@ import java.util.List;
 public class AnswerController implements AnswerApi {
     private final AnswerApplication answerApplication;
 
-    @PostMapping(value = "/member/{memberId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/{memberId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<AnswerDetailResponse> createAnswer(@PathVariable Long memberId,
                                                              @RequestPart(value = "imageFiles") List<MultipartFile> imageFiles,
                                                              @RequestPart(value = "audioFile") MultipartFile audioFile,
