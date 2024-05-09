@@ -60,8 +60,15 @@ public class ManageMemberResponse {
       ProfileImageResponse response = new ProfileImageResponse();
       response.imageUrl = imageUrl;
       return response;
-      
-      
+    }
+  }
+
+
+  @Getter
+  @Setter
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
   public static class MemberIdResponse{
     private Long memberId;
 
