@@ -35,7 +35,7 @@ public class AnswerRepositoryImpl implements AnswerRepository{
     }
 
     @Override
-    public void delete(Answer answerEntity) {
-        jpaRepository.delete(answerEntity);
+    public void delete(Answer answer) {
+        jpaRepository.delete(answer);
     }
 }

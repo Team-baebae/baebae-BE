@@ -9,9 +9,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 @Service
-public class S3ImageStorageService implements ImageStorageService{
+public class S3ImageStorageService implements ImageStorageService {
     @Autowired
     private AmazonS3Client amazonS3Client;
 
@@ -54,6 +56,16 @@ public class S3ImageStorageService implements ImageStorageService{
                 return memberId + "/" + answerId + "/audio.mp3";
             default:
                 throw new IllegalArgumentException("Unknown file type");
+        }
+    }
+
+    public void deleteFileByUrl(String fileUrl) {
+        try {
+            URL url = new URL(fileUrl);
+            String key = url.getPath().substring(1); // URL에서 키 추출
+            amazonS3Client.deleteObject(bucketName, key);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("Invalid file URL", e);
         }
     }
 }

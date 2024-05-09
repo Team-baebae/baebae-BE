@@ -31,31 +31,40 @@ public class AnswerService {
         List<String> imageUrls = new ArrayList<>();
         String musicAudioUrl = null;
 
+
+        answer = answerRepository.save(answer);
+
         try {
-            String memberId = answer.getMember().getId().toString();
-            String answerId = answer.getId().toString();
-
-            // 이미지 파일 처리
-            int imageIndex = 0;
-            for (MultipartFile file : imageFiles) {
-                InputStream inputStream = file.getInputStream();
-                String fileType = "image";
-                imageUrls.add(s3ImageStorageService.uploadFile(memberId, answerId, fileType, imageIndex++, inputStream, file.getSize(), file.getContentType()));
+            // 이미지 파일 업로드
+            for (int i = 0; i < imageFiles.size(); i++) {
+                MultipartFile file = imageFiles.get(i);
+                if (!file.isEmpty()) {
+                    InputStream inputStream = file.getInputStream();
+                    String imageUrl = s3ImageStorageService.uploadFile(answer.getMember().getId().toString(), answer.getId().toString(), "image", i, inputStream, file.getSize(), file.getContentType());
+                    imageUrls.add(imageUrl);
+                }
             }
-            answer.setImageFiles(imageUrls);
 
-            // 오디오 파일 처리
+            // 오디오 파일 업로드
             if (audioFile != null && !audioFile.isEmpty()) {
                 InputStream inputStream = audioFile.getInputStream();
-                musicAudioUrl = s3ImageStorageService.uploadFile(memberId, answerId, "audio", 0, inputStream, audioFile.getSize(), audioFile.getContentType());
-                answer.setMusicAudio(musicAudioUrl);
+                musicAudioUrl = s3ImageStorageService.uploadFile(answer.getMember().getId().toString(), answer.getId().toString(), "audio", 0, inputStream, audioFile.getSize(), audioFile.getContentType());
             }
 
-        } catch (IOException e) {
-            throw new BusinessException(AnswerError.IMAGE_PROCESSING_ERROR);
+            // 파일 URL을 Answer 엔티티에 저장
+            answer.setImageFiles(imageUrls);
+            answer.setMusicAudio(musicAudioUrl);
+
+        } catch (Exception e) {
+            // 롤백 이후 파일 삭제 로직
+            imageUrls.forEach(url -> s3ImageStorageService.deleteFileByUrl(url)); // 이미지 파일 삭제
+            if (musicAudioUrl != null) {
+                s3ImageStorageService.deleteFileByUrl(musicAudioUrl); // 오디오 파일 삭제
+            }
+            throw new RuntimeException("Failed to create answer", e);
         }
 
-        return answerRepository.save(answer);
+        return answer;
     }
 
     @Transactional
