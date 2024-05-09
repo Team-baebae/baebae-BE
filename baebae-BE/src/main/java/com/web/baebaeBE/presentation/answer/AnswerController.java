@@ -2,9 +2,11 @@ package com.web.baebaeBE.presentation.answer;
 
 import com.google.firebase.database.annotations.NotNull;
 import com.web.baebaeBE.application.answer.AnswerApplication;
+import com.web.baebaeBE.infra.answer.entity.Answer;
 import com.web.baebaeBE.presentation.answer.api.AnswerApi;
 import com.web.baebaeBE.presentation.answer.dto.AnswerCreateRequest;
 import com.web.baebaeBE.presentation.answer.dto.AnswerDetailResponse;
+import com.web.baebaeBE.presentation.answer.dto.AnswerResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -31,6 +33,12 @@ public class AnswerController implements AnswerApi {
                                                              @RequestPart AnswerCreateRequest request) {
         AnswerDetailResponse createdAnswer = answerApplication.createAnswer(request, memberId, imageFiles, audioFile);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdAnswer);
+    }
+
+    @GetMapping("/member/{memberId}")
+    public ResponseEntity<List<AnswerResponse>> getAnswersByMemberId(@PathVariable Long memberId) {
+        List<AnswerResponse> answers = answerApplication.getAnswersByMemberId(memberId);
+        return ResponseEntity.ok(answers);
     }
 
     @GetMapping(value = "/{answerId}")

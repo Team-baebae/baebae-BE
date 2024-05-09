@@ -12,6 +12,7 @@ import com.web.baebaeBE.infra.question.entity.Question;
 import com.web.baebaeBE.infra.question.repository.QuestionRepository;
 import com.web.baebaeBE.presentation.answer.dto.AnswerCreateRequest;
 import com.web.baebaeBE.presentation.answer.dto.AnswerDetailResponse;
+import com.web.baebaeBE.presentation.answer.dto.AnswerResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +40,13 @@ public class AnswerApplication {
         Answer answerEntity = answerMapper.toEntity(request, question, member);
         Answer savedAnswerEntity = answerService.createAnswer(answerEntity, imageFiles, audioFile);
         return answerMapper.toDomain(savedAnswerEntity);
+    }
+
+    public List<AnswerResponse> getAnswersByMemberId(Long memberId) {
+        List<Answer> answers = answerService.getAnswersByMemberId(memberId);
+        return answers.stream()
+                .map(AnswerResponse::of)
+                .collect(Collectors.toList());
     }
 
     public Page<AnswerDetailResponse> getAllAnswers(Long memberId, Pageable pageable) {

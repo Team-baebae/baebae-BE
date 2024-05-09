@@ -65,6 +65,10 @@ public class AnswerService {
 
         return answer;
     }
+    
+    public List<Answer> getAnswersByMemberId(Long memberId) {
+        return answerRepository.findByMemberId(memberId);
+    }
 
     @Transactional
     public Page<Answer> getAllAnswers(Long memberId, Pageable pageable) {
