@@ -33,6 +33,11 @@ public class ManageMemberService {
 
         return ManageMemberResponse.MemberInformationResponse.of(member);
     }
+    public String getProfileImage(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new BusinessException(MemberError.NOT_EXIST_MEMBER));
+        return member.getProfileImage();
+    }
 
     public void updateProfileImage(Long memberId, MultipartFile image) throws IOException {
         String imageUrl = convertImageToObject(memberId, image);

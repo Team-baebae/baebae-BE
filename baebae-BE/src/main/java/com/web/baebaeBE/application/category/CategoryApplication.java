@@ -24,7 +24,7 @@ public class CategoryApplication{
         Category category =
                 categoryService.createCategory(memberId, categoryImage, createCategory.getCategoryName());
 
-        return categoryService.createAnswersToCategory(category.getCategoryId(), createCategory.getAnswerId());
+        return categoryService.createAnswersToCategory(category.getCategoryId(), createCategory.getAnswerIds());
     }
     public CategoryResponse.CategoryListResponse getCategoriesByMember(Long memberId) {
         return categoryService.getCategoriesByMember(memberId);

@@ -56,16 +56,22 @@ private final EntityManager entityManager; // Answer 엔티티 프록시 가져�
         return categoryRepository.save(category);
     }
 
-    public CategoryResponse.CategoryInformationResponse createAnswersToCategory(Long categoryId, Long answerId) {
-        Category category = categoryRepository.findById(categoryId).get();
-        //.orElseThrow(() -> new BusinessException(CategoryError.CATEGORY_NOT_FOUND));
+    public CategoryResponse.CategoryInformationResponse createAnswersToCategory(Long categoryId, List<Long> answerIds) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new BusinessException(CategoryError.CATEGORY_NOT_FOUND));
 
         // 카테고리에 Answer 추가
-        Answer answer = answerRepository.findByAnswerId(answerId).get();
-        categoryAnswerRepository.save(CategorizedAnswer.builder()
-                .category(category)
-                .answer(answer)
-                .build());
+        for (Long answerId : answerIds) {
+            System.out.println(answerId);
+            Answer answer = answerRepository.findByAnswerId(answerId)
+                    .orElseThrow(() -> new BusinessException(AnswerError.NO_EXIST_ANSWER));
+            CategorizedAnswer categorizedAnswer = CategorizedAnswer.builder()
+                    .category(category)
+                    .answer(answer)
+                    .build();
+            category.getCategoryAnswers().add(categorizedAnswer); // CategorizedAnswer를 Category의 CategorizedAnswer 리스트에 추가
+            categoryAnswerRepository.save(categorizedAnswer);
+        }
 
         return CategoryResponse.CategoryInformationResponse.of(category);
     }

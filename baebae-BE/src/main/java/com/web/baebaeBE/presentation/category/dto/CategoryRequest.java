@@ -19,7 +19,7 @@ public class CategoryRequest {
     @AllArgsConstructor
     public static class CreateCategory{
         private String categoryName;
-        private Long answerId;
+        private List<Long> answerIds;
 
     }
 

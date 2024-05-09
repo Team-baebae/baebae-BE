@@ -3,6 +3,7 @@ package com.web.baebaeBE.presentation.answer.api;
 import com.google.firebase.database.annotations.NotNull;
 import com.web.baebaeBE.presentation.answer.dto.AnswerCreateRequest;
 import com.web.baebaeBE.presentation.answer.dto.AnswerDetailResponse;
+import com.web.baebaeBE.presentation.answer.dto.AnswerResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -45,6 +46,22 @@ public interface AnswerApi {
             @RequestPart(value = "audioFile") MultipartFile audioFile,
             @RequestPart(name = "request") AnswerCreateRequest request);
 
+    @Operation(
+            summary = "모든 답변 리스트 조회",
+            description = "해당 회원의 전체 답변을 간략하게 조회합니다.",
+            security = @SecurityRequirement(name = "bearerAuth")
+    )
+    @Parameter(
+            in = ParameterIn.HEADER,
+            name = "Authorization", required = true,
+            schema = @Schema(type = "string"),
+            description = "Bearer [Access 토큰]")
+    @ApiResponse(responseCode = "200", description = "답변 조회 성공",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = Page.class)))
+    @RequestMapping(method = RequestMethod.GET)
+    ResponseEntity<List<AnswerResponse>> getAnswersByMemberId(
+            @PathVariable Long memberId);
     @Operation(
             summary = "모든 답변 조회",
             description = "모든 답변을 페이지네이션으로 조회합니다.",

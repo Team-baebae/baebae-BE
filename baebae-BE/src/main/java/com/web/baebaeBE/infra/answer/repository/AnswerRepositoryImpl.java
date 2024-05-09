@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -19,6 +20,11 @@ public class AnswerRepositoryImpl implements AnswerRepository{
         this.jpaRepository = jpaRepository;
     }
 
+
+    @Override
+    public List<Answer> findByMemberId(Long memberId) {
+        return jpaRepository.findByMemberId(memberId);
+    }
     @Override
     public Optional<Answer> findByAnswerId(Long answerId) {
         return jpaRepository.findById(answerId);

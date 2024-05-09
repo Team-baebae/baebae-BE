@@ -8,6 +8,7 @@ import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -34,8 +35,9 @@ public class Category {
     @Column(name="category_image")
     private String categoryImage;
 
+    @Builder.Default
     @OneToMany(mappedBy = "category")
-    private List<CategorizedAnswer> categoryAnswers;
+    private List<CategorizedAnswer> categoryAnswers = new ArrayList<>();
 
     public void updateCategoryName(String categoryName) {
         this.categoryName = categoryName;
