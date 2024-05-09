@@ -42,7 +42,7 @@ public class Answer {
     @Column(name = "music_name")
     private String musicName;
 
-    @Column(name = "muic_singer")
+    @Column(name = "music_singer")
     private String musicSinger;
 
     @Column(name = "music_audio")
@@ -80,7 +80,5 @@ public class Answer {
                 curiousCount, sadCount, createdDate,null);
     }
 }
-
-
 
 

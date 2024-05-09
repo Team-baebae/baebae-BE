@@ -2,6 +2,7 @@ package com.web.baebaeBE.presentation.question;
 
 import com.web.baebaeBE.application.question.QuestionApplication;
 import com.web.baebaeBE.global.jwt.JwtTokenProvider;
+import com.web.baebaeBE.presentation.question.api.QuestionApi;
 import com.web.baebaeBE.presentation.question.dto.QuestionCreateRequest;
 import com.web.baebaeBE.presentation.question.dto.QuestionDetailResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/questions")
-public class QuestionController {
+public class QuestionController implements QuestionApi {
     private final QuestionApplication questionApplication;
     private final JwtTokenProvider tokenProvider;
 
@@ -32,9 +33,6 @@ public class QuestionController {
             @RequestBody QuestionCreateRequest questionDTO, @PathVariable Long memberId,
             @RequestHeader("Authorization") String token) {
 
-        if (!tokenProvider.validToken(token)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
         QuestionDetailResponse createdQuestion = questionApplication.createQuestion(questionDTO, memberId, token);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdQuestion);
     }
@@ -51,9 +49,7 @@ public class QuestionController {
     @Operation(summary = "질문 수정")
     @PutMapping("/{questionId}")
     public ResponseEntity<Void> updateQuestion(@PathVariable Long questionId, @RequestParam String content, @RequestHeader("Authorization") String token) {
-        if (!tokenProvider.validToken(token)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+
         questionApplication.updateQuestion(questionId, content, token);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }

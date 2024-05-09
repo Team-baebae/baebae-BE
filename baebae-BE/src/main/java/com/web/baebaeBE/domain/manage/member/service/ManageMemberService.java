@@ -3,6 +3,7 @@ package com.web.baebaeBE.domain.manage.member.service;
 import com.web.baebaeBE.domain.manage.member.exception.ManageMemberError;
 import com.web.baebaeBE.domain.member.exception.MemberError;
 import com.web.baebaeBE.global.error.exception.BusinessException;
+import com.web.baebaeBE.global.image.s3.S3ImageStorageService;
 import com.web.baebaeBE.global.jwt.JwtTokenProvider;
 import com.web.baebaeBE.infra.member.entity.Member;
 import com.web.baebaeBE.infra.member.repository.MemberRepository;
@@ -14,6 +15,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -21,6 +25,7 @@ public class ManageMemberService {
 
     private final MemberRepository memberRepository;
     private final JwtTokenProvider jwtTokenProvider;
+    private final S3ImageStorageService s3ImageStorageService;
 
     public ManageMemberResponse.MemberInformationResponse getMember(Long memberId) {
         Member member = memberRepository.findById(memberId)
@@ -29,18 +34,28 @@ public class ManageMemberService {
         return ManageMemberResponse.MemberInformationResponse.of(member);
     }
 
-    public void updateProfileImage(Long memberId, String profileImage) {
+    public void updateProfileImage(Long memberId, MultipartFile image) throws IOException {
+        String imageUrl = convertImageToObject(memberId, image);
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(MemberError.NOT_EXIST_MEMBER));
-
-        member.updateProfileImage(profileImage);
+        member.updateProfileImage(imageUrl);
         memberRepository.save(member);
     }
 
-    // 이미지 파일을 Object Storage에 저장하고 키파일을 반환하는 메서드
-    // 추후 수정할 예정
-    public String convertImageToObject(Long memberId, MultipartFile image){
-        return image.getName();
+    public String convertImageToObject(Long memberId, MultipartFile image) throws IOException {
+        if (image.isEmpty()) {
+            throw new BusinessException(ManageMemberError.INVAILD_IMAGE_FILE);
+        }
+        String fileType = "profile";
+        int index = 0; // 프로필 이미지에는 인덱스가 필요 없으므로 사용하지 않음
+        String fileName = memberId + "_profile.jpg";
+        String path = memberId + "/" + fileName;
+
+        try (InputStream inputStream = image.getInputStream()) {
+            long size = image.getSize();
+            String contentType = image.getContentType();
+            return s3ImageStorageService.uploadFile(memberId.toString(), null, fileType, index, inputStream, size, contentType);
+        }
     }
 
     public void updateFcmToken(Long memberId, String fcmToken) {

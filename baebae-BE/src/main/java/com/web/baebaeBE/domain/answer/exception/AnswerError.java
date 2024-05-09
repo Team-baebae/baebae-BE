@@ -17,5 +17,4 @@ public enum AnswerError implements ErrorCode {
     private final HttpStatus httpStatus;
     private final String errorCode;
     private final String message;
-
 }

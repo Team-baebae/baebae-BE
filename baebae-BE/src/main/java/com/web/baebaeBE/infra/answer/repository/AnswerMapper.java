@@ -22,7 +22,7 @@ public class AnswerMapper {
                 .linkAttachments(request.getLinkAttachments()) // 링크 첨부 리스트 처리
                 .musicName(request.getMusicName())
                 .musicSinger(request.getMusicSinger())
-                .musicAudio(request.getMusicAudio())
+                .musicAudio(request.getMusicAudioUrl())
                 .createdDate(LocalDateTime.now())
                 .heartCount(0)
                 .curiousCount(0)

@@ -14,27 +14,29 @@ public class AnswerCreateRequest {
     private List<String> linkAttachments;
     private String musicName;
     private String musicSinger;
-    private String musicAudio;
+    private String musicAudioUrl;
+    private MultipartFile audioFile;
     private List<String> imageUrls; // 이미지 URL 리스트
     private List<MultipartFile> imageFiles; // MultipartFile 리스트, 파일 업로드용
 
     public AnswerCreateRequest(Long questionId, String content, List<String> linkAttachments,
-                               String musicName, String musicSinger, String musicAudio,
+                               String musicName, String musicSinger, String musicAudioUrl, MultipartFile audioFile,
                                List<String> imageUrls, List<MultipartFile> imageFiles) {
         this.questionId = questionId;
         this.content = content;
         this.linkAttachments = linkAttachments;
         this.musicName = musicName;
         this.musicSinger = musicSinger;
-        this.musicAudio = musicAudio;
+        this.musicAudioUrl = musicAudioUrl;
+        this.audioFile = audioFile;
         this.imageUrls = imageUrls;
         this.imageFiles = imageFiles;
     }
 
     public static AnswerCreateRequest of(Long questionId, String content, List<String> linkAttachments,
-                                         String musicName, String musicSinger, String musicAudio,
+                                         String musicName, String musicSinger, String musicAudioUrl, MultipartFile audioFile,
                                          List<String> imageUrls, List<MultipartFile> imageFiles) {
-        return new AnswerCreateRequest(questionId, content, linkAttachments, musicName,
-                musicSinger, musicAudio, imageUrls,imageFiles);
+        return new AnswerCreateRequest(questionId, content, linkAttachments, musicName, musicSinger,
+                musicAudioUrl, audioFile, imageUrls,imageFiles);
     }
 }
