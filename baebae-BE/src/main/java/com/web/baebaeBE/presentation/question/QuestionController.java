@@ -27,17 +27,14 @@ public class QuestionController implements QuestionApi {
         this.tokenProvider = tokenProvider;
     }
 
-    @Operation(summary = "질문 생성")
     @PostMapping("/member/{memberId}")
     public ResponseEntity<QuestionDetailResponse> createQuestion(
-            @RequestBody QuestionCreateRequest questionDTO, @PathVariable Long memberId,
-            @RequestHeader("Authorization") String token) {
+            @RequestBody QuestionCreateRequest questionDTO, @PathVariable Long memberId, @RequestHeader("Authorization") String token) {
 
         QuestionDetailResponse createdQuestion = questionApplication.createQuestion(questionDTO, memberId, token);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdQuestion);
     }
 
-    @Operation(summary = "질문 조회")
     @GetMapping()
     public ResponseEntity<List<QuestionDetailResponse>> getAllQuestions(
             @RequestParam Long memberId,
@@ -46,7 +43,6 @@ public class QuestionController implements QuestionApi {
         return ResponseEntity.ok(questions.getContent());
     }
 
-    @Operation(summary = "질문 수정")
     @PutMapping("/{questionId}")
     public ResponseEntity<Void> updateQuestion(@PathVariable Long questionId, @RequestParam String content, @RequestHeader("Authorization") String token) {
 
@@ -54,7 +50,7 @@ public class QuestionController implements QuestionApi {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 
-    @Operation(summary = "질문 삭제")
+
     @DeleteMapping("/{questionId}")
     public ResponseEntity<Void> deleteQuestion(@PathVariable Long questionId) {
         questionApplication.deleteQuestion(questionId);
