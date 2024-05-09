@@ -35,10 +35,10 @@ public class ManageMemberController implements ManageMemberApi {
     return ResponseEntity.ok(memberInformation);
   }
   @GetMapping("/nickname/{nickname}")
-  public Long getMemberIdByNickname(
+  public ResponseEntity<ManageMemberResponse.MemberIdResponse> getMemberIdByNickname(
           @PathVariable String nickname
   ) {
-    return manageMemberApplication.getMemberIdByNickname(nickname);
+    return ResponseEntity.ok(manageMemberApplication.getMemberIdByNickname(nickname));
   }
 
   @PatchMapping(value = "/profile-image/{memberId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
