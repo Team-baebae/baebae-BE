@@ -1,10 +1,10 @@
 package com.web.baebaeBE.global.config;
 
-import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +16,9 @@ import static io.swagger.v3.oas.models.security.SecurityScheme.In.HEADER;
 // http://<서버주소>:<포트번호>/swagger-ui/index.html로 접속
 @Configuration
 public class SwaggerConfig {
+
+    @Value("${server.url}")
+    private String serverUrl;
 
     @Bean
     public OpenAPI publicApi() {
@@ -35,6 +38,7 @@ public class SwaggerConfig {
 
         return new OpenAPI()
                 .info(info)
-                .components(components);
+                .components(components)
+                .addServersItem(new Server().url(serverUrl).description("Dynamic Server"));
     }
 }
