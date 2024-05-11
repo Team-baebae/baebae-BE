@@ -32,16 +32,18 @@ public class QuestionService {
 
     @Transactional(readOnly = true)
     public Page<Question> getAnsweredQuestions(Long memberId, Pageable pageable) {
-        return questionRepository.findAllAnsweredQuestionsByMemberId(memberId, pageable);
+        return questionRepository.findAllByMemberIdAndIsAnsweredTrue(memberId, pageable);
     }
 
     @Transactional(readOnly = true)
     public Page<Question> getUnansweredQuestions(Long memberId, Pageable pageable) {
-        return questionRepository.findAllUnansweredQuestionsByMemberId(memberId, pageable);
+        return questionRepository.findAllByMemberIdAndIsAnsweredFalse(memberId, pageable);
     }
 
+
+
     @Transactional
-    public Question updateQuestion(Long questionId, String content) {
+    public Question updateQuestion(Long questionId, String content, Boolean isAnswered) {
         Question questionEntity = questionRepository.findById(questionId)
                 .orElseThrow(() -> new BusinessException(QuestionError.NO_EXIST_QUESTION));
         questionEntity.updateContent(content);

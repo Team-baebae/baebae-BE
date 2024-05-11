@@ -19,6 +19,7 @@ public class QuestionMapper {
                 .nickname(request.getNickname())
                 .profileOnOff(request.getProfileOnOff())
                 .createdDate(LocalDateTime.now())
+                .isAnswered(false)
                 .build();
     }
 
@@ -29,7 +30,8 @@ public class QuestionMapper {
                 question.getNickname(),
                 question.getProfileOnOff(),
                 question.getCreatedDate(),
-                fcmtoken
+                fcmtoken,
+                question.isAnswered()
         );
     }
 }

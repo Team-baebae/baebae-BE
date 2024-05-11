@@ -48,8 +48,8 @@ public class QuestionApplication {
         Page<Question> questionPage = questionService.getUnansweredQuestions(memberId, pageable);
         return questionPage.map(question -> questionMapper.toDomain(question, "appropriate token here"));
     }
-    public QuestionDetailResponse updateQuestion(Long questionId, String content) {
-        Question updatedQuestion = questionService.updateQuestion(questionId, content);
+    public QuestionDetailResponse updateQuestion(Long questionId, String content, Boolean isAnswered) {
+        Question updatedQuestion = questionService.updateQuestion(questionId, content, isAnswered);
         return questionMapper.toDomain(updatedQuestion, updatedQuestion.getMember().getFcmToken());
     }
     public void deleteQuestion(Long questionId) {

@@ -120,7 +120,8 @@ public interface QuestionApi {
     @RequestMapping(method = RequestMethod.PUT, value = "/{questionId}")
     ResponseEntity<Void> updateQuestion(
             @PathVariable Long questionId,
-            @RequestParam String content);
+            @RequestParam String content,
+            @RequestParam boolean isAnswered);
 
     @Operation(
             summary = "질문 삭제",
