@@ -48,6 +48,37 @@ public class ManageMemberResponse {
     }
   }
 
+  @Getter
+  @Setter
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
+  public static class ProfileImageResponse {
+    private String imageUrl;
+
+    public static ProfileImageResponse of(String imageUrl) {
+      ProfileImageResponse response = new ProfileImageResponse();
+      response.imageUrl = imageUrl;
+      return response;
+    }
+  }
+
+
+  @Getter
+  @Setter
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
+  public static class MemberIdResponse{
+    private Long memberId;
+
+    public static MemberIdResponse of (Long memberId){
+      return MemberIdResponse.builder()
+              .memberId(memberId)
+              .build();
+    }
+  }
+
 
 
 

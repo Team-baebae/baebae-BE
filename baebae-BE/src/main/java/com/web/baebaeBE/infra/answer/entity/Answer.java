@@ -1,9 +1,12 @@
 package com.web.baebaeBE.infra.answer.entity;
 
+import com.web.baebaeBE.infra.categorized.answer.entity.CategorizedAnswer;
 import com.web.baebaeBE.infra.member.entity.Member;
 import com.web.baebaeBE.infra.question.entity.Question;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,6 +31,7 @@ public class Answer {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
     @ElementCollection
@@ -64,6 +68,11 @@ public class Answer {
     @Column(name = "created_date", nullable = false)
     private LocalDateTime createdDate;
 
+    @OneToMany(mappedBy = "answer", cascade = CascadeType.REMOVE)
+    private List<CategorizedAnswer> categorizedAnswers;
+
+
+
     public static Answer of(Long id, Question question, Member member, String content,
                             List<String> imageFiles, String musicName, String musicPicture,
                             String musicAudio, List<String> linkAttachments, int heartCount,
@@ -71,7 +80,7 @@ public class Answer {
 
         return new Answer(id, question, member, imageFiles, content, musicName,
                 musicPicture, musicAudio, linkAttachments, heartCount,
-                curiousCount, sadCount, createdDate);
+                curiousCount, sadCount, createdDate,null);
     }
 }
 

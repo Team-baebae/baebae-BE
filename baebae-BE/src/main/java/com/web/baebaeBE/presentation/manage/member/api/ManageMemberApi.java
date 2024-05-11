@@ -54,6 +54,59 @@ public interface ManageMemberApi {
     ResponseEntity<ManageMemberResponse.MemberInformationResponse> getMemberInformation(@PathVariable Long id);
 
 
+    @Operation(
+            summary = "회원 id 조회",
+            description = "주어진 회원의 닉네임 정보를 바탕으로 회원의 id를 조회합니다. "
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ManageMemberResponse.MemberInformationResponse.class))),
+            @ApiResponse(responseCode = "401", description = "토큰 인증 실패",
+                    content = @Content(mediaType = "application/json",
+                            examples = @ExampleObject(value = "{\n" +
+                                    "  \"errorCode\": \"T-002\",\n" +
+                                    "  \"message\": \"해당 토큰은 유효한 토큰이 아닙니다.\"\n" +
+                                    "}"))
+            ),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 회원",
+                    content = @Content(mediaType = "application/json",
+                            examples = @ExampleObject(value = "{\n" +
+                                    "  \"errorCode\": \"M-002\",\n" +
+                                    "  \"message\": \"존재하지 않는 회원입니다.\"\n" +
+                                    "}"))
+            )
+    })
+    @GetMapping("/nickname/{nickname}")
+    ResponseEntity<ManageMemberResponse.MemberIdResponse> getMemberIdByNickname(@PathVariable String nickname);
+
+    @Operation(
+            summary = "프로필 이미지 조회",
+            description = "인증없이 회원의 프로필 이미지를 조회합니다."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ManageMemberResponse.ProfileImageResponse.class))),
+            @ApiResponse(responseCode = "401", description = "토큰 인증 실패",
+                    content = @Content(mediaType = "application/json",
+                            examples = @ExampleObject(value = "{\n" +
+                                    "  \"errorCode\": \"T-002\",\n" +
+                                    "  \"message\": \"해당 토큰은 유효한 토큰이 아닙니다.\"\n" +
+                                    "}"))
+            ),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 회원",
+                    content = @Content(mediaType = "application/json",
+                            examples = @ExampleObject(value = "{\n" +
+                                    "  \"errorCode\": \"M-002\",\n" +
+                                    "  \"message\": \"존재하지 않는 회원입니다.\"\n" +
+                                    "}"))
+            )
+    })
+    @GetMapping("/profile-image/{memberId}")
+    ResponseEntity<ManageMemberResponse.ProfileImageResponse> getProfileImage(
+           @PathVariable Long memberId
+    );
 
     @Operation(
             summary = "프로필 사진 업데이트",

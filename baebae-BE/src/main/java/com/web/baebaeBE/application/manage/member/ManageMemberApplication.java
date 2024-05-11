@@ -31,6 +31,11 @@ public class ManageMemberApplication {
         return manageMemberService.getMember(memberId);
     }
 
+    public ManageMemberResponse.ProfileImageResponse getProfileImage(Long memberId) {
+        String imageUrl = manageMemberService.getProfileImage(memberId);
+        return ManageMemberResponse.ProfileImageResponse.of(imageUrl);
+    }
+
     public ManageMemberResponse.ObjectUrlResponse updateProfileImage(Long memberId, MultipartFile image) throws IOException {
         manageMemberService.updateProfileImage(memberId, image);
         Member member = memberRepository.findById(memberId)
@@ -50,6 +55,10 @@ public class ManageMemberApplication {
         String accessToken = jwtTokenProvider.getToken(httpServletRequest);
         manageMemberService.verifyMemberWithToken(memberId, accessToken);
         manageMemberService.deleteMember(memberId);
+    }
+
+    public ManageMemberResponse.MemberIdResponse getMemberIdByNickname(String nickname) {
+        return manageMemberService.getMemberIdByNickname(nickname);
     }
 
 }

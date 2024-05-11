@@ -12,6 +12,7 @@ import com.web.baebaeBE.infra.question.entity.Question;
 import com.web.baebaeBE.infra.question.repository.QuestionRepository;
 import com.web.baebaeBE.presentation.answer.dto.AnswerCreateRequest;
 import com.web.baebaeBE.presentation.answer.dto.AnswerDetailResponse;
+import com.web.baebaeBE.presentation.answer.dto.AnswerResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,12 +33,20 @@ public class AnswerApplication {
     public AnswerDetailResponse createAnswer(AnswerCreateRequest request, Long memberId, List<MultipartFile> imageFiles, MultipartFile audioFile) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(MemberError.NOT_EXIST_MEMBER));
+        System.out.println(request.getQuestionId());
         Question question = questionRepository.findById(request.getQuestionId())
                 .orElseThrow(() -> new BusinessException(AnswerError.NO_EXIST_QUESTION));
 
         Answer answerEntity = answerMapper.toEntity(request, question, member);
         Answer savedAnswerEntity = answerService.createAnswer(answerEntity, imageFiles, audioFile);
         return answerMapper.toDomain(savedAnswerEntity);
+    }
+
+    public List<AnswerResponse> getAnswersByMemberId(Long memberId) {
+        List<Answer> answers = answerService.getAnswersByMemberId(memberId);
+        return answers.stream()
+                .map(AnswerResponse::of)
+                .collect(Collectors.toList());
     }
 
     public Page<AnswerDetailResponse> getAllAnswers(Long memberId, Pageable pageable) {

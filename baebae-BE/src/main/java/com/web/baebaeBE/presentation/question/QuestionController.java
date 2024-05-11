@@ -33,6 +33,7 @@ public class QuestionController implements QuestionApi {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdQuestion);
     }
 
+
 //    @GetMapping("/member/{memberId}")
 //    public ResponseEntity<List<QuestionDetailResponse>> getAllQuestions(
 //            @RequestParam Long memberId, Pageable pageable) {

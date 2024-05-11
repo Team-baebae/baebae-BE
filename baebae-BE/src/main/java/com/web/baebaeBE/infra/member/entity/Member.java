@@ -1,13 +1,9 @@
 package com.web.baebaeBE.infra.member.entity;
 
+import com.web.baebaeBE.infra.answer.entity.Answer;
 import com.web.baebaeBE.infra.member.enums.MemberType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -55,6 +51,9 @@ public class Member implements UserDetails {
 
   @Column(name = "fcm_token")
   private String fcmToken;
+
+  @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+  private List<Answer> answers;
 
 
   public Member update(String nickname) {
