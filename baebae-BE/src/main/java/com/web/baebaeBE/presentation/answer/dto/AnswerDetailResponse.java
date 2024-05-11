@@ -11,6 +11,7 @@ import java.util.List;
 public class AnswerDetailResponse {
     private Long answerId;
     private Long questionId;
+    private String questionContent;
     private Long memberId;
     private String content;
     private List<String> linkAttachments;
@@ -22,13 +23,15 @@ public class AnswerDetailResponse {
     private Integer heartCount;
     private Integer curiousCount;
     private Integer sadCount;
+    private String fcmtoken;
 
-    public AnswerDetailResponse(Long answerId, Long questionId, Long memberId, String content,
+    public AnswerDetailResponse(Long answerId, Long questionId, String questionContent, Long memberId, String content,
                                 List<String> linkAttachments, String musicName, String musicSinger,
                                 String musicAudioUrl, List<String> imageUrls, LocalDateTime createdDate,
-                                Integer heartCount, Integer curiousCount, Integer sadCount) {
+                                Integer heartCount, Integer curiousCount, Integer sadCount, String fcmtoken) {
         this.answerId = answerId;
         this.questionId = questionId;
+        this.questionContent = questionContent;
         this.memberId = memberId;
         this.content = content;
         this.linkAttachments = linkAttachments;
@@ -40,14 +43,15 @@ public class AnswerDetailResponse {
         this.heartCount = heartCount;
         this.curiousCount = curiousCount;
         this.sadCount = sadCount;
+        this.fcmtoken = fcmtoken;
     }
 
-    public static AnswerDetailResponse of(Long answerId, Long questionId, Long memberId, String content,
-                                          List<String> linkAttachments, String musicName, String musicSinger,
+    public static AnswerDetailResponse of(Long answerId, Long questionId, String questionContent, Long memberId,
+                                          String content, List<String> linkAttachments, String musicName, String musicSinger,
                                           String musicAudioUrl, List<String> imageUrls, LocalDateTime createdDate,
-                                          Integer heartCount, Integer curiousCount, Integer sadCount) {
-        return new AnswerDetailResponse(answerId, questionId, memberId, content, linkAttachments, musicName,
+                                          Integer heartCount, Integer curiousCount, Integer sadCount, String fcmtoken) {
+        return new AnswerDetailResponse(answerId, questionId, questionContent, memberId, content, linkAttachments, musicName,
                 musicSinger, musicAudioUrl, imageUrls, createdDate,
-                heartCount, curiousCount, sadCount);
+                heartCount, curiousCount, sadCount, fcmtoken);
     }
 }
