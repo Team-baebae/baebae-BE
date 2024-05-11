@@ -64,6 +64,9 @@ public class AnswerService {
         }
         // 새로운 답변 달리면 알림 생성
         firebaseNotificationService.notifyNewAnswer(answer.getMember(), answer);
+        // 질문의 isAnswered 상태를 true로 업데이트
+        Question question = answer.getQuestion();
+        question.setAnswered(true);
         return savedAnswer;
     }
     

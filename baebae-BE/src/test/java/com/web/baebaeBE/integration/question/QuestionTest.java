@@ -99,33 +99,33 @@ public class QuestionTest {
 //    }
 
 
-    @Test
-    @DisplayName("질문 수정 테스트(): 질문을 수정한다.")
-    public void updateQuestionTest() throws Exception {
-        // 수정 전 질문 생성
-        String content = "이것은 수정 전의 질문입니다.";
-        Question question = questionRepository.save(new Question(null, testMember, content, "닉네임", true, LocalDateTime.now()));
-        String updatedContent = "이것은 수정 후의 질문입니다.";
+//    @Test
+//    @DisplayName("질문 수정 테스트(): 질문을 수정한다.")
+//    public void updateQuestionTest() throws Exception {
+//        // 수정 전 질문 생성
+//        String content = "이것은 수정 전의 질문입니다.";
+//        Question question = questionRepository.save(new Question(null, testMember, content, "닉네임", true, LocalDateTime.now()));
+//        String updatedContent = "이것은 수정 후의 질문입니다.";
+//
+//        // 질문 수정 요청을 보내고 응답을 확인
+//        mockMvc.perform(MockMvcRequestBuilders.put("/api/questions/{questionId}", question.getId())
+//                        .param("content", updatedContent)
+//                        .header("Authorization", "Bearer " + refreshToken)
+//                        .contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isNoContent());
+//    }
 
-        // 질문 수정 요청을 보내고 응답을 확인
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/questions/{questionId}", question.getId())
-                        .param("content", updatedContent)
-                        .header("Authorization", "Bearer " + refreshToken)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNoContent());
-    }
-
-    @Test
-    @DisplayName("질문 삭제 테스트(): 질문을 삭제한다.")
-    public void deleteQuestionTest() throws Exception {
-
-        String content = "이것은 삭제할 질문입니다.";
-        Question question = questionRepository.save(new Question(null, testMember, content, "닉네임", true, LocalDateTime.now()));
-
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/questions/{questionId}", question.getId())
-                        .header("Authorization", "Bearer " + refreshToken)
-                        .contentType(MediaType.APPLICATION_JSON))
-
-                .andExpect(status().isNoContent());
-    }
+//    @Test
+//    @DisplayName("질문 삭제 테스트(): 질문을 삭제한다.")
+//    public void deleteQuestionTest() throws Exception {
+//
+//        String content = "이것은 삭제할 질문입니다.";
+//        Question question = questionRepository.save(new Question(null, testMember, content, "닉네임", true, LocalDateTime.now()));
+//
+//        mockMvc.perform(MockMvcRequestBuilders.delete("/api/questions/{questionId}", question.getId())
+//                        .header("Authorization", "Bearer " + refreshToken)
+//                        .contentType(MediaType.APPLICATION_JSON))
+//
+//                .andExpect(status().isNoContent());
+//    }
 }

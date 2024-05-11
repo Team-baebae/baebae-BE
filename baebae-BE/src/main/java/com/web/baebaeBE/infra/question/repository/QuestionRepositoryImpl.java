@@ -31,13 +31,15 @@ public class QuestionRepositoryImpl implements QuestionRepository{
     }
 
     @Override
-    public Page<Question> findAllAnsweredQuestionsByMemberId(Long memberId, Pageable pageable) {
-        return questionJpaRepository.findAllAnsweredQuestionsByMemberId(memberId, pageable);
+    public Page<Question> findAllByMemberIdAndIsAnsweredTrue(Long memberId, Pageable pageable) {
+        // 이 메서드는 답변된 질문만 필터링하여 반환합니다.
+        return questionJpaRepository.findAllByMemberIdAndIsAnsweredTrue(memberId, pageable);
     }
 
     @Override
-    public Page<Question> findAllUnansweredQuestionsByMemberId(Long memberId, Pageable pageable) {
-        return questionJpaRepository.findAllUnansweredQuestionsByMemberId(memberId, pageable);
+    public Page<Question> findAllByMemberIdAndIsAnsweredFalse(Long memberId, Pageable pageable) {
+        // 이 메서드는 답변되지 않은 질문만 필터링하여 반환합니다.
+        return questionJpaRepository.findAllByMemberIdAndIsAnsweredFalse(memberId, pageable);
     }
     @Override
     public void delete(Question questionEntity) {

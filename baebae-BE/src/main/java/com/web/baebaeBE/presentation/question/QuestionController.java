@@ -57,9 +57,8 @@ public class QuestionController implements QuestionApi {
 
 
     @PutMapping("/{questionId}")
-    public ResponseEntity<Void> updateQuestion(@PathVariable Long questionId, @RequestParam String content) {
-
-        questionApplication.updateQuestion(questionId, content);
+    public ResponseEntity<Void> updateQuestion(@PathVariable Long questionId, @RequestParam String content, @RequestParam boolean isAnswered) {
+        questionApplication.updateQuestion(questionId, content, isAnswered);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 
