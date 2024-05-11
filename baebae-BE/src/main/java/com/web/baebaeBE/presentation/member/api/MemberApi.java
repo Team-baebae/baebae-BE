@@ -110,7 +110,8 @@ public interface MemberApi {
 
     @Operation(
             summary = "Access Token 재발급",
-            description = "Refresh Token을 기반으로, 새로운 Access Token을 발급합니다."
+            description = "Refresh Token을 기반으로, 새로운 Access Token을 발급합니다.",
+            security = @SecurityRequirement(name = "bearerAuth")
     )
     @Parameter(
             in = ParameterIn.HEADER,
@@ -144,7 +145,8 @@ public interface MemberApi {
 
     @Operation(
             summary = "로그아웃",
-            description = "Refresh Token 만료시간을 현재시간으로 설정해 로그아웃 시킵니다."
+            description = "Refresh Token 만료시간을 현재시간으로 설정해 로그아웃 시킵니다.",
+            security = @SecurityRequirement(name = "bearerAuth")
     )
     @Parameter(
             in = ParameterIn.HEADER,

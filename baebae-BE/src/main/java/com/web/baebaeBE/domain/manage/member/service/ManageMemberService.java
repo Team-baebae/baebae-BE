@@ -33,6 +33,11 @@ public class ManageMemberService {
 
         return ManageMemberResponse.MemberInformationResponse.of(member);
     }
+    public String getProfileImage(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new BusinessException(MemberError.NOT_EXIST_MEMBER));
+        return member.getProfileImage();
+    }
 
     public void updateProfileImage(Long memberId, MultipartFile image) throws IOException {
         String imageUrl = convertImageToObject(memberId, image);
@@ -87,5 +92,10 @@ public class ManageMemberService {
         //회원 정보와 토큰안의 이메일 정보가 일치하지않으면 예외 발생
         if(!member.getEmail().equals(memberEmail))
             throw new BusinessException(ManageMemberError.NOT_VERIFY_MEMBET_WITH_TOKEN);
+    }
+
+    // 닉네임 기반으로 memberId를 찾아오는 메서드
+    public ManageMemberResponse.MemberIdResponse getMemberIdByNickname(String nickname) {
+        return ManageMemberResponse.MemberIdResponse.of(memberRepository.findByNickname(nickname).get().getId());
     }
 }
