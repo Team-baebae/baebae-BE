@@ -4,6 +4,7 @@ import com.web.baebaeBE.infra.category.entity.Category;
 import lombok.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CategoryResponse {
 
@@ -15,13 +16,17 @@ public class CategoryResponse {
     public static class CategoryInformationResponse {
         private Long categoryId;
         private String categoryName;
-        private List<Long> answerAnswers;
+        private String categoryImage;
+        private List<Long> answerIds;
 
         public static CategoryResponse.CategoryInformationResponse of(Category category) {
             return CategoryInformationResponse.builder()
                     .categoryId(category.getCategoryId())
                     .categoryName(category.getCategoryName())
-                    .answerAnswers(category.getCategoryAnswers().stream().map(answer -> answer.getId()).toList())
+                    .categoryImage(category.getCategoryImage())
+                    .answerIds(category.getCategoryAnswers().stream()
+                            .map(categorizedAnswer -> categorizedAnswer.getAnswer().getId())
+                            .collect(Collectors.toList()))
                     .build();
         }
     }

@@ -28,7 +28,6 @@ public class CategoryRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UpdateCategory{
-        private Long categoryId;
         private String categoryName;
         private List<Long> answerIds;
     }

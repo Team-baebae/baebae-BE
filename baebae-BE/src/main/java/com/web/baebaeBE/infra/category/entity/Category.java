@@ -36,7 +36,7 @@ public class Category {
     private String categoryImage;
 
     @Builder.Default
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
     private List<CategorizedAnswer> categoryAnswers = new ArrayList<>();
 
     public void updateCategoryName(String categoryName) {
@@ -44,5 +44,9 @@ public class Category {
     }
     public void updateCategoryImage(String categoryImage) {
         this.categoryImage = categoryImage;
+    }
+
+    public void loadCategoryAnswers() {
+        categoryAnswers.size(); // categoryAnswers 필드를 로드
     }
 }

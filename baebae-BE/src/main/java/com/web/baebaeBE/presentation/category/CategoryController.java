@@ -25,8 +25,6 @@ public class CategoryController implements CategoryApi {
             @RequestPart(value = "categoryImage", required = false) MultipartFile categoryImage,
             @RequestPart CategoryRequest.CreateCategory createCategory
     ) {
-        System.out.println("categoryImage: " + categoryImage);
-        System.out.println(createCategory.getCategoryName()+ " " + createCategory.getAnswerIds());
         return ResponseEntity.ok(categoryApplication.createCategory(memberId, categoryImage, createCategory));
     }
 

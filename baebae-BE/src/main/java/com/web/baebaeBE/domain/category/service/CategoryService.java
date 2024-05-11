@@ -62,7 +62,6 @@ private final EntityManager entityManager; // Answer 엔티티 프록시 가져�
 
         // 카테고리에 Answer 추가
         for (Long answerId : answerIds) {
-            System.out.println(answerId);
             Answer answer = answerRepository.findByAnswerId(answerId)
                     .orElseThrow(() -> new BusinessException(AnswerError.NO_EXIST_ANSWER));
             CategorizedAnswer categorizedAnswer = CategorizedAnswer.builder()
@@ -105,31 +104,34 @@ private final EntityManager entityManager; // Answer 엔티티 프록시 가져�
     }
     public CategoryResponse.CategoryInformationResponse updateAnswersToCategory(Category category, List<Long> answerIds) {
 
-
-        // 기존에 카테고리에 연결된 모든 CategorizedAnswer들을 조회
-        List<CategorizedAnswer> oldCategorizedAnswers = categoryAnswerRepository.findAllByCategory(category);
-
         // 새로운 Answer들의 id들을 Set에 저장
         Set<Long> newAnswerIds = new HashSet<>(answerIds);
 
         // 기존의 CategorizedAnswer들 중 새로운 Answer들의 id들에 없는 것들을 찾아 삭제
-        oldCategorizedAnswers.stream()
-                .filter(categorizedAnswer -> !newAnswerIds.contains(categorizedAnswer.getAnswer().getId()))
-                .forEach(categoryAnswerRepository::delete);
+        category.getCategoryAnswers().removeIf(categorizedAnswer -> {
+            if (!newAnswerIds.contains(categorizedAnswer.getAnswer().getId())) {
+                categoryAnswerRepository.delete(categorizedAnswer);
+                return true;
+            }
+            return false;
+        });
 
         // 새로운 Answer들의 id들 중 기존의 CategorizedAnswer들에 없는 것들을 찾아 추가
-        oldCategorizedAnswers.stream()
-                .map(CategorizedAnswer::getAnswer)
-                .map(Answer::getId)
-                .forEach(oldAnswerId -> {
-                    if (!newAnswerIds.contains(oldAnswerId)) {
-                        Answer answer = entityManager.getReference(Answer.class, oldAnswerId);
-                        categoryAnswerRepository.save(CategorizedAnswer.builder()
-                                .category(category)
-                                .answer(answer)
-                                .build());
-                    }
-                });
+        newAnswerIds.forEach(newAnswerId -> {
+            boolean isAlreadyAdded = category.getCategoryAnswers().stream()
+                    .anyMatch(categorizedAnswer -> categorizedAnswer.getAnswer().getId().equals(newAnswerId));
+            if (!isAlreadyAdded) {
+                //Answer 엔티티 프록시 가져오기
+                Answer answer = entityManager.getReference(Answer.class, newAnswerId);
+                CategorizedAnswer newCategorizedAnswer = CategorizedAnswer.builder()
+                        .category(category)
+                        .answer(answer)
+                        .build();
+                // CategorizedAnswer 엔티티 저장
+                category.getCategoryAnswers().add(newCategorizedAnswer);
+                categoryAnswerRepository.save(newCategorizedAnswer);
+            }
+        });
 
         return CategoryResponse.CategoryInformationResponse.of(category);
     }
