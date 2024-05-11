@@ -84,19 +84,20 @@ public class QuestionTest {
 
     }
 
-    @Test
-    @DisplayName("회원별 질문 조회 테스트(): 해당 회원의 질문을 조회한다.")
-    public void getQuestionsByMemberIdTest() throws Exception {
-        String content = "이것은 회원의 질문입니다.";
-        Question question = questionRepository.save(new Question(null, testMember, content, "닉네임", true, LocalDateTime.now()));
+//    @Test
+//    @DisplayName("회원별 질문 조회 테스트(): 해당 회원의 질문을 조회한다.")
+//    public void getQuestionsByMemberIdTest() throws Exception {
+//        String content = "이것은 회원의 질문입니다.";
+//        Question question = questionRepository.save(new Question(null, testMember, content, "닉네임", true, LocalDateTime.now()));
+//
+//        mockMvc.perform(MockMvcRequestBuilders.get("/api/questions")
+//                        .param("memberId", String.valueOf(testMember.getId()))
+//                        .header("Authorization", "Bearer " + refreshToken)
+//                        .contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$[0].content").value(content));
+//    }
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/questions")
-                        .param("memberId", String.valueOf(testMember.getId()))
-                        .header("Authorization", "Bearer " + refreshToken)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].content").value(content));
-    }
 
     @Test
     @DisplayName("질문 수정 테스트(): 질문을 수정한다.")

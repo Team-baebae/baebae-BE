@@ -20,8 +20,8 @@ public class QuestionService {
     @Transactional
     public Question createQuestion(Question question) {
         Question savedQuestion = questionRepository.save(question);
-        // 질문 생성 후 알림 발송
-        firebaseNotificationService.notifyNewQuestion(savedQuestion.getMember(), savedQuestion);
+        // 질문 생성 후 알림 발송, 멤버의 FCM 토큰을 사용
+        firebaseNotificationService.notifyNewQuestion(question.getMember(), question);
         return savedQuestion;
     }
 
@@ -30,13 +30,23 @@ public class QuestionService {
         return questionRepository.findAllByMemberId(memberId, pageable);
     }
 
+    @Transactional(readOnly = true)
+    public Page<Question> getAnsweredQuestions(Long memberId, Pageable pageable) {
+        return questionRepository.findAllAnsweredQuestionsByMemberId(memberId, pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Question> getUnansweredQuestions(Long memberId, Pageable pageable) {
+        return questionRepository.findAllUnansweredQuestionsByMemberId(memberId, pageable);
+    }
+
     @Transactional
     public Question updateQuestion(Long questionId, String content) {
         Question questionEntity = questionRepository.findById(questionId)
                 .orElseThrow(() -> new BusinessException(QuestionError.NO_EXIST_QUESTION));
         questionEntity.updateContent(content);
         Question updatedQuestion = questionRepository.save(questionEntity);
-        // 질문 업데이트 후 알림 발송
+        // 질문 업데이트 후 알림
         firebaseNotificationService.notifyNewQuestion(updatedQuestion.getMember(), updatedQuestion);
         return updatedQuestion;
     }

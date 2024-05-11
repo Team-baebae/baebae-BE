@@ -31,6 +31,15 @@ public class QuestionRepositoryImpl implements QuestionRepository{
     }
 
     @Override
+    public Page<Question> findAllAnsweredQuestionsByMemberId(Long memberId, Pageable pageable) {
+        return questionJpaRepository.findAllAnsweredQuestionsByMemberId(memberId, pageable);
+    }
+
+    @Override
+    public Page<Question> findAllUnansweredQuestionsByMemberId(Long memberId, Pageable pageable) {
+        return questionJpaRepository.findAllUnansweredQuestionsByMemberId(memberId, pageable);
+    }
+    @Override
     public void delete(Question questionEntity) {
         questionJpaRepository.delete(questionEntity);
     }

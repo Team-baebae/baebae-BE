@@ -24,13 +24,14 @@ public class QuestionApplication {
     private final QuestionMapper questionMapper;
     private final MemberRepository memberRepository;
 
-    public QuestionDetailResponse createQuestion(QuestionCreateRequest request, Long memberId, String token) {
+    public QuestionDetailResponse createQuestion(QuestionCreateRequest request, Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(MemberError.NOT_EXIST_MEMBER));
 
         Question questionEntity = questionMapper.toEntity(request, member);
+        // 이제 멤버의 FCM 토큰을 사용하여 질문을 생성
         Question savedQuestionEntity = questionService.createQuestion(questionEntity);
-        return questionMapper.toDomain(savedQuestionEntity, token);
+        return questionMapper.toDomain(savedQuestionEntity, member.getFcmToken());
     }
 
     public Page<QuestionDetailResponse> getAllQuestions(Long memberId, Pageable pageable) {
@@ -38,12 +39,21 @@ public class QuestionApplication {
         return questionPage.map(question -> questionMapper.toDomain(question, "appropriate token here"));
     }
 
-    public QuestionDetailResponse updateQuestion(Long questionId, String content, String token) {
-        Question updatedQuestion = questionService.updateQuestion(questionId, content);
-        return questionMapper.toDomain(updatedQuestion, token);
+    public Page<QuestionDetailResponse> getAnsweredQuestions(Long memberId, Pageable pageable) {
+        Page<Question> questionPage = questionService.getAnsweredQuestions(memberId, pageable);
+        return questionPage.map(question -> questionMapper.toDomain(question, "appropriate token here"));
     }
 
+    public Page<QuestionDetailResponse> getUnansweredQuestions(Long memberId, Pageable pageable) {
+        Page<Question> questionPage = questionService.getUnansweredQuestions(memberId, pageable);
+        return questionPage.map(question -> questionMapper.toDomain(question, "appropriate token here"));
+    }
+    public QuestionDetailResponse updateQuestion(Long questionId, String content) {
+        Question updatedQuestion = questionService.updateQuestion(questionId, content);
+        return questionMapper.toDomain(updatedQuestion, updatedQuestion.getMember().getFcmToken());
+    }
     public void deleteQuestion(Long questionId) {
         questionService.deleteQuestion(questionId);
     }
+
 }
