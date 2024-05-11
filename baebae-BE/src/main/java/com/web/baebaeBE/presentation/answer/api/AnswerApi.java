@@ -76,7 +76,7 @@ public interface AnswerApi {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = Page.class)))
     @RequestMapping(method = RequestMethod.GET)
-    ResponseEntity<Page<AnswerDetailResponse>> getAllAnswers(
+    ResponseEntity<List<AnswerDetailResponse>> getAllAnswers(
             @RequestParam Long memberId,
             Pageable pageable);
 
@@ -93,12 +93,12 @@ public interface AnswerApi {
     @ApiResponse(responseCode = "200", description = "답변 수정 성공",
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = AnswerDetailResponse.class)))
-    @RequestMapping(method = RequestMethod.PUT, value = "/{answerId}", consumes = "multipart/form-data")
+    @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<AnswerDetailResponse> updateAnswer(
             @PathVariable Long answerId,
-            @ModelAttribute AnswerCreateRequest request,
-            @RequestParam("imageFiles") MultipartFile[] imageFiles,
-            @RequestParam("audioFile") MultipartFile audioFile);
+            @RequestPart(value = "imageFiles") List<MultipartFile> imageFiles,
+            @RequestPart(value = "audioFile") MultipartFile audioFile,
+            @RequestPart(name = "request") AnswerCreateRequest request);
 
     @Operation(
             summary = "답변 삭제",

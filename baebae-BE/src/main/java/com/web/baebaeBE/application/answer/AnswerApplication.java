@@ -33,13 +33,12 @@ public class AnswerApplication {
     public AnswerDetailResponse createAnswer(AnswerCreateRequest request, Long memberId, List<MultipartFile> imageFiles, MultipartFile audioFile) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(MemberError.NOT_EXIST_MEMBER));
-        System.out.println(request.getQuestionId());
         Question question = questionRepository.findById(request.getQuestionId())
                 .orElseThrow(() -> new BusinessException(AnswerError.NO_EXIST_QUESTION));
 
         Answer answerEntity = answerMapper.toEntity(request, question, member);
         Answer savedAnswerEntity = answerService.createAnswer(answerEntity, imageFiles, audioFile);
-        return answerMapper.toDomain(savedAnswerEntity);
+        return answerMapper.toDomain(savedAnswerEntity, member.getFcmToken());
     }
 
     public List<AnswerResponse> getAnswersByMemberId(Long memberId) {
@@ -51,12 +50,12 @@ public class AnswerApplication {
 
     public Page<AnswerDetailResponse> getAllAnswers(Long memberId, Pageable pageable) {
         Page<Answer> answerPage = answerService.getAllAnswers(memberId, pageable);
-        return answerPage.map(answerMapper::toDomain);
+        return answerPage.map(answer -> answerMapper.toDomain(answer, "appropriate token here"));
     }
 
     public AnswerDetailResponse updateAnswer(Long answerId, AnswerCreateRequest request, MultipartFile[] imageFiles, MultipartFile audioFile) {
         Answer updatedAnswer = answerService.updateAnswer(answerId, request, imageFiles, audioFile);
-        return answerMapper.toDomain(updatedAnswer);
+        return answerMapper.toDomain(updatedAnswer, updatedAnswer.getMember().getFcmToken());
     }
 
     public void deleteAnswer(Long answerId) {

@@ -30,10 +30,11 @@ public class AnswerMapper {
                 .build();
     }
 
-    public AnswerDetailResponse toDomain(Answer answer) {
+    public AnswerDetailResponse toDomain(Answer answer, String fcmtoken) {
         return AnswerDetailResponse.of(
                 answer.getId(),
                 answer.getQuestion().getId(),
+                answer.getQuestion().getContent(), //질문 내용
                 answer.getMember().getId(),
                 answer.getContent(),
                 answer.getLinkAttachments(),
@@ -44,7 +45,8 @@ public class AnswerMapper {
                 answer.getCreatedDate(),
                 answer.getHeartCount(),
                 answer.getCuriousCount(),
-                answer.getSadCount()
+                answer.getSadCount(),
+                fcmtoken
         );
     }
 }

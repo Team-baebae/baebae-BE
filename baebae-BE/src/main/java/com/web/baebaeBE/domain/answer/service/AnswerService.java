@@ -6,6 +6,7 @@ import com.web.baebaeBE.global.firebase.FirebaseNotificationService;
 import com.web.baebaeBE.global.image.s3.S3ImageStorageService;
 import com.web.baebaeBE.infra.answer.entity.Answer;
 import com.web.baebaeBE.infra.answer.repository.AnswerRepository;
+import com.web.baebaeBE.infra.question.entity.Question;
 import com.web.baebaeBE.presentation.answer.dto.AnswerCreateRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -30,8 +31,7 @@ public class AnswerService {
     public Answer createAnswer(Answer answer, List<MultipartFile> imageFiles, MultipartFile audioFile) {
         List<String> imageUrls = new ArrayList<>();
         String musicAudioUrl = null;
-
-        answer = answerRepository.save(answer);
+        Answer savedAnswer = answerRepository.save(answer);
 
         try {
             // 이미지 파일 업로드
@@ -62,8 +62,9 @@ public class AnswerService {
             }
             throw new RuntimeException("Failed to create answer", e);
         }
-
-        return answer;
+        // 새로운 답변 달리면 알림 생성
+        firebaseNotificationService.notifyNewAnswer(answer.getMember(), answer);
+        return savedAnswer;
     }
     
     public List<Answer> getAnswersByMemberId(Long memberId) {
