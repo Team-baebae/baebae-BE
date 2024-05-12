@@ -39,7 +39,7 @@ public class AnswerApplication {
 
         Answer answerEntity = answerMapper.toEntity(request, question, member);
         Answer savedAnswerEntity = answerService.createAnswer(answerEntity, imageFiles, audioFile);
-        return answerMapper.toDomain(savedAnswerEntity);
+        return answerMapper.toDomain(savedAnswerEntity, "나중에 수정 요망");
     }
 
     public List<AnswerResponse> getAnswersByMemberId(Long memberId) {
@@ -49,15 +49,15 @@ public class AnswerApplication {
                 .collect(Collectors.toList());
     }
 
-    public Page<AnswerDetailResponse> getAllAnswers(Long memberId, Pageable pageable) {
+   /* public Page<AnswerDetailResponse> getAllAnswers(Long memberId, Pageable pageable) {
         Page<Answer> answerPage = answerService.getAllAnswers(memberId, pageable);
         return answerPage.map(answerMapper::toDomain);
-    }
+    }*/
 
-    public AnswerDetailResponse updateAnswer(Long answerId, AnswerCreateRequest request, MultipartFile[] imageFiles, MultipartFile audioFile) {
+    /*public AnswerDetailResponse updateAnswer(Long answerId, AnswerCreateRequest request, MultipartFile[] imageFiles, MultipartFile audioFile) {
         Answer updatedAnswer = answerService.updateAnswer(answerId, request, imageFiles, audioFile);
         return answerMapper.toDomain(updatedAnswer);
-    }
+    }*/
 
     public void deleteAnswer(Long answerId) {
         answerService.deleteAnswer(answerId);
