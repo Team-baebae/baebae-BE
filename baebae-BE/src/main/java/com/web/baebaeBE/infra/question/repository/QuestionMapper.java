@@ -19,17 +19,19 @@ public class QuestionMapper {
                 .nickname(request.getNickname())
                 .profileOnOff(request.getProfileOnOff())
                 .createdDate(LocalDateTime.now())
+                .isAnswered(false)
                 .build();
     }
 
-    public QuestionDetailResponse toDomain(Question question, String token) {
+    public QuestionDetailResponse toDomain(Question question, String fcmtoken) {
         return QuestionDetailResponse.of(
                 question.getId(),
                 question.getContent(),
                 question.getNickname(),
                 question.getProfileOnOff(),
                 question.getCreatedDate(),
-                token
+                fcmtoken,
+                question.isAnswered()
         );
     }
 }

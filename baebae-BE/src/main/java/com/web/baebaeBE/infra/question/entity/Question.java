@@ -38,12 +38,17 @@ public class Question {
     @Column(name = "created_date", nullable = false)
     private LocalDateTime createdDate;
 
+    @Column(name = "is_answered", nullable = false)
+    private boolean isAnswered = false;
+
     public void updateContent(String content) {
         this.content = content;
     }
+
+
     public static Question of(Long id, Member member, String content, String nickname, Boolean profileOnOff,
-                              LocalDateTime createdDate) {
-        return new Question(id, member, content, nickname, profileOnOff, createdDate);
+                              LocalDateTime createdDate, Boolean isAnswered) {
+        return new Question(id, member, content, nickname, profileOnOff, createdDate, isAnswered);
     }
 }
 

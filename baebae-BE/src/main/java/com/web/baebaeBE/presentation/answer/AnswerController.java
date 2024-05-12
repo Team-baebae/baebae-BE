@@ -42,25 +42,26 @@ public class AnswerController implements AnswerApi {
     }
 
     @GetMapping(value = "/{answerId}")
-    public ResponseEntity<Page<AnswerDetailResponse>> getAllAnswers(@RequestParam Long memberId, Pageable pageable) {
+    public ResponseEntity<List<AnswerDetailResponse>> getAllAnswers(@RequestParam Long memberId, Pageable pageable) {
         Page<AnswerDetailResponse> answers = answerApplication.getAllAnswers(memberId, pageable);
-        return ResponseEntity.ok(answers);
+        return ResponseEntity.ok(answers.getContent());
     }
 
-    @PutMapping(value = "/{answerId}", consumes = "multipart/form-data")
+    @PutMapping(value = "/{answerId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<AnswerDetailResponse> updateAnswer(
             @PathVariable Long answerId,
-            @ModelAttribute AnswerCreateRequest request,
-            @RequestParam("imageFiles") MultipartFile[] imageFiles,
-            @RequestParam("audioFile") MultipartFile audioFile) {
-        AnswerDetailResponse updatedAnswer = answerApplication.updateAnswer(answerId, request, imageFiles, audioFile);
+            @RequestPart(value = "imageFiles") List<MultipartFile> imageFiles,
+            @RequestPart(value = "audioFile") MultipartFile audioFile,
+            @RequestPart AnswerCreateRequest request) {
+        MultipartFile[] imageFilesArray = imageFiles.toArray(new MultipartFile[0]);
+        AnswerDetailResponse updatedAnswer = answerApplication.updateAnswer(answerId, request, imageFilesArray, audioFile);
         return ResponseEntity.ok(updatedAnswer);
     }
 
     @DeleteMapping("/{answerId}")
     public ResponseEntity<Void> deleteAnswer( @PathVariable Long answerId) {
         answerApplication.deleteAnswer(answerId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 
     @Operation(summary = "반응 알림")

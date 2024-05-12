@@ -11,6 +11,8 @@ public interface QuestionRepository{
     Optional<Question> findById(Long questionId);
     Question save(Question questionEntity);
     Page<Question> findAllByMemberId(Long memberId, Pageable pageable);
+    Page<Question> findAllByMemberIdAndIsAnsweredTrue(Long memberId, Pageable pageable);
+    Page<Question> findAllByMemberIdAndIsAnsweredFalse(Long memberId, Pageable pageable);
     void delete(Question questionEntity);
 
 }

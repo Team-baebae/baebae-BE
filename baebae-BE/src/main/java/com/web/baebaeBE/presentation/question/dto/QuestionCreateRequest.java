@@ -1,5 +1,6 @@
 package com.web.baebaeBE.presentation.question.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,4 +20,5 @@ public class QuestionCreateRequest {
     public static QuestionCreateRequest of(String content, String nickname, Boolean profileOnOff) {
         return new QuestionCreateRequest(content, nickname, profileOnOff);
     }
+
 }

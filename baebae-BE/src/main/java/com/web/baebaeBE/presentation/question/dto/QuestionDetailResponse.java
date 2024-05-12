@@ -13,17 +13,19 @@ public class QuestionDetailResponse {
     private String nickname;
     private Boolean profileOnOff;
     private LocalDateTime createdDate;
-    private String token;
+    private Boolean isAnswered;
+    private String fcmtoken;
 
-    public QuestionDetailResponse(Long questionId, String content, String nickname, Boolean profileOnOff, LocalDateTime createdDate, String token) {
+    public QuestionDetailResponse(Long questionId, String content, String nickname, Boolean profileOnOff, LocalDateTime createdDate, String fcmtoken, Boolean isAnswered) {
         this.questionId = questionId;
         this.content = content;
         this.nickname = nickname;
         this.profileOnOff = profileOnOff;
         this.createdDate = createdDate;
-        this.token = token;
+        this.fcmtoken = fcmtoken;
+        this.isAnswered = isAnswered;
     }
-    public static QuestionDetailResponse of(Long questionId, String content, String nickname, Boolean profileOnOff, LocalDateTime createdDate, String token) {
-        return new QuestionDetailResponse(questionId, content, nickname, profileOnOff, createdDate, token);
+    public static QuestionDetailResponse of(Long questionId, String content, String nickname, Boolean profileOnOff, LocalDateTime createdDate, String fcmtoken, Boolean isAnswered) {
+        return new QuestionDetailResponse(questionId, content, nickname, profileOnOff, createdDate, fcmtoken, isAnswered);
     }
 }
