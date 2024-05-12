@@ -1,13 +1,13 @@
 package com.web.baebaeBE.domain.notification.service;
 
-import com.web.baebaeBE.domain.member.exception.MemberError;
+import com.web.baebaeBE.domain.login.exception.LoginException;
 import com.web.baebaeBE.global.error.exception.BusinessException;
-import com.web.baebaeBE.infra.notification.entity.Notification;
-import com.web.baebaeBE.infra.notification.repository.NotificationRepository;
-import com.web.baebaeBE.infra.member.entity.Member;
-import com.web.baebaeBE.infra.member.repository.MemberRepository;
-import com.web.baebaeBE.presentation.notification.dto.NotificationRequest;
-import com.web.baebaeBE.presentation.notification.dto.NotificationResponse;
+import com.web.baebaeBE.domain.notification.entity.Notification;
+import com.web.baebaeBE.domain.notification.repository.NotificationRepository;
+import com.web.baebaeBE.domain.member.entity.Member;
+import com.web.baebaeBE.domain.member.repository.MemberRepository;
+import com.web.baebaeBE.domain.notification.dto.NotificationRequest;
+import com.web.baebaeBE.domain.notification.dto.NotificationResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,7 @@ public class NotificationService {
     // 알림 생성
     public Notification createNotification(NotificationRequest.create createNotificationDto) {
         Member member = memberRepository.findById(createNotificationDto.getMemberId())
-                .orElseThrow(() -> new BusinessException(MemberError.NOT_EXIST_MEMBER));
+                .orElseThrow(() -> new BusinessException(LoginException.NOT_EXIST_MEMBER));
 
         return notificationRepository.save(Notification.builder()
                 .member(member)
@@ -38,7 +38,7 @@ public class NotificationService {
     // 특정 멤버의 모든 알람 조회
     public NotificationResponse.NotificationListResponse getNotificationsListByMember(Long memberId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BusinessException(MemberError.NOT_EXIST_MEMBER));
+                .orElseThrow(() -> new BusinessException(LoginException.NOT_EXIST_MEMBER));
 
         List<Notification> notificationList = notificationRepository.findByMemberOrderByNotificationTimeDesc(member);
 

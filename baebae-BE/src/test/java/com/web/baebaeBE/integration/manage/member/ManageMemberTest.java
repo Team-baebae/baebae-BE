@@ -2,10 +2,10 @@ package com.web.baebaeBE.integration.manage.member;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.web.baebaeBE.global.jwt.JwtTokenProvider;
-import com.web.baebaeBE.infra.member.entity.Member;
-import com.web.baebaeBE.infra.member.enums.MemberType;
-import com.web.baebaeBE.infra.member.repository.MemberRepository;
-import com.web.baebaeBE.presentation.manage.member.dto.ManageMemberRequest;
+import com.web.baebaeBE.domain.member.entity.Member;
+import com.web.baebaeBE.domain.member.entity.MemberType;
+import com.web.baebaeBE.domain.member.repository.MemberRepository;
+import com.web.baebaeBE.domain.member.dto.MemberRequest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,7 +26,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.Optional;
 
@@ -131,8 +130,8 @@ public class ManageMemberTest {
     @DisplayName("FCM 토큰 업데이트 테스트(): 해당 회원의 FCM 토큰을 업데이트한다.")
     public void updateFcmTokenTest() throws Exception {
         // given
-        ManageMemberRequest.UpdateFcmTokenDto updateFcmTokenDto
-                = new ManageMemberRequest.UpdateFcmTokenDto("fwef094938jweSIJDe8204gaskd390GK32G9HADF0809d8708U908ud9UHD9FH4e32982hF0ODH22E");
+        MemberRequest.UpdateFcmTokenDto updateFcmTokenDto
+                = new MemberRequest.UpdateFcmTokenDto("fwef094938jweSIJDe8204gaskd390GK32G9HADF0809d8708U908ud9UHD9FH4e32982hF0ODH22E");
 
         // when
         mockMvc.perform(patch("/api/member/fcm-token/{memberId}", testMember.getId())
@@ -148,8 +147,8 @@ public class ManageMemberTest {
     @DisplayName("닉네임 업데이트 테스트(): 해당 회원의 닉네임을 업데이트한다.")
     public void updateNicknameTest() throws Exception {
         // given
-        ManageMemberRequest.UpdateNicknameDto updateNicknameDto
-                = new ManageMemberRequest.UpdateNicknameDto("새로운 닉네임");
+        MemberRequest.UpdateNicknameDto updateNicknameDto
+                = new MemberRequest.UpdateNicknameDto("새로운 닉네임");
 
         // when
         mockMvc.perform(patch("/api/member/nickname/{memberId}", testMember.getId())

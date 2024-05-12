@@ -2,9 +2,9 @@ package com.web.baebaeBE.integration.question;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.web.baebaeBE.global.jwt.JwtTokenProvider;
-import com.web.baebaeBE.infra.member.entity.Member;
-import com.web.baebaeBE.infra.member.enums.MemberType;
-import com.web.baebaeBE.infra.member.repository.MemberRepository;
+import com.web.baebaeBE.domain.member.entity.Member;
+import com.web.baebaeBE.domain.member.entity.MemberType;
+import com.web.baebaeBE.domain.member.repository.MemberRepository;
 import com.web.baebaeBE.infra.question.entity.Question;
 import com.web.baebaeBE.infra.question.repository.QuestionRepository;
 import com.web.baebaeBE.presentation.question.dto.QuestionCreateRequest;

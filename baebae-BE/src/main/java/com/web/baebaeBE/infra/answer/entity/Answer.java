@@ -1,7 +1,7 @@
 package com.web.baebaeBE.infra.answer.entity;
 
-import com.web.baebaeBE.infra.categorized.answer.entity.CategorizedAnswer;
-import com.web.baebaeBE.infra.member.entity.Member;
+import com.web.baebaeBE.domain.categorized.answer.entity.CategorizedAnswer;
+import com.web.baebaeBE.domain.member.entity.Member;
 import com.web.baebaeBE.infra.question.entity.Question;
 import jakarta.persistence.*;
 import lombok.*;

@@ -20,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@RestController
+/*@RestController
 @AllArgsConstructor
 @RequestMapping("/api/answers")
 public class AnswerController implements AnswerApi {
@@ -75,4 +75,4 @@ public class AnswerController implements AnswerApi {
         answerApplication.updateReactionCounts(answerId, heartCount, curiousCount, sadCount);
         return ResponseEntity.ok().build();
     }
-}
+}*/

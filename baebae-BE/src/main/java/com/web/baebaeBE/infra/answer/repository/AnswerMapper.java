@@ -1,7 +1,7 @@
 package com.web.baebaeBE.infra.answer.repository;
 
 import com.web.baebaeBE.infra.answer.entity.Answer;
-import com.web.baebaeBE.infra.member.entity.Member;
+import com.web.baebaeBE.domain.member.entity.Member;
 import com.web.baebaeBE.infra.question.entity.Question;
 import com.web.baebaeBE.presentation.answer.dto.AnswerCreateRequest;
 import com.web.baebaeBE.presentation.answer.dto.AnswerDetailResponse;

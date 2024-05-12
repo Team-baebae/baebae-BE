@@ -1,7 +1,7 @@
 package com.web.baebaeBE.global.firebase;
 
+import com.web.baebaeBE.domain.member.entity.Member;
 import com.web.baebaeBE.infra.answer.entity.Answer;
-import com.web.baebaeBE.infra.member.entity.Member;
 import com.web.baebaeBE.infra.question.entity.Question;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

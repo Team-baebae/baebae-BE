@@ -1,9 +1,8 @@
 package com.web.baebaeBE.global.jwt;
 
-import com.web.baebaeBE.global.error.exception.BusinessException;
 import com.web.baebaeBE.global.error.exception.JwtAuthenticationException;
 import com.web.baebaeBE.global.jwt.exception.TokenError;
-import com.web.baebaeBE.infra.member.entity.Member;
+import com.web.baebaeBE.domain.member.entity.Member;
 import io.jsonwebtoken.*;
 
 import java.time.Duration;
@@ -12,7 +11,6 @@ import java.util.Date;
 import java.util.Set;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
