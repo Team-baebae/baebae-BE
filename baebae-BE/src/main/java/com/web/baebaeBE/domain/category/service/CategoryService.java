@@ -1,31 +1,27 @@
 package com.web.baebaeBE.domain.category.service;
 
-import com.web.baebaeBE.domain.answer.exception.AnswerError;
-import com.web.baebaeBE.domain.category.exception.CategoryError;
-import com.web.baebaeBE.domain.member.exception.MemberError;
+import com.web.baebaeBE.domain23.answer.exception.AnswerError;
+import com.web.baebaeBE.domain.category.exception.CategoryException;
+import com.web.baebaeBE.domain.login.exception.LoginException;
 import com.web.baebaeBE.global.error.exception.BusinessException;
 import com.web.baebaeBE.infra.answer.entity.Answer;
 import com.web.baebaeBE.infra.answer.repository.AnswerRepository;
-import com.web.baebaeBE.infra.categorized.answer.entity.CategorizedAnswer;
-import com.web.baebaeBE.infra.categorized.answer.repository.CategorizedAnswerRepository;
-import com.web.baebaeBE.infra.category.entity.Category;
-import com.web.baebaeBE.infra.category.repository.CategoryRepository;
-import com.web.baebaeBE.infra.member.entity.Member;
-import com.web.baebaeBE.infra.member.repository.MemberRepository;
-import com.web.baebaeBE.presentation.category.dto.CategoryRequest;
-import com.web.baebaeBE.presentation.category.dto.CategoryResponse;
+import com.web.baebaeBE.domain.categorized.answer.entity.CategorizedAnswer;
+import com.web.baebaeBE.domain.categorized.answer.repository.CategorizedAnswerRepository;
+import com.web.baebaeBE.domain.category.entity.Category;
+import com.web.baebaeBE.domain.category.repository.CategoryRepository;
+import com.web.baebaeBE.domain.member.entity.Member;
+import com.web.baebaeBE.domain.member.repository.MemberRepository;
+import com.web.baebaeBE.domain.category.dto.CategoryResponse;
 import jakarta.persistence.EntityManager;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -40,7 +36,7 @@ private final EntityManager entityManager; // Answer 엔티티 프록시 가져�
 
     public Category createCategory(Long memberId, MultipartFile categoryImage, String categoryName) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BusinessException(MemberError.NOT_EXIST_MEMBER));
+                .orElseThrow(() -> new BusinessException(LoginException.NOT_EXIST_MEMBER));
 
         String imagePath = "default_image_path";
         if (categoryImage != null) {
@@ -58,7 +54,7 @@ private final EntityManager entityManager; // Answer 엔티티 프록시 가져�
 
     public CategoryResponse.CategoryInformationResponse createAnswersToCategory(Long categoryId, List<Long> answerIds) {
         Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new BusinessException(CategoryError.CATEGORY_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(CategoryException.CATEGORY_NOT_FOUND));
 
         // 카테고리에 Answer 추가
         for (Long answerId : answerIds) {
@@ -76,7 +72,7 @@ private final EntityManager entityManager; // Answer 엔티티 프록시 가져�
     }
     public CategoryResponse.CategoryListResponse getCategoriesByMember(Long memberId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BusinessException(MemberError.NOT_EXIST_MEMBER));
+                .orElseThrow(() -> new BusinessException(LoginException.NOT_EXIST_MEMBER));
 
         List<Category> categories = categoryRepository.findAllByMember(member);
 
@@ -85,7 +81,7 @@ private final EntityManager entityManager; // Answer 엔티티 프록시 가져�
 
     public Category updateCategoryName(Long categoryId, String categoryName) {
         Category category =  categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new BusinessException(CategoryError.CATEGORY_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(CategoryException.CATEGORY_NOT_FOUND));
 
         category.updateCategoryName(categoryName);
         return categoryRepository.save(category);
@@ -94,7 +90,7 @@ private final EntityManager entityManager; // Answer 엔티티 프록시 가져�
     public void updateCategoryImage(Long categoryId, MultipartFile imageFile) {
         // Category 엔티티 조회
         Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new BusinessException(CategoryError.CATEGORY_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(CategoryException.CATEGORY_NOT_FOUND));
 
         /*// 이미지 파일 저장 로직 (이 부분은 프로젝트의 이미지 저장 방식에 따라 달라집니다.)
         String imagePath = imageStorageService.save(imageFile);
@@ -139,7 +135,7 @@ private final EntityManager entityManager; // Answer 엔티티 프록시 가져�
     public void addAnswerToCategory(Long categoryId, Long answerId) {
         // Category 엔티티 조회
         Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new BusinessException(CategoryError.CATEGORY_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(CategoryException.CATEGORY_NOT_FOUND));
 
         // Answer 엔티티 조회
         Answer answer = answerRepository.findByAnswerId(answerId)
@@ -149,7 +145,7 @@ private final EntityManager entityManager; // Answer 엔티티 프록시 가져�
         boolean isAlreadyAdded = category.getCategoryAnswers().stream()
                 .anyMatch(categorizedAnswer -> categorizedAnswer.getAnswer().equals(answer));
         if (isAlreadyAdded) {
-            throw new BusinessException(CategoryError.ANSWER_ALREADY_EXIST);
+            throw new BusinessException(CategoryException.ANSWER_ALREADY_EXIST);
         }
 
         // CategorizedAnswer 엔티티 생성 및 저장

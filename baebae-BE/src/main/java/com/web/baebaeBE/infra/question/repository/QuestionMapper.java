@@ -1,6 +1,6 @@
 package com.web.baebaeBE.infra.question.repository;
 
-import com.web.baebaeBE.infra.member.entity.Member;
+import com.web.baebaeBE.domain.member.entity.Member;
 import com.web.baebaeBE.infra.question.entity.Question;
 import com.web.baebaeBE.presentation.question.dto.QuestionCreateRequest;
 import com.web.baebaeBE.presentation.question.dto.QuestionDetailResponse;

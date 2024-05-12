@@ -1,37 +1,26 @@
 package com.web.baebaeBE.integration.token;
 
-import com.web.baebaeBE.config.jwt.JwtFactory;
 import com.web.baebaeBE.global.error.exception.JwtAuthenticationException;
 import com.web.baebaeBE.global.jwt.JwtProperties;
 import com.web.baebaeBE.global.jwt.JwtTokenProvider;
-import com.web.baebaeBE.infra.member.entity.Member;
-import com.web.baebaeBE.infra.member.enums.MemberType;
-import com.web.baebaeBE.infra.member.repository.MemberRepository;
-import io.jsonwebtoken.ExpiredJwtException;
+import com.web.baebaeBE.domain.member.entity.Member;
+import com.web.baebaeBE.domain.member.entity.MemberType;
+import com.web.baebaeBE.domain.member.repository.MemberRepository;
 import io.jsonwebtoken.Jwts;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatRuntimeException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

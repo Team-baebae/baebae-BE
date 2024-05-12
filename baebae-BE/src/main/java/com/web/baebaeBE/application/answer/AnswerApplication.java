@@ -1,13 +1,13 @@
 package com.web.baebaeBE.application.answer;
 
-import com.web.baebaeBE.domain.answer.exception.AnswerError;
-import com.web.baebaeBE.domain.answer.service.AnswerService;
-import com.web.baebaeBE.domain.member.exception.MemberError;
+import com.web.baebaeBE.domain23.answer.exception.AnswerError;
+import com.web.baebaeBE.domain23.answer.service.AnswerService;
+import com.web.baebaeBE.domain.login.exception.LoginException;
 import com.web.baebaeBE.global.error.exception.BusinessException;
 import com.web.baebaeBE.infra.answer.entity.Answer;
 import com.web.baebaeBE.infra.answer.repository.AnswerMapper;
-import com.web.baebaeBE.infra.member.entity.Member;
-import com.web.baebaeBE.infra.member.repository.MemberRepository;
+import com.web.baebaeBE.domain.member.entity.Member;
+import com.web.baebaeBE.domain.member.repository.MemberRepository;
 import com.web.baebaeBE.infra.question.entity.Question;
 import com.web.baebaeBE.infra.question.repository.QuestionRepository;
 import com.web.baebaeBE.presentation.answer.dto.AnswerCreateRequest;
@@ -32,7 +32,7 @@ public class AnswerApplication {
 
     public AnswerDetailResponse createAnswer(AnswerCreateRequest request, Long memberId, List<MultipartFile> imageFiles, MultipartFile audioFile) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BusinessException(MemberError.NOT_EXIST_MEMBER));
+                .orElseThrow(() -> new BusinessException(LoginException.NOT_EXIST_MEMBER));
         System.out.println(request.getQuestionId());
         Question question = questionRepository.findById(request.getQuestionId())
                 .orElseThrow(() -> new BusinessException(AnswerError.NO_EXIST_QUESTION));

@@ -6,14 +6,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.web.baebaeBE.application.member.MemberApplication;
-import com.web.baebaeBE.domain.kakao.service.TokenService;
-import com.web.baebaeBE.domain.member.service.LoginService;
+import com.web.baebaeBE.domain.oauth2.service.Oauth2Service;
+import com.web.baebaeBE.domain.login.service.LoginService;
 import com.web.baebaeBE.global.jwt.JwtTokenProvider;
-import com.web.baebaeBE.infra.member.entity.Member;
-import com.web.baebaeBE.infra.member.enums.MemberType;
-import com.web.baebaeBE.infra.member.repository.MemberRepository;
-import com.web.baebaeBE.presentation.kakao.dto.KakaoUserInfoDto;
-import com.web.baebaeBE.presentation.member.dto.MemberRequest;
+import com.web.baebaeBE.domain.member.entity.Member;
+import com.web.baebaeBE.domain.member.entity.MemberType;
+import com.web.baebaeBE.domain.member.repository.MemberRepository;
+import com.web.baebaeBE.domain.oauth2.dto.KakaoUserInfoDto;
+import com.web.baebaeBE.domain.login.dto.LoginRequest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -47,7 +47,7 @@ public class MemberIntegrationTest {
     @MockBean
     private RestTemplate restTemplate;
     @MockBean
-    private TokenService tokenService;
+    private Oauth2Service oauth2Service;
     @Autowired
     private MemberApplication memberApplication;
     @Autowired
@@ -92,7 +92,7 @@ public class MemberIntegrationTest {
         // given
         // 가짜 카카오 토큰 Mock 객체 설정
         KakaoUserInfoDto kakaoUserInfo = new KakaoUserInfoDto("3","tioon74@gmail.com", "김예찬");
-        Mockito.when(tokenService.requestKakaoInfo(any(String.class))).thenReturn(kakaoUserInfo); // 카카오 토큰 인증 메서드 Mock 설정
+        Mockito.when(oauth2Service.requestKakaoInfo(any(String.class))).thenReturn(kakaoUserInfo); // 카카오 토큰 인증 메서드 Mock 설정
 
         RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
         Mockito.when(restTemplate.exchange(
@@ -103,8 +103,8 @@ public class MemberIntegrationTest {
         )).thenReturn(new ResponseEntity<>(kakaoUserInfo, HttpStatus.OK));
 
         // HttpRequest Body 설정
-        MemberRequest.SignUp signUpRequest
-                = new MemberRequest.SignUp(MemberType.KAKAO, "김예찬"); // 요청
+        LoginRequest.SignUp signUpRequest
+                = new LoginRequest.SignUp(MemberType.KAKAO, "김예찬"); // 요청
 
 
         // when

@@ -1,6 +1,6 @@
 package com.web.baebaeBE.infra.question.entity;
 
-import com.web.baebaeBE.infra.member.entity.Member;
+import com.web.baebaeBE.domain.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
