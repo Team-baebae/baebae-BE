@@ -5,7 +5,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.web.baebaeBE.application.member.MemberApplication;
 import com.web.baebaeBE.domain.oauth2.service.Oauth2Service;
 import com.web.baebaeBE.domain.login.service.LoginService;
 import com.web.baebaeBE.global.jwt.JwtTokenProvider;
@@ -48,8 +47,6 @@ public class MemberIntegrationTest {
     private RestTemplate restTemplate;
     @MockBean
     private Oauth2Service oauth2Service;
-    @Autowired
-    private MemberApplication memberApplication;
     @Autowired
     private LoginService loginService;
     @Autowired
@@ -108,7 +105,7 @@ public class MemberIntegrationTest {
 
 
         // when
-        mockMvc.perform(post("/api/oauth/login")
+        mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", "Bearer " + refreshToken)
                         .content(objectMapper.writeValueAsString(signUpRequest)))
@@ -127,7 +124,7 @@ public class MemberIntegrationTest {
         // given
 
         // when
-        mockMvc.perform(post("/api/oauth/token/refresh")
+        mockMvc.perform(post("/api/auth/token/refresh")
                         .header("Authorization", "Bearer " + refreshToken))
         // then
                 .andExpect(status().isOk())
@@ -146,7 +143,7 @@ public class MemberIntegrationTest {
         // given
 
         // when
-        mockMvc.perform(post("/api/oauth/logout")
+        mockMvc.perform(post("/api/auth/logout")
                         .header("Authorization", "Bearer " + accessToken))
         // then
                 .andExpect(status().isOk());
