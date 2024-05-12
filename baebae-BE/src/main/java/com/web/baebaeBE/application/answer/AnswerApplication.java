@@ -30,7 +30,7 @@ public class AnswerApplication {
     private final MemberRepository memberRepository;
     private final QuestionRepository questionRepository;
 
-    public AnswerDetailResponse createAnswer(AnswerCreateRequest request, Long memberId, List<MultipartFile> imageFiles, MultipartFile audioFile) {
+    public AnswerDetailResponse createAnswer(AnswerCreateRequest request, Long memberId, MultipartFile imageFiles) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(LoginException.NOT_EXIST_MEMBER));
         System.out.println(request.getQuestionId());
@@ -38,7 +38,7 @@ public class AnswerApplication {
                 .orElseThrow(() -> new BusinessException(AnswerError.NO_EXIST_QUESTION));
 
         Answer answerEntity = answerMapper.toEntity(request, question, member);
-        Answer savedAnswerEntity = answerService.createAnswer(answerEntity, imageFiles, audioFile);
+        Answer savedAnswerEntity = answerService.createAnswer(answerEntity, imageFiles);
         return answerMapper.toDomain(savedAnswerEntity, "나중에 수정 요망");
     }
 
@@ -49,15 +49,15 @@ public class AnswerApplication {
                 .collect(Collectors.toList());
     }
 
-   /* public Page<AnswerDetailResponse> getAllAnswers(Long memberId, Pageable pageable) {
+    public Page<AnswerDetailResponse> getAllAnswers(Long memberId, Pageable pageable) {
         Page<Answer> answerPage = answerService.getAllAnswers(memberId, pageable);
-        return answerPage.map(answerMapper::toDomain);
-    }*/
+        return answerPage.map(answer -> answerMapper.toDomain(answer, "나중에 수정 요망"));
+    }
 
-    /*public AnswerDetailResponse updateAnswer(Long answerId, AnswerCreateRequest request, MultipartFile[] imageFiles, MultipartFile audioFile) {
-        Answer updatedAnswer = answerService.updateAnswer(answerId, request, imageFiles, audioFile);
-        return answerMapper.toDomain(updatedAnswer);
-    }*/
+    public AnswerDetailResponse updateAnswer(Long answerId, AnswerCreateRequest request, MultipartFile imageFiles) {
+        Answer updatedAnswer = answerService.updateAnswer(answerId, request, imageFiles);
+        return answerMapper.toDomain(updatedAnswer, "나중에 수정 요망");
+    }
 
     public void deleteAnswer(Long answerId) {
         answerService.deleteAnswer(answerId);

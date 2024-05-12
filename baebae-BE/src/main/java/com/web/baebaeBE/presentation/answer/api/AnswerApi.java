@@ -42,8 +42,7 @@ public interface AnswerApi {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<AnswerDetailResponse> createAnswer(
             @PathVariable Long memberId,
-            @RequestPart(value = "imageFiles") List<MultipartFile> imageFiles,
-            @RequestPart(value = "audioFile") MultipartFile audioFile,
+            @RequestPart(value = "imageFiles") MultipartFile imageFile,
             @RequestPart(name = "request") AnswerCreateRequest request);
 
     @Operation(
@@ -96,8 +95,7 @@ public interface AnswerApi {
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<AnswerDetailResponse> updateAnswer(
             @PathVariable Long answerId,
-            @RequestPart(value = "imageFiles") List<MultipartFile> imageFiles,
-            @RequestPart(value = "audioFile") MultipartFile audioFile,
+            @RequestPart(value = "imageFiles") MultipartFile imageFiles,
             @RequestPart(name = "request") AnswerCreateRequest request);
 
     @Operation(

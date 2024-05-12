@@ -28,31 +28,22 @@ public class AnswerService {
     private final S3ImageStorageService s3ImageStorageService;
 
     @Transactional
-    public Answer createAnswer(Answer answer, List<MultipartFile> imageFiles, MultipartFile audioFile) {
+    public Answer createAnswer(Answer answer, MultipartFile imageFile) {
         List<String> imageUrls = new ArrayList<>();
         String musicAudioUrl = null;
         Answer savedAnswer = answerRepository.save(answer);
 
         try {
             // 이미지 파일 업로드
-            for (int i = 0; i < imageFiles.size(); i++) {
-                MultipartFile file = imageFiles.get(i);
-                if (!file.isEmpty()) {
-                    InputStream inputStream = file.getInputStream();
-                    String imageUrl = s3ImageStorageService.uploadFile(answer.getMember().getId().toString(), answer.getId().toString(), "image", i, inputStream, file.getSize(), file.getContentType());
-                    imageUrls.add(imageUrl);
-                }
-            }
-
-            // 오디오 파일 업로드
-            if (audioFile != null && !audioFile.isEmpty()) {
-                InputStream inputStream = audioFile.getInputStream();
-                musicAudioUrl = s3ImageStorageService.uploadFile(answer.getMember().getId().toString(), answer.getId().toString(), "audio", 0, inputStream, audioFile.getSize(), audioFile.getContentType());
+            if (!imageFile.isEmpty()) {
+                InputStream inputStream = imageFile.getInputStream();
+                String imageUrl = s3ImageStorageService.uploadFile(answer.getMember().getId().toString(), answer.getId().toString(), "image", 0, inputStream, imageFile.getSize(), imageFile.getContentType());
+                imageUrls.add(imageUrl);
             }
 
             // 파일 URL을 Answer 엔티티에 저장
             answer.setImageFiles(imageUrls);
-            answer.setMusicAudio(musicAudioUrl);
+            answer.setMusicAudio(answer.getMusicAudio());
 
         } catch (Exception e) {
             // 롤백 이후 파일 삭제 로직
@@ -69,18 +60,9 @@ public class AnswerService {
         question.setAnswered(true);
         return savedAnswer;
     }
-    
-    public List<Answer> getAnswersByMemberId(Long memberId) {
-        return answerRepository.findByMemberId(memberId);
-    }
 
     @Transactional
-    public Page<Answer> getAllAnswers(Long memberId, Pageable pageable) {
-        return answerRepository.findAllByMemberId(memberId, pageable);
-    }
-
-    @Transactional
-    public Answer updateAnswer(Long answerId, AnswerCreateRequest request, MultipartFile[] imageFiles, MultipartFile audioFile) {
+    public Answer updateAnswer(Long answerId, AnswerCreateRequest request, MultipartFile imageFile) {
         Answer answer = answerRepository.findByAnswerId(answerId)
                 .orElseThrow(() -> new BusinessException(AnswerError.NO_EXIST_ANSWER));
 
@@ -88,27 +70,14 @@ public class AnswerService {
         try {
             String memberId = answer.getMember().getId().toString();
             String fileType = "image";
-            int index = 0;
 
             // 이미지 파일 처리
-            for (MultipartFile file : imageFiles) {
-                String fileName = "image_" + index + ".jpg";
-                InputStream inputStream = file.getInputStream();
-                long size = file.getSize();
-                String contentType = file.getContentType();
-                String url = s3ImageStorageService.uploadFile(memberId, answerId.toString(), fileType, index, inputStream, size, contentType);
-                urls.add(url);
-                index++;
-            }
-
-            // 오디오 파일 처리
-            if (audioFile != null && !audioFile.isEmpty()) {
-                InputStream inputStream = audioFile.getInputStream();
-                long size = audioFile.getSize();
-                String contentType = audioFile.getContentType();
-                String musicAudioUrl = s3ImageStorageService.uploadFile(memberId, answerId.toString(), "audio", 0, inputStream, size, contentType);
-                answer.setMusicAudio(musicAudioUrl);
-            }
+            String fileName = "image_0.jpg";
+            InputStream inputStream = imageFile.getInputStream();
+            long size = imageFile.getSize();
+            String contentType = imageFile.getContentType();
+            String url = s3ImageStorageService.uploadFile(memberId, answerId.toString(), fileType, 0, inputStream, size, contentType);
+            urls.add(url);
 
         } catch (IOException e) {
             throw new BusinessException(AnswerError.IMAGE_PROCESSING_ERROR);
@@ -125,6 +94,15 @@ public class AnswerService {
 
         // 데이터베이스 저장
         return answerRepository.save(answer);
+    }
+
+    public List<Answer> getAnswersByMemberId(Long memberId) {
+        return answerRepository.findByMemberId(memberId);
+    }
+
+    @Transactional
+    public Page<Answer> getAllAnswers(Long memberId, Pageable pageable) {
+        return answerRepository.findAllByMemberId(memberId, pageable);
     }
 
     @Transactional

@@ -17,7 +17,6 @@ public class AnswerMapper {
         return Answer.builder()
                 .question(question)
                 .member(member)
-                .imageFiles(request.getImageUrls()) // 이미지 URL 리스트 처리
                 .content(request.getContent())
                 .linkAttachments(request.getLinkAttachments()) // 링크 첨부 리스트 처리
                 .musicName(request.getMusicName())
