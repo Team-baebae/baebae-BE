@@ -153,6 +153,10 @@ private final EntityManager entityManager; // Answer 엔티티 프록시 가져�
                 .build();
         categoryAnswerRepository.save(categorizedAnswer);
     }
+
+    public Category getCategoryByNameOrId(Long identifier) {
+        return categoryRepository.findById(identifier).orElse(null);
+    }
     public void deleteCategory(Long categoryId) {
         categoryRepository.deleteById(categoryId);
     }
