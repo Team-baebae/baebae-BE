@@ -49,7 +49,6 @@ public class AnswerMapper {
                 fcmtoken
         );
     }
-
     public AnswerResponse toResponse(Answer answer) {
         return AnswerResponse.of(answer);
     }

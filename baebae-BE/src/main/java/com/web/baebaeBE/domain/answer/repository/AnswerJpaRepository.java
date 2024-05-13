@@ -13,5 +13,4 @@ public interface AnswerJpaRepository extends JpaRepository<Answer, Long> {
     Page<Answer> findAllByMemberIdAndCategory(Long memberId, Category category, Pageable pageable);
 
     List<Answer> findByMemberId(Long memberId);
-
 }
