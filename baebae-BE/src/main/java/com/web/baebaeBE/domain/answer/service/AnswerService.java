@@ -4,7 +4,6 @@ import com.web.baebaeBE.domain.answer.dto.AnswerDetailResponse;
 import com.web.baebaeBE.domain.answer.dto.AnswerResponse;
 import com.web.baebaeBE.domain.answer.exception.AnswerError;
 import com.web.baebaeBE.domain.answer.repository.AnswerMapper;
-import com.web.baebaeBE.domain.category.entity.Category;
 import com.web.baebaeBE.domain.login.exception.LoginException;
 import com.web.baebaeBE.domain.member.entity.Member;
 import com.web.baebaeBE.domain.member.repository.MemberRepository;
@@ -73,13 +72,9 @@ public class AnswerService {
     }
 
     @Transactional
-    public Page<AnswerDetailResponse> getAllAnswers(Long memberId, Category category, Pageable pageable) {
-        Page<Answer> answerPage;
-        if (category == null) {
-            answerPage = answerRepository.findAllByMemberId(memberId, pageable);
-        } else {
-            answerPage = answerRepository.findAllByMemberIdAndCategory(memberId, category, pageable);
-        }
+    public Page<AnswerDetailResponse> getAllAnswers(Long memberId, Pageable pageable) {
+        Page<Answer> answerPage = answerRepository.findAllByMemberId(memberId, pageable);
+
         return answerPage.map(answer -> answerMapper.toDomain(answer, "FCM token needed"));
     }
 
@@ -124,5 +119,4 @@ public class AnswerService {
         answer.setSadCount(sadCount);
         answerRepository.save(answer);
     }
-
 }

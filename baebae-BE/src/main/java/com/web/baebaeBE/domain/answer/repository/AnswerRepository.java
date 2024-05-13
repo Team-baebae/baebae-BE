@@ -1,7 +1,6 @@
 package com.web.baebaeBE.domain.answer.repository;
 
 import com.web.baebaeBE.domain.answer.entity.Answer;
-import com.web.baebaeBE.domain.category.entity.Category;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -13,7 +12,5 @@ public interface AnswerRepository {
     List<Answer> findByMemberId(Long memberId);
     Answer save(Answer answer);
     Page<Answer> findAllByMemberId(Long memberId, Pageable pageable);
-    Page<Answer> findAllByMemberIdAndCategory(Long memberId, Category category, Pageable pageable);
-
     void delete(Answer answer);
 }

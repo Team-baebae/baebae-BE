@@ -1,7 +1,6 @@
 package com.web.baebaeBE.domain.answer.entity;
 
 import com.web.baebaeBE.domain.categorized.answer.entity.CategorizedAnswer;
-import com.web.baebaeBE.domain.category.entity.Category;
 import com.web.baebaeBE.domain.member.entity.Member;
 import com.web.baebaeBE.domain.question.entity.Question;
 import jakarta.persistence.*;
@@ -26,13 +25,9 @@ public class Answer {
     @Column(name = "answer_id")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id", nullable = false)
     private Question question;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
-    private Category category;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
@@ -78,12 +73,12 @@ public class Answer {
 
 
 
-    public static Answer of(Long id, Question question, Category category, Member member, String content,
+    public static Answer of(Long id, Question question, Member member, String content,
                             List<String> imageFiles, String musicName, String musicPicture,
                             String musicAudio, List<String> linkAttachments, int heartCount,
                             int curiousCount, int sadCount, LocalDateTime createdDate) {
 
-        return new Answer(id, question, category, member, imageFiles, content, musicName,
+        return new Answer(id, question, member, imageFiles, content, musicName,
                 musicPicture, musicAudio, linkAttachments, heartCount,
                 curiousCount, sadCount, createdDate,null);
     }

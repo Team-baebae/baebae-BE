@@ -5,8 +5,6 @@ import com.web.baebaeBE.domain.answer.dto.AnswerCreateRequest;
 import com.web.baebaeBE.domain.answer.dto.AnswerDetailResponse;
 import com.web.baebaeBE.domain.answer.dto.AnswerResponse;
 import com.web.baebaeBE.domain.answer.service.AnswerService;
-import com.web.baebaeBE.domain.category.entity.Category;
-import com.web.baebaeBE.domain.category.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,7 +22,7 @@ import java.util.List;
 @RequestMapping("/api/answers")
 public class AnswerController implements AnswerApi {
     private final AnswerService answerService;
-    private final CategoryService categoryService;
+
     @PostMapping(value = "/{memberId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<AnswerDetailResponse> createAnswer(@PathVariable Long memberId,
                                                              @RequestPart(value = "imageFile") MultipartFile imageFile,
@@ -40,17 +38,9 @@ public class AnswerController implements AnswerApi {
     }
 
     @GetMapping()
-    public ResponseEntity<Page<AnswerDetailResponse>> getAllAnswers(
-            @RequestParam Long memberId,
-            @RequestParam(required = false) Long category,
-            Pageable pageable) {
-
-        Category cat = null;
-        if (category != null) {
-            cat = categoryService.getCategoryByNameOrId(category);
-        }
-        Page<AnswerDetailResponse> answers = answerService.getAllAnswers(memberId, cat, pageable);
-        return ResponseEntity.ok(answers);
+    public ResponseEntity<List<AnswerDetailResponse>> getAllAnswers(@RequestParam Long memberId, Pageable pageable) {
+        Page<AnswerDetailResponse> answers = answerService.getAllAnswers(memberId, pageable);
+        return ResponseEntity.ok(answers.getContent());
     }
 
     @PutMapping(value = "/{answerId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
