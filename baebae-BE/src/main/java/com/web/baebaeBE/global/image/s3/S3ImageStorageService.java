@@ -21,15 +21,15 @@ public class S3ImageStorageService implements ImageStorageService {
     private String bucketName;
 
     @Override
-    public String uploadFile(String memberId, String answerId, String fileType, int index, InputStream inputStream, long size, String contentType) {
-        String key = generateFilePath(memberId, answerId, fileType, index);
+    public String uploadFile(String memberId, String Id, String fileType, int index, InputStream inputStream, long size, String contentType) {
+        String key = generateFilePath(memberId, Id, fileType, index);
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(size);
         metadata.setContentType(contentType);
         PutObjectRequest request = new PutObjectRequest(bucketName, key, inputStream, metadata)
                 .withCannedAcl(CannedAccessControlList.PublicRead);
         amazonS3Client.putObject(request);
-        return getFileUrl(memberId, answerId, fileType, index);
+        return getFileUrl(memberId, Id, fileType, index);
     }
 
     @Override
@@ -38,22 +38,26 @@ public class S3ImageStorageService implements ImageStorageService {
         amazonS3Client.deleteObject(bucketName, key);
     }
 
+    // 여기서 Id는 answerId OR categoryId
     @Override
-    public String getFileUrl(String memberId, String answerId, String fileType, int index) {
-        String key = generateFilePath(memberId, answerId, fileType, index);
+    public String getFileUrl(String memberId, String Id, String fileType, int index) {
+        String key = generateFilePath(memberId, Id, fileType, index);
         return amazonS3Client.getUrl(bucketName, key).toExternalForm();
     }
 
-    public String generateFilePath(String memberId, String answerId, String fileType, int index) {
+    // 여기서 Id는 answerId OR categoryId
+    public String generateFilePath(String memberId, String id, String fileType, int index) {
         switch (fileType) {
             case "profile":
                 return memberId + "/profile.jpg";
             case "image":
-                return memberId + "/" + answerId + "/image_" + index + ".jpg";
+                return memberId + "/" + id + "/image_" + index + ".jpg";
             case "music":
-                return memberId + "/" + answerId + "/music.jpg";
+                return memberId + "/" + id + "/music.jpg";
             case "audio":
-                return memberId + "/" + answerId + "/audio.mp3";
+                return memberId + "/" + id + "/audio.mp3";
+            case "category":
+                return memberId + "/" + id + ".jpg";
             default:
                 throw new IllegalArgumentException("Unknown file type");
         }

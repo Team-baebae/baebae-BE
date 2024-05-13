@@ -3,6 +3,8 @@ package com.web.baebaeBE.domain.category.service;
 import com.web.baebaeBE.domain.answer.exception.AnswerError;
 import com.web.baebaeBE.domain.category.exception.CategoryException;
 import com.web.baebaeBE.domain.login.exception.LoginException;
+import com.web.baebaeBE.domain.member.dto.MemberResponse;
+import com.web.baebaeBE.domain.member.exception.MemberException;
 import com.web.baebaeBE.global.error.exception.BusinessException;
 import com.web.baebaeBE.domain.answer.entity.Answer;
 import com.web.baebaeBE.domain.answer.repository.AnswerRepository;
@@ -13,6 +15,7 @@ import com.web.baebaeBE.domain.category.repository.CategoryRepository;
 import com.web.baebaeBE.domain.member.entity.Member;
 import com.web.baebaeBE.domain.member.repository.MemberRepository;
 import com.web.baebaeBE.domain.category.dto.CategoryResponse;
+import com.web.baebaeBE.global.image.s3.S3ImageStorageService;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +23,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,11 +33,12 @@ import java.util.Set;
 @Slf4j
 @RequiredArgsConstructor
 public class CategoryService {
-private final CategoryRepository categoryRepository;
-private final CategorizedAnswerRepository categoryAnswerRepository;
-private final MemberRepository memberRepository;
-private final AnswerRepository answerRepository;
-private final EntityManager entityManager; // Answer 엔티티 프록시 가져오기 위함.
+    private final CategoryRepository categoryRepository;
+    private final CategorizedAnswerRepository categoryAnswerRepository;
+    private final MemberRepository memberRepository;
+    private final AnswerRepository answerRepository;
+    private final EntityManager entityManager; // Answer 엔티티 프록시 가져오기 위함.
+    private final S3ImageStorageService s3ImageStorageService;
 
     public Category createCategory(Long memberId, MultipartFile categoryImage, String categoryName) {
         Member member = memberRepository.findById(memberId)
@@ -87,14 +93,42 @@ private final EntityManager entityManager; // Answer 엔티티 프록시 가져�
         return categoryRepository.save(category);
     }
 
+
+
     public CategoryResponse.CategoryInformationResponse updateCategoryImage(Long categoryId, MultipartFile imageFile) {
-        // Category 엔티티 조회
+        // 엔티티 조회
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new BusinessException(CategoryException.CATEGORY_NOT_FOUND));
+        Member member = memberRepository.findById(category.getMember().getId())
+                .orElseThrow(() -> new BusinessException(LoginException.NOT_EXIST_MEMBER));
 
-        category.updateCategoryImage("default_image_path"); // 저장방식 추후 수정
+        String imageUrl = null;
+        try {
+            imageUrl = convertImageToObject(member.getId(), category.getCategoryId(), imageFile);
+        } catch (IOException e) {
+            log.error(String.valueOf(e));
+            throw new RuntimeException(e);
+        }
+
+        category.updateCategoryImage(imageUrl);
+        categoryRepository.save(category);
+
 
         return CategoryResponse.CategoryInformationResponse.of(category);
+    }
+    public String convertImageToObject(Long memberId, Long categoryId, MultipartFile image) throws IOException {
+        if (image.isEmpty()) {
+            throw new BusinessException(MemberException.INVAILD_IMAGE_FILE);
+        }
+        String fileType = "category";
+        int index = 0; // 프로필 이미지에는 인덱스가 필요 없으므로 사용하지 않음
+        String fileName = memberId + "_" + categoryId +"_category_image.jpg";
+
+        try (InputStream inputStream = image.getInputStream()) {
+            long size = image.getSize();
+            String contentType = image.getContentType();
+            return s3ImageStorageService.uploadFile(memberId.toString(), null, fileType, index, inputStream, size, contentType);
+        }
     }
     public CategoryResponse.CategoryInformationResponse updateAnswersToCategory(Category category, List<Long> answerIds) {
 
