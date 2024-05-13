@@ -5,6 +5,8 @@ import com.web.baebaeBE.domain.category.entity.Category;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "categorized_answer")
 @Getter
@@ -25,4 +27,7 @@ public class CategorizedAnswer {
     @ManyToOne
     @JoinColumn(name = "answer_id", nullable = false)
     private Answer answer;
+
+    @Column(name = "created_date")
+    private LocalDateTime createdDate;
 }

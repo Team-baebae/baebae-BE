@@ -3,12 +3,13 @@ package com.web.baebaeBE.domain.question.service;
 import com.web.baebaeBE.domain.login.exception.LoginException;
 import com.web.baebaeBE.domain.member.entity.Member;
 import com.web.baebaeBE.domain.member.repository.MemberRepository;
+import com.web.baebaeBE.domain.notification.dto.NotificationRequest;
+import com.web.baebaeBE.domain.notification.service.NotificationService;
 import com.web.baebaeBE.domain.question.dto.QuestionCreateRequest;
 import com.web.baebaeBE.domain.question.dto.QuestionDetailResponse;
 import com.web.baebaeBE.domain.question.exception.QuestionError;
 import com.web.baebaeBE.domain.question.repository.QuestionMapper;
 import com.web.baebaeBE.global.error.exception.BusinessException;
-import com.web.baebaeBE.global.firebase.FirebaseNotificationService;
 import com.web.baebaeBE.domain.question.entity.Question;
 import com.web.baebaeBE.domain.question.repository.QuestionRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,7 @@ public class QuestionService {
     private final QuestionRepository questionRepository;
     private final MemberRepository memberRepository;
     private final QuestionMapper questionMapper;
-    private final FirebaseNotificationService firebaseNotificationService;
+    private final NotificationService notificationService;
 
     @Transactional
     public QuestionDetailResponse createQuestion(QuestionCreateRequest request, Long memberId) {
@@ -32,9 +33,18 @@ public class QuestionService {
 
         Question question = questionMapper.toEntity(request, member);
         Question savedQuestion = questionRepository.save(question);
-        if (member.getFcmToken() != null) {
-            firebaseNotificationService.notifyNewQuestion(member, question);
-        }
+
+        // 알림생성
+        NotificationRequest.create notificationDto = new NotificationRequest.create(
+                member.getId(),
+                "새로운 질문이 등록되었습니다!",
+                question.getContent(),
+                NotificationRequest.EventType.NEW_QUESTION,
+                null // reactionType
+        );
+
+        notificationService.createNotification(notificationDto);
+
         return questionMapper.toDomain(savedQuestion, member.getFcmToken());
     }
 
@@ -54,10 +64,6 @@ public class QuestionService {
         // 질문 업데이트 후 저장
         Question updatedQuestion = questionRepository.save(question);
 
-        // FCM 토큰이 있고 질문이 업데이트되었다면 알림 발송
-        if (updatedQuestion.getMember().getFcmToken() != null) {
-            firebaseNotificationService.notifyNewQuestion(updatedQuestion.getMember(), updatedQuestion);
-        }
         return questionMapper.toDomain(updatedQuestion, updatedQuestion.getMember().getFcmToken());
 
     }

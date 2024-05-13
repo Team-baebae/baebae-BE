@@ -23,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Duration;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -81,13 +83,18 @@ public class NotificationSelectTest {
         NotificationRequest.create createRequest1 = new NotificationRequest.create(
                 testMember.getId(),
                 "배승우님이 질문을 남기셨습니다! 확인해보세요",
-                "가은아! 넌 무슨색상을 좋아해?"
+                "가은아! 넌 무슨색상을 좋아해?",
+                NotificationRequest.EventType.NEW_QUESTION,// 이벤트 타입 설정
+                null
         );
         NotificationRequest.create createRequest2 = new NotificationRequest.create(
                 testMember.getId(),
                 "김예찬님이 질문을 남기셨습니다! 확인해보세요",
-                "가은아! 너는 무슨음식을 좋아해?"
+                "가은아! 너는 무슨음식을 좋아해?",
+                NotificationRequest.EventType.NEW_QUESTION,// 이벤트 타입 설정
+                null
         );
+
         notificationService.createNotification(createRequest1);
         notificationService.createNotification(createRequest2);
 
@@ -111,7 +118,9 @@ public class NotificationSelectTest {
         NotificationRequest.create createRequest1 = new NotificationRequest.create(
                 testMember.getId(),
                 "배승우님이 질문을 남기셨습니다! 확인해보세요",
-                "가은아! 넌 무슨색상을 좋아해?"
+                "가은아! 넌 무슨색상을 좋아해?",
+                NotificationRequest.EventType.NEW_QUESTION,// 이벤트 타입 설정
+                null
         );
         Notification notification = notificationService.createNotification(createRequest1);
 
