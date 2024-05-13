@@ -50,13 +50,12 @@ public class CategoryController implements CategoryApi {
     }
 
     @PatchMapping("/{categoryId}/image")
-    public ResponseEntity<Void> updateCategoryImage(
+    public ResponseEntity<CategoryResponse.CategoryInformationResponse> updateCategoryImage(
             @PathVariable Long categoryId,
             @RequestPart("imageFile") MultipartFile imageFile
     ) {
 
-        categoryService.updateCategoryImage(categoryId, imageFile);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(categoryService.updateCategoryImage(categoryId, imageFile));
     }
 
 

@@ -87,16 +87,14 @@ private final EntityManager entityManager; // Answer 엔티티 프록시 가져�
         return categoryRepository.save(category);
     }
 
-    public void updateCategoryImage(Long categoryId, MultipartFile imageFile) {
+    public CategoryResponse.CategoryInformationResponse updateCategoryImage(Long categoryId, MultipartFile imageFile) {
         // Category 엔티티 조회
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new BusinessException(CategoryException.CATEGORY_NOT_FOUND));
 
-        /*// 이미지 파일 저장 로직 (이 부분은 프로젝트의 이미지 저장 방식에 따라 달라집니다.)
-        String imagePath = imageStorageService.save(imageFile);
+        category.updateCategoryImage("default_image_path"); // 저장방식 추후 수정
 
-        // Category의 이미지 경로 업데이트
-        category.updateImagePath(imagePath);*/ //추후 수정 예정
+        return CategoryResponse.CategoryInformationResponse.of(category);
     }
     public CategoryResponse.CategoryInformationResponse updateAnswersToCategory(Category category, List<Long> answerIds) {
 

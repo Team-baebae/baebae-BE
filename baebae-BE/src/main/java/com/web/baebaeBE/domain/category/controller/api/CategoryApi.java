@@ -89,7 +89,7 @@ public interface CategoryApi {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "수정 성공")
     })
-    ResponseEntity<Void> updateCategoryImage(
+    ResponseEntity<CategoryResponse.CategoryInformationResponse> updateCategoryImage(
             @Parameter(description = "카테고리의 ID", required = true) @PathVariable Long categoryId,
             @Parameter(description = "이미지 파일", required = true) @RequestPart("imageFile") MultipartFile imageFile
     );
