@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 @Primary
 @RequiredArgsConstructor
-public class QuestionRepositoryImpl implements QuestionRepository{
+public class QuestionRepositoryImpl implements QuestionRepository {
     private final QuestionJpaRepository questionJpaRepository;
 
     @Override
@@ -41,10 +41,9 @@ public class QuestionRepositoryImpl implements QuestionRepository{
         // 이 메서드는 답변되지 않은 질문만 필터링하여 반환합니다.
         return questionJpaRepository.findAllByMemberIdAndIsAnsweredFalse(memberId, pageable);
     }
+
     @Override
     public void delete(Question questionEntity) {
         questionJpaRepository.delete(questionEntity);
     }
 }
-
-

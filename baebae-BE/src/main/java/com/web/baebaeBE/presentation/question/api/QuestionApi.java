@@ -122,19 +122,4 @@ public interface QuestionApi {
             @PathVariable Long questionId,
             @RequestParam String content,
             @RequestParam boolean isAnswered);
-
-    @Operation(
-            summary = "질문 삭제",
-            description = "특정 질문을 삭제합니다.",
-            security = @SecurityRequirement(name = "bearerAuth")
-    )
-    @Parameter(
-            in = ParameterIn.HEADER,
-            name = "Authorization", required = true,
-            schema = @Schema(type = "string"),
-            description = "Bearer [Access 토큰]")
-    @ApiResponse(responseCode = "204", description = "질문 삭제 성공")
-    @RequestMapping(method = RequestMethod.DELETE, value = "/{questionId}")
-    ResponseEntity<Void> deleteQuestion(
-            @PathVariable Long questionId);
 }
