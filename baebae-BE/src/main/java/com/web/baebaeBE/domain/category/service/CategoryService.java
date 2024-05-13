@@ -3,6 +3,8 @@ package com.web.baebaeBE.domain.category.service;
 import com.web.baebaeBE.domain.answer.exception.AnswerError;
 import com.web.baebaeBE.domain.category.exception.CategoryException;
 import com.web.baebaeBE.domain.login.exception.LoginException;
+import com.web.baebaeBE.domain.member.dto.MemberResponse;
+import com.web.baebaeBE.domain.member.exception.MemberException;
 import com.web.baebaeBE.global.error.exception.BusinessException;
 import com.web.baebaeBE.domain.answer.entity.Answer;
 import com.web.baebaeBE.domain.answer.repository.AnswerRepository;
@@ -13,13 +15,17 @@ import com.web.baebaeBE.domain.category.repository.CategoryRepository;
 import com.web.baebaeBE.domain.member.entity.Member;
 import com.web.baebaeBE.domain.member.repository.MemberRepository;
 import com.web.baebaeBE.domain.category.dto.CategoryResponse;
+import com.web.baebaeBE.global.image.s3.S3ImageStorageService;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -27,29 +33,36 @@ import java.util.Set;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional
 public class CategoryService {
-private final CategoryRepository categoryRepository;
-private final CategorizedAnswerRepository categoryAnswerRepository;
-private final MemberRepository memberRepository;
-private final AnswerRepository answerRepository;
-private final EntityManager entityManager; // Answer 엔티티 프록시 가져오기 위함.
+    private final CategoryRepository categoryRepository;
+    private final CategorizedAnswerRepository categoryAnswerRepository;
+    private final MemberRepository memberRepository;
+    private final AnswerRepository answerRepository;
+    private final EntityManager entityManager; // Answer 엔티티 프록시 가져오기 위함.
+    private final S3ImageStorageService s3ImageStorageService;
 
     public Category createCategory(Long memberId, MultipartFile categoryImage, String categoryName) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(LoginException.NOT_EXIST_MEMBER));
 
-        String imagePath = "default_image_path";
-        if (categoryImage != null) {
-            //imagePath = imageStorageService.save(categoryImage); //추후 수정 예정
-        }
 
         Category category = Category.builder()
                 .member(member)
                 .categoryName(categoryName)
-                .categoryImage(imagePath)
                 .build();
 
-        return categoryRepository.save(category);
+        category = categoryRepository.save(category);
+
+        String imageUrl = null;
+        if(categoryImage == null)
+            imageUrl = s3ImageStorageService.getDefaultFileUrl();
+        else
+            imageUrl = convertImageToObject(memberId, category.getCategoryId(), categoryImage);
+
+        category.updateCategoryImage(imageUrl);
+
+        return category;
     }
 
     public CategoryResponse.CategoryInformationResponse createAnswersToCategory(Long categoryId, List<Long> answerIds) {
@@ -87,14 +100,40 @@ private final EntityManager entityManager; // Answer 엔티티 프록시 가져�
         return categoryRepository.save(category);
     }
 
+
+
     public CategoryResponse.CategoryInformationResponse updateCategoryImage(Long categoryId, MultipartFile imageFile) {
-        // Category 엔티티 조회
+        // 엔티티 조회
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new BusinessException(CategoryException.CATEGORY_NOT_FOUND));
+        Member member = memberRepository.findById(category.getMember().getId())
+                .orElseThrow(() -> new BusinessException(LoginException.NOT_EXIST_MEMBER));
 
-        category.updateCategoryImage("default_image_path"); // 저장방식 추후 수정
+        String imageUrl
+                = convertImageToObject(member.getId(), category.getCategoryId(), imageFile);
+
+        category.updateCategoryImage(imageUrl);
+        categoryRepository.save(category);
+
 
         return CategoryResponse.CategoryInformationResponse.of(category);
+    }
+    public String convertImageToObject(Long memberId, Long categoryId, MultipartFile image) {
+        if (image.isEmpty()) {
+            throw new BusinessException(MemberException.INVAILD_IMAGE_FILE);
+        }
+        String fileType = "category";
+        int index = 0; // 카테고리 이미지에는 인덱스가 필요 없으므로 사용하지 않음
+        String fileName = memberId + "_" + categoryId +"_category_image.jpg";
+
+        try (InputStream inputStream = image.getInputStream()) {
+            long size = image.getSize();
+            String contentType = image.getContentType();
+            return s3ImageStorageService.uploadFile(memberId.toString(), categoryId.toString(), fileType, index, inputStream, size, contentType);
+        } catch (IOException e) {
+            log.error(e.toString());
+            throw new RuntimeException(e);
+        }
     }
     public CategoryResponse.CategoryInformationResponse updateAnswersToCategory(Category category, List<Long> answerIds) {
 

@@ -3,6 +3,7 @@ package com.web.baebaeBE.domain.login.service;
 import com.web.baebaeBE.domain.oauth2.service.Oauth2Service;
 import com.web.baebaeBE.domain.login.exception.LoginException;
 import com.web.baebaeBE.global.error.exception.BusinessException;
+import com.web.baebaeBE.global.image.s3.S3ImageStorageService;
 import com.web.baebaeBE.global.jwt.JwtTokenProvider;
 import com.web.baebaeBE.domain.member.entity.Member;
 import com.web.baebaeBE.domain.member.repository.MemberRepository;
@@ -14,6 +15,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,6 +26,7 @@ public class LoginService {
   private final MemberRepository memberRepository;
   private final Oauth2Service oauth2Service;
   private final JwtTokenProvider jwtTokenProvider;
+  private final S3ImageStorageService s3ImageStorageService;
   public static final Duration REFRESH_TOKEN_DURATION = Duration.ofDays(14); // 리프레시 토큰 유효기간.
   public static final Duration ACCESS_TOKEN_DURATION = Duration.ofHours(1); // 액세스 토큰 유효기간.
 
@@ -85,6 +88,7 @@ public class LoginService {
         .nickname(signUpRequest.getNickname())
         .memberType(signUpRequest.getMemberType())
         .refreshToken(null)
+            .profileImage(s3ImageStorageService.getDefaultFileUrl())
         .tokenExpirationTime(LocalDateTime.now().plus(REFRESH_TOKEN_DURATION))
         .build();
 
