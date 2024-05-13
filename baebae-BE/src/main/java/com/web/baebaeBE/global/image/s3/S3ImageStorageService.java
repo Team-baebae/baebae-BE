@@ -45,6 +45,10 @@ public class S3ImageStorageService implements ImageStorageService {
         return amazonS3Client.getUrl(bucketName, key).toExternalForm();
     }
 
+    public String getDefaultFileUrl() {
+        return amazonS3Client.getUrl(bucketName,"default_image.jpg").toExternalForm();
+    }
+
     // 여기서 Id는 answerId OR categoryId
     public String generateFilePath(String memberId, String id, String fileType, int index) {
         switch (fileType) {

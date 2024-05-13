@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -32,6 +33,7 @@ import java.util.Set;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional
 public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategorizedAnswerRepository categoryAnswerRepository;
@@ -44,10 +46,7 @@ public class CategoryService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(LoginException.NOT_EXIST_MEMBER));
 
-        String imagePath = "default_image_path";
-        if (categoryImage != null) {
-            //imagePath = imageStorageService.save(categoryImage); //추후 수정 예정
-        }
+        String imagePath = s3ImageStorageService.getDefaultFileUrl();
 
         Category category = Category.builder()
                 .member(member)
@@ -55,7 +54,17 @@ public class CategoryService {
                 .categoryImage(imagePath)
                 .build();
 
-        return categoryRepository.save(category);
+        category = categoryRepository.save(category);
+
+        String imageUrl = null;
+        if(categoryImage.isEmpty())
+            imageUrl = s3ImageStorageService.getDefaultFileUrl();
+        else
+            imageUrl = convertImageToObject(memberId, category.getCategoryId(), categoryImage);
+
+        category.updateCategoryImage(imageUrl);
+
+        return category;
     }
 
     public CategoryResponse.CategoryInformationResponse createAnswersToCategory(Long categoryId, List<Long> answerIds) {
@@ -102,13 +111,8 @@ public class CategoryService {
         Member member = memberRepository.findById(category.getMember().getId())
                 .orElseThrow(() -> new BusinessException(LoginException.NOT_EXIST_MEMBER));
 
-        String imageUrl = null;
-        try {
-            imageUrl = convertImageToObject(member.getId(), category.getCategoryId(), imageFile);
-        } catch (IOException e) {
-            log.error(String.valueOf(e));
-            throw new RuntimeException(e);
-        }
+        String imageUrl
+                = convertImageToObject(member.getId(), category.getCategoryId(), imageFile);
 
         category.updateCategoryImage(imageUrl);
         categoryRepository.save(category);
@@ -116,18 +120,21 @@ public class CategoryService {
 
         return CategoryResponse.CategoryInformationResponse.of(category);
     }
-    public String convertImageToObject(Long memberId, Long categoryId, MultipartFile image) throws IOException {
+    public String convertImageToObject(Long memberId, Long categoryId, MultipartFile image) {
         if (image.isEmpty()) {
             throw new BusinessException(MemberException.INVAILD_IMAGE_FILE);
         }
         String fileType = "category";
-        int index = 0; // 프로필 이미지에는 인덱스가 필요 없으므로 사용하지 않음
+        int index = 0; // 카테고리 이미지에는 인덱스가 필요 없으므로 사용하지 않음
         String fileName = memberId + "_" + categoryId +"_category_image.jpg";
 
         try (InputStream inputStream = image.getInputStream()) {
             long size = image.getSize();
             String contentType = image.getContentType();
             return s3ImageStorageService.uploadFile(memberId.toString(), null, fileType, index, inputStream, size, contentType);
+        } catch (IOException e) {
+            log.error(e.toString());
+            throw new RuntimeException(e);
         }
     }
     public CategoryResponse.CategoryInformationResponse updateAnswersToCategory(Category category, List<Long> answerIds) {
