@@ -58,7 +58,7 @@ public class CategoryService {
         if(categoryImage == null)
             imageUrl = s3ImageStorageService.getDefaultFileUrl();
         else
-            imageUrl = convertImageToObject(memberId, category.getCategoryId(), categoryImage);
+            imageUrl = convertImageToObject(memberId, category.getId(), categoryImage);
 
         category.updateCategoryImage(imageUrl);
 
@@ -110,7 +110,7 @@ public class CategoryService {
                 .orElseThrow(() -> new BusinessException(LoginException.NOT_EXIST_MEMBER));
 
         String imageUrl
-                = convertImageToObject(member.getId(), category.getCategoryId(), imageFile);
+                = convertImageToObject(member.getId(), category.getId(), imageFile);
 
         category.updateCategoryImage(imageUrl);
         categoryRepository.save(category);

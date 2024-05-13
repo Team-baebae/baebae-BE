@@ -5,6 +5,7 @@ import com.web.baebaeBE.domain.answer.dto.AnswerCreateRequest;
 import com.web.baebaeBE.domain.answer.dto.AnswerDetailResponse;
 import com.web.baebaeBE.domain.answer.dto.AnswerResponse;
 import com.web.baebaeBE.domain.answer.service.AnswerService;
+import com.web.baebaeBE.domain.categorized.answer.service.CategorizedAnswerService;
 import com.web.baebaeBE.domain.category.entity.Category;
 import com.web.baebaeBE.domain.category.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,6 +26,7 @@ import java.util.List;
 public class AnswerController implements AnswerApi {
     private final AnswerService answerService;
     private final CategoryService categoryService;
+    private final CategorizedAnswerService categorizedAnswerService;
     @PostMapping(value = "/{memberId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<AnswerDetailResponse> createAnswer(@PathVariable Long memberId,
                                                              @RequestPart(value = "imageFile") MultipartFile imageFile,
@@ -45,12 +47,7 @@ public class AnswerController implements AnswerApi {
             @RequestParam(required = false) Long category,
             Pageable pageable) {
 
-        Category cat = null;
-        if (category != null) {
-            cat = categoryService.getCategoryByNameOrId(category);
-        }
-        Page<AnswerDetailResponse> answers = answerService.getAllAnswers(memberId, cat, pageable);
-        return ResponseEntity.ok(answers);
+        return ResponseEntity.ok(categorizedAnswerService.getAnswersByMemberAndCategory(memberId, category, pageable));
     }
 
     @PutMapping(value = "/{answerId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

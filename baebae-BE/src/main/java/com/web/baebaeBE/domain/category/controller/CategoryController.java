@@ -29,7 +29,7 @@ public class CategoryController implements CategoryApi {
         Category category =
                 categoryService.createCategory(memberId, categoryImage, createCategory.getCategoryName());
 
-        return ResponseEntity.ok(categoryService.createAnswersToCategory(category.getCategoryId(), createCategory.getAnswerIds()));
+        return ResponseEntity.ok(categoryService.createAnswersToCategory(category.getId(), createCategory.getAnswerIds()));
     }
 
     @GetMapping("/{memberId}")
