@@ -1,11 +1,11 @@
 package com.web.baebaeBE.domain.category.service;
 
-import com.web.baebaeBE.domain23.answer.exception.AnswerError;
+import com.web.baebaeBE.domain.answer.exception.AnswerError;
 import com.web.baebaeBE.domain.category.exception.CategoryException;
 import com.web.baebaeBE.domain.login.exception.LoginException;
 import com.web.baebaeBE.global.error.exception.BusinessException;
-import com.web.baebaeBE.infra.answer.entity.Answer;
-import com.web.baebaeBE.infra.answer.repository.AnswerRepository;
+import com.web.baebaeBE.domain.answer.entity.Answer;
+import com.web.baebaeBE.domain.answer.repository.AnswerRepository;
 import com.web.baebaeBE.domain.categorized.answer.entity.CategorizedAnswer;
 import com.web.baebaeBE.domain.categorized.answer.repository.CategorizedAnswerRepository;
 import com.web.baebaeBE.domain.category.entity.Category;
