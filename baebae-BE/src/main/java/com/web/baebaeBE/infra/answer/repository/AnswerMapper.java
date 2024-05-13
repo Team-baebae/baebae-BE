@@ -1,7 +1,7 @@
 package com.web.baebaeBE.infra.answer.repository;
 
 import com.web.baebaeBE.infra.answer.entity.Answer;
-import com.web.baebaeBE.infra.member.entity.Member;
+import com.web.baebaeBE.domain.member.entity.Member;
 import com.web.baebaeBE.infra.question.entity.Question;
 import com.web.baebaeBE.presentation.answer.dto.AnswerCreateRequest;
 import com.web.baebaeBE.presentation.answer.dto.AnswerDetailResponse;
@@ -17,7 +17,6 @@ public class AnswerMapper {
         return Answer.builder()
                 .question(question)
                 .member(member)
-                .imageFiles(request.getImageUrls()) // 이미지 URL 리스트 처리
                 .content(request.getContent())
                 .linkAttachments(request.getLinkAttachments()) // 링크 첨부 리스트 처리
                 .musicName(request.getMusicName())

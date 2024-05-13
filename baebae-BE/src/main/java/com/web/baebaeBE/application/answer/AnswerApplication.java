@@ -1,13 +1,13 @@
 package com.web.baebaeBE.application.answer;
 
-import com.web.baebaeBE.domain.answer.exception.AnswerError;
-import com.web.baebaeBE.domain.answer.service.AnswerService;
-import com.web.baebaeBE.domain.member.exception.MemberError;
+import com.web.baebaeBE.domain23.answer.exception.AnswerError;
+import com.web.baebaeBE.domain23.answer.service.AnswerService;
+import com.web.baebaeBE.domain.login.exception.LoginException;
 import com.web.baebaeBE.global.error.exception.BusinessException;
 import com.web.baebaeBE.infra.answer.entity.Answer;
 import com.web.baebaeBE.infra.answer.repository.AnswerMapper;
-import com.web.baebaeBE.infra.member.entity.Member;
-import com.web.baebaeBE.infra.member.repository.MemberRepository;
+import com.web.baebaeBE.domain.member.entity.Member;
+import com.web.baebaeBE.domain.member.repository.MemberRepository;
 import com.web.baebaeBE.infra.question.entity.Question;
 import com.web.baebaeBE.infra.question.repository.QuestionRepository;
 import com.web.baebaeBE.presentation.answer.dto.AnswerCreateRequest;
@@ -30,15 +30,16 @@ public class AnswerApplication {
     private final MemberRepository memberRepository;
     private final QuestionRepository questionRepository;
 
-    public AnswerDetailResponse createAnswer(AnswerCreateRequest request, Long memberId, List<MultipartFile> imageFiles, MultipartFile audioFile) {
+    public AnswerDetailResponse createAnswer(AnswerCreateRequest request, Long memberId, MultipartFile imageFiles) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BusinessException(MemberError.NOT_EXIST_MEMBER));
+                .orElseThrow(() -> new BusinessException(LoginException.NOT_EXIST_MEMBER));
+        System.out.println(request.getQuestionId());
         Question question = questionRepository.findById(request.getQuestionId())
                 .orElseThrow(() -> new BusinessException(AnswerError.NO_EXIST_QUESTION));
 
         Answer answerEntity = answerMapper.toEntity(request, question, member);
-        Answer savedAnswerEntity = answerService.createAnswer(answerEntity, imageFiles, audioFile);
-        return answerMapper.toDomain(savedAnswerEntity, member.getFcmToken());
+        Answer savedAnswerEntity = answerService.createAnswer(answerEntity, imageFiles);
+        return answerMapper.toDomain(savedAnswerEntity, "나중에 수정 요망");
     }
 
     public List<AnswerResponse> getAnswersByMemberId(Long memberId) {
@@ -50,12 +51,12 @@ public class AnswerApplication {
 
     public Page<AnswerDetailResponse> getAllAnswers(Long memberId, Pageable pageable) {
         Page<Answer> answerPage = answerService.getAllAnswers(memberId, pageable);
-        return answerPage.map(answer -> answerMapper.toDomain(answer, "appropriate token here"));
+        return answerPage.map(answer -> answerMapper.toDomain(answer, "나중에 수정 요망"));
     }
 
-    public AnswerDetailResponse updateAnswer(Long answerId, AnswerCreateRequest request, MultipartFile[] imageFiles, MultipartFile audioFile) {
-        Answer updatedAnswer = answerService.updateAnswer(answerId, request, imageFiles, audioFile);
-        return answerMapper.toDomain(updatedAnswer, updatedAnswer.getMember().getFcmToken());
+    public AnswerDetailResponse updateAnswer(Long answerId, AnswerCreateRequest request, MultipartFile imageFiles) {
+        Answer updatedAnswer = answerService.updateAnswer(answerId, request, imageFiles);
+        return answerMapper.toDomain(updatedAnswer, "나중에 수정 요망");
     }
 
     public void deleteAnswer(Long answerId) {

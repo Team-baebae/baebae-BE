@@ -2,7 +2,7 @@ package com.web.baebaeBE.global.config;
 
 import com.web.baebaeBE.global.jwt.JwtAuthenticationFilter;
 import com.web.baebaeBE.global.jwt.JwtTokenProvider;
-import com.web.baebaeBE.domain.member.service.OAuth2UserCustomService;
+import com.web.baebaeBE.domain.login.service.OAuth2UserCustomService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

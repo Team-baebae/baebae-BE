@@ -28,10 +28,9 @@ public class AnswerController implements AnswerApi {
 
     @PostMapping(value = "/{memberId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<AnswerDetailResponse> createAnswer(@PathVariable Long memberId,
-                                                             @RequestPart(value = "imageFiles") List<MultipartFile> imageFiles,
-                                                             @RequestPart(value = "audioFile") MultipartFile audioFile,
+                                                             @RequestPart(value = "imageFile") MultipartFile imageFile,
                                                              @RequestPart AnswerCreateRequest request) {
-        AnswerDetailResponse createdAnswer = answerApplication.createAnswer(request, memberId, imageFiles, audioFile);
+        AnswerDetailResponse createdAnswer = answerApplication.createAnswer(request, memberId, imageFile);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdAnswer);
     }
 
@@ -50,11 +49,9 @@ public class AnswerController implements AnswerApi {
     @PutMapping(value = "/{answerId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<AnswerDetailResponse> updateAnswer(
             @PathVariable Long answerId,
-            @RequestPart(value = "imageFiles") List<MultipartFile> imageFiles,
-            @RequestPart(value = "audioFile") MultipartFile audioFile,
+            @RequestPart(value = "imageFile") MultipartFile imageFile,
             @RequestPart AnswerCreateRequest request) {
-        MultipartFile[] imageFilesArray = imageFiles.toArray(new MultipartFile[0]);
-        AnswerDetailResponse updatedAnswer = answerApplication.updateAnswer(answerId, request, imageFilesArray, audioFile);
+        AnswerDetailResponse updatedAnswer = answerApplication.updateAnswer(answerId, request, imageFile);
         return ResponseEntity.ok(updatedAnswer);
     }
 

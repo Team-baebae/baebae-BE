@@ -1,10 +1,10 @@
 package com.web.baebaeBE.application.question;
 
-import com.web.baebaeBE.domain.member.exception.MemberError;
-import com.web.baebaeBE.domain.question.service.QuestionService;
+import com.web.baebaeBE.domain.login.exception.LoginException;
+import com.web.baebaeBE.domain23.question.service.QuestionService;
 import com.web.baebaeBE.global.error.exception.BusinessException;
-import com.web.baebaeBE.infra.member.entity.Member;
-import com.web.baebaeBE.infra.member.repository.MemberRepository;
+import com.web.baebaeBE.domain.member.entity.Member;
+import com.web.baebaeBE.domain.member.repository.MemberRepository;
 import com.web.baebaeBE.infra.question.entity.Question;
 import com.web.baebaeBE.infra.question.repository.QuestionMapper;
 import com.web.baebaeBE.presentation.question.dto.QuestionCreateRequest;
@@ -26,7 +26,7 @@ public class QuestionApplication {
 
     public QuestionDetailResponse createQuestion(QuestionCreateRequest request, Long memberId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BusinessException(MemberError.NOT_EXIST_MEMBER));
+                .orElseThrow(() -> new BusinessException(LoginException.NOT_EXIST_MEMBER));
 
         Question questionEntity = questionMapper.toEntity(request, member);
         // 이제 멤버의 FCM 토큰을 사용하여 질문을 생성
