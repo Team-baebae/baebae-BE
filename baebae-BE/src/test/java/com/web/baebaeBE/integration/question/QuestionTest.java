@@ -5,13 +5,11 @@ import com.web.baebaeBE.global.jwt.JwtTokenProvider;
 import com.web.baebaeBE.domain.member.entity.Member;
 import com.web.baebaeBE.domain.member.entity.MemberType;
 import com.web.baebaeBE.domain.member.repository.MemberRepository;
-import com.web.baebaeBE.infra.question.entity.Question;
-import com.web.baebaeBE.infra.question.repository.QuestionRepository;
-import com.web.baebaeBE.presentation.question.dto.QuestionCreateRequest;
+import com.web.baebaeBE.domain.question.repository.QuestionRepository;
+import com.web.baebaeBE.domain.question.dto.QuestionCreateRequest;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -19,13 +17,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @SpringBootTest()

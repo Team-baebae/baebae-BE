@@ -1,6 +1,6 @@
 package com.web.baebaeBE.domain.member.entity;
 
-import com.web.baebaeBE.infra.answer.entity.Answer;
+import com.web.baebaeBE.domain.answer.entity.Answer;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
