@@ -3,6 +3,7 @@ package com.web.baebaeBE.domain.answer.repository;
 import com.web.baebaeBE.domain.answer.entity.Answer;
 import com.web.baebaeBE.domain.answer.repository.AnswerJpaRepository;
 import com.web.baebaeBE.domain.answer.repository.AnswerRepository;
+import com.web.baebaeBE.domain.category.entity.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
@@ -42,6 +43,10 @@ public class AnswerRepositoryImpl implements AnswerRepository {
         return jpaRepository.findAllByMemberId(memberId, pageable);
     }
 
+    @Override
+    public Page<Answer> findAllByMemberIdAndCategory(Long memberId, Category category, Pageable pageable) {
+        return jpaRepository.findAllByMemberIdAndCategory(memberId, category, pageable);
+    }
     @Override
     public void delete(Answer answer) {
         jpaRepository.delete(answer);
