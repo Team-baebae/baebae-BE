@@ -29,6 +29,7 @@ public class LoginResponse {
     private String nickname;
     @Schema(example = "KAKAO")
     private MemberType memberType;
+    private String profileImage;
     @Schema(example = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJiZWJlLXNlcnZlciIsImlhdCI6MTcxMzQxNjgyNSwiZXhwIjoxNzEzNTAzMjI1LCJzdWIiOiJ1amozOTAwQG5hdmVyLmNvbSIsImp0aSI6IjIifQ.wvQR4Uoa8KtMgIDwRn7AwKy60olwnzP33_WLI1l3q4I")
     private String accessToken;
     @Schema(example = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJiZWJlLXNlcnZlciIsImlhdCI6MTcxMzQxNjgyNSwiZXhwIjoxNzE0NjI2NDI1LCJzdWIiOiJ1amozOTAwQG5hdmVyLmNvbSIsImp0aSI6IjIifQ.BYrRkhwK1SSAe3nanmRIT_oSZkWyZlNnl3wFLI_nIqY")
@@ -41,6 +42,7 @@ public class LoginResponse {
           .email(member.getEmail())
           .nickname(member.getNickname())
           .memberType(member.getMemberType())
+              .profileImage(member.getProfileImage())
           .refreshToken(member.getRefreshToken())
           .accessToken(accessToken)
           .build();

@@ -61,7 +61,7 @@ public class S3ImageStorageService implements ImageStorageService {
             case "audio":
                 return memberId + "/" + id + "/audio.mp3";
             case "category":
-                return memberId + "/" + id + ".jpg";
+                return memberId + "/" + id + "/category_image.jpg";
             default:
                 throw new IllegalArgumentException("Unknown file type");
         }

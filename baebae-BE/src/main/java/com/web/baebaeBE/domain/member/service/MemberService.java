@@ -39,34 +39,31 @@ public class MemberService {
     }
 
     public MemberResponse.ProfileImageResponse updateProfileImage(Long memberId, MultipartFile image) {
-        String imageUrl = null;
-        try {
-            imageUrl = convertImageToObject(memberId, image);
-        } catch (IOException e) {
-            log.error(String.valueOf(e));
-            throw new RuntimeException(e);
-        }
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(LoginException.NOT_EXIST_MEMBER));
+
+        String imageUrl = convertImageToObject(memberId, image);
         member.updateProfileImage(imageUrl);
         memberRepository.save(member);
 
         return MemberResponse.ProfileImageResponse.of(imageUrl);
     }
 
-    public String convertImageToObject(Long memberId, MultipartFile image) throws IOException {
+    public String convertImageToObject(Long memberId, MultipartFile image){
         if (image.isEmpty()) {
             throw new BusinessException(MemberException.INVAILD_IMAGE_FILE);
         }
         String fileType = "profile";
         int index = 0; // 프로필 이미지에는 인덱스가 필요 없으므로 사용하지 않음
         String fileName = memberId + "_profile.jpg";
-        String path = memberId + "/" + fileName;
 
         try (InputStream inputStream = image.getInputStream()) {
             long size = image.getSize();
             String contentType = image.getContentType();
             return s3ImageStorageService.uploadFile(memberId.toString(), null, fileType, index, inputStream, size, contentType);
+        } catch (IOException e) {
+            log.error(e.toString());
+            throw new RuntimeException(e);
         }
     }
 

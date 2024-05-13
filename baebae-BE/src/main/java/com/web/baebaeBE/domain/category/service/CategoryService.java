@@ -46,18 +46,16 @@ public class CategoryService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(LoginException.NOT_EXIST_MEMBER));
 
-        String imagePath = s3ImageStorageService.getDefaultFileUrl();
 
         Category category = Category.builder()
                 .member(member)
                 .categoryName(categoryName)
-                .categoryImage(imagePath)
                 .build();
 
         category = categoryRepository.save(category);
 
         String imageUrl = null;
-        if(categoryImage.isEmpty())
+        if(categoryImage == null)
             imageUrl = s3ImageStorageService.getDefaultFileUrl();
         else
             imageUrl = convertImageToObject(memberId, category.getCategoryId(), categoryImage);
@@ -131,7 +129,7 @@ public class CategoryService {
         try (InputStream inputStream = image.getInputStream()) {
             long size = image.getSize();
             String contentType = image.getContentType();
-            return s3ImageStorageService.uploadFile(memberId.toString(), null, fileType, index, inputStream, size, contentType);
+            return s3ImageStorageService.uploadFile(memberId.toString(), categoryId.toString(), fileType, index, inputStream, size, contentType);
         } catch (IOException e) {
             log.error(e.toString());
             throw new RuntimeException(e);
