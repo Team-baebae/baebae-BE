@@ -67,13 +67,6 @@ public class MemberService {
         }
     }
 
-    public void updateFcmToken(Long memberId, String fcmToken) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BusinessException(LoginException.NOT_EXIST_MEMBER));
-
-        member.updateFcmToken(fcmToken);
-        memberRepository.save(member);
-    }
 
     public void updateNickname(Long memberId, String nickname) {
         Member member = memberRepository.findById(memberId)

@@ -29,6 +29,7 @@ public class MemberController implements MemberApi {
 
     return ResponseEntity.ok(memberService.getMember(memberId));
   }
+
   @GetMapping("/nickname/{nickname}")
   public ResponseEntity<MemberResponse.MemberIdResponse> getMemberIdByNickname(
           @PathVariable String nickname
@@ -54,14 +55,6 @@ public class MemberController implements MemberApi {
     return ResponseEntity.ok(memberService.updateProfileImage(memberId, image));
   }
 
-  @PatchMapping("/fcm-token/{memberId}")
-  public ResponseEntity<Void> updateFcmToken(
-          @PathVariable Long memberId,
-          @RequestBody MemberRequest.UpdateFcmTokenDto updateFcmTokenDto) {
-
-    memberService.updateFcmToken(memberId, updateFcmTokenDto.getFcmToken());
-    return ResponseEntity.ok().build();
-  }
 
   @PatchMapping("/nickname/{memberId}")
   public ResponseEntity<Void> updateNickname(
