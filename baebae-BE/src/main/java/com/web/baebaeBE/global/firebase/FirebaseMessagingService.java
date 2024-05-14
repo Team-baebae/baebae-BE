@@ -17,7 +17,7 @@ public class FirebaseMessagingService {
      * @return        전송된 메시지의 ID
      * @throws FirebaseMessagingException FCM 전송 중 오류 발생 시
      */
-    public String sendNotification(String token, String title, String body) throws FirebaseMessagingException {
+    public String sendNotification(String token, String title, String body) {
         Notification notification = Notification.builder()
                 .setTitle(title)
                 .setBody(body)
@@ -29,6 +29,10 @@ public class FirebaseMessagingService {
                 .build();
 
         // FirebaseMessaging 인스턴스를 통해 메시지 전송
-        return FirebaseMessaging.getInstance().send(message);
+        try {
+            return FirebaseMessaging.getInstance().send(message);
+        } catch (FirebaseMessagingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
