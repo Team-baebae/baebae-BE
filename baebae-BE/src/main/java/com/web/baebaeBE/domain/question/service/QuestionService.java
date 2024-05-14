@@ -32,16 +32,16 @@ public class QuestionService {
 
         Question question = questionMapper.toEntity(request, member);
         Question savedQuestion = questionRepository.save(question);
-        if (member.getFcmToken() != null) {
-            firebaseNotificationService.notifyNewQuestion(member, question);
-        }
-        return questionMapper.toDomain(savedQuestion, member.getFcmToken());
+
+        firebaseNotificationService.notifyNewQuestion(member, question);// 파이어베이스 메세지 송신
+
+        return questionMapper.toDomain(savedQuestion);
     }
 
     @Transactional(readOnly = true)
     public Page<QuestionDetailResponse> getQuestionsByMemberId(Long memberId, Pageable pageable) {
         Page<Question> questions = questionRepository.findAllByMemberId(memberId, pageable);
-        return questions.map(question -> questionMapper.toDomain(question, question.getMember().getFcmToken()));
+        return questions.map(question -> questionMapper.toDomain(question));
     }
 
     @Transactional
@@ -54,11 +54,9 @@ public class QuestionService {
         // 질문 업데이트 후 저장
         Question updatedQuestion = questionRepository.save(question);
 
-        // FCM 토큰이 있고 질문이 업데이트되었다면 알림 발송
-        if (updatedQuestion.getMember().getFcmToken() != null) {
-            firebaseNotificationService.notifyNewQuestion(updatedQuestion.getMember(), updatedQuestion);
-        }
-        return questionMapper.toDomain(updatedQuestion, updatedQuestion.getMember().getFcmToken());
+        firebaseNotificationService.notifyNewQuestion(updatedQuestion.getMember(), updatedQuestion); // 파이어베이스 메세지 송신
+
+        return questionMapper.toDomain(updatedQuestion);
 
     }
 
@@ -72,12 +70,12 @@ public class QuestionService {
     @Transactional(readOnly = true)
     public Page<QuestionDetailResponse> getAnsweredQuestions(Long memberId, Pageable pageable) {
         Page<Question> questions = questionRepository.findAllByMemberIdAndIsAnsweredTrue(memberId, pageable);
-        return questions.map(question -> questionMapper.toDomain(question, question.getMember().getFcmToken()));
+        return questions.map(question -> questionMapper.toDomain(question));
     }
 
     @Transactional(readOnly = true)
     public Page<QuestionDetailResponse> getUnansweredQuestions(Long memberId, Pageable pageable) {
         Page<Question> questions = questionRepository.findAllByMemberIdAndIsAnsweredFalse(memberId, pageable);
-        return questions.map(question -> questionMapper.toDomain(question, question.getMember().getFcmToken()));
+        return questions.map(question -> questionMapper.toDomain(question));
     }
 }
