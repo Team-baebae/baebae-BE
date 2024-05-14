@@ -61,4 +61,10 @@ public class QuestionController implements QuestionApi {
         questionService.deleteQuestion(questionId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
+
+    @GetMapping("/count/{memberId}")
+    public ResponseEntity<Long> countQuestionsByMemberId(@PathVariable Long memberId) {
+        long count = questionService.countQuestionsByMemberId(memberId);
+        return ResponseEntity.ok(count);
+    }
 }

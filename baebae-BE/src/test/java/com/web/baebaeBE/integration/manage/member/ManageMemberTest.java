@@ -172,5 +172,4 @@ public class ManageMemberTest {
                 .andExpect(status().isOk());
     }
 
-
 }

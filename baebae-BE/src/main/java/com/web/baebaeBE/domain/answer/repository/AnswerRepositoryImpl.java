@@ -53,4 +53,3 @@ public class AnswerRepositoryImpl implements AnswerRepository {
         jpaRepository.delete(answer);
     }
 }
-

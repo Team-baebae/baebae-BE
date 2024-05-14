@@ -86,4 +86,9 @@ public class QuestionService {
         Page<Question> questions = questionRepository.findAllByMemberIdAndIsAnsweredFalse(memberId, pageable);
         return questions.map(question -> questionMapper.toDomain(question, question.getMember().getFcmToken()));
     }
+
+    @Transactional(readOnly = true)
+    public long countQuestionsByMemberId(Long memberId) {
+        return questionRepository.countByMemberId(memberId);
+    }
 }

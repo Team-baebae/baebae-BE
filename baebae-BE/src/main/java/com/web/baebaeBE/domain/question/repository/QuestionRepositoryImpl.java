@@ -46,4 +46,9 @@ public class QuestionRepositoryImpl implements QuestionRepository {
     public void delete(Question questionEntity) {
         questionJpaRepository.delete(questionEntity);
     }
+
+    @Override
+    public Long countByMemberId(Long memberId) {
+        return questionJpaRepository.countByMemberId(memberId);
+    }
 }

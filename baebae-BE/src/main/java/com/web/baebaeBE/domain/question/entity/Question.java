@@ -50,4 +50,3 @@ public class Question {
         return new Question(id, member, content, nickname, profileOnOff, createdDate, isAnswered);
     }
 }
-
