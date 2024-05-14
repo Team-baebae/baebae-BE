@@ -6,6 +6,7 @@ import com.web.baebaeBE.domain.answer.dto.AnswerDetailResponse;
 import com.web.baebaeBE.domain.answer.dto.AnswerResponse;
 import com.web.baebaeBE.domain.answer.service.AnswerService;
 import com.web.baebaeBE.domain.categorized.answer.service.CategorizedAnswerService;
+
 import com.web.baebaeBE.domain.category.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
@@ -24,6 +25,7 @@ import java.util.List;
 @RequestMapping("/api/answers")
 public class AnswerController implements AnswerApi {
     private final AnswerService answerService;
+
     private final CategorizedAnswerService categorizedAnswerService;
     @PostMapping(value = "/{memberId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<AnswerDetailResponse> createAnswer(@PathVariable Long memberId,
@@ -45,7 +47,10 @@ public class AnswerController implements AnswerApi {
             @RequestParam(required = false) Long categoryId, // Change this from Category to Long
             Pageable pageable) {
 
+
         return ResponseEntity.ok(answerService.getAllAnswers(memberId, categoryId, pageable));
+
+
     }
 
     @PutMapping(value = "/{answerId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

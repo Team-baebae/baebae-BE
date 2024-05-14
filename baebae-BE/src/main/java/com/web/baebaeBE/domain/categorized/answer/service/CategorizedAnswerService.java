@@ -27,5 +27,6 @@ public class CategorizedAnswerService {
             categorizedAnswers = categorizedAnswerRepository.findByAnswer_Member_IdAndCategory_Id(memberId, categoryId, pageable);
 
         return categorizedAnswers.map(categorizedAnswer -> answerMapper.toDomain(categorizedAnswer.getAnswer()));
+
     }
 }
