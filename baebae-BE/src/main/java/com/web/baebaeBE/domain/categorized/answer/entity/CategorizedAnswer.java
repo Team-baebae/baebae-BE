@@ -28,6 +28,4 @@ public class CategorizedAnswer {
     @JoinColumn(name = "answer_id", nullable = false)
     private Answer answer;
 
-    @Column(name = "created_date")
-    private LocalDateTime createdDate;
 }

@@ -86,14 +86,17 @@ public class AnswerService {
     }
 
     @Transactional
-    public Page<AnswerDetailResponse> getAllAnswers(Long memberId, Category category, Pageable pageable) {
-        Page<Answer> answerPage;
-        if (category == null) {
-            answerPage = answerRepository.findAllByMemberId(memberId, pageable);
+    public Page<AnswerDetailResponse> getAllAnswers(Long memberId, Long categoryId, Pageable pageable) {
+        if (categoryId == null) {
+            // Use AnswerRepository when no category ID is provided
+            Page<Answer> answerPage = answerRepository.findAllByMemberId(memberId, pageable);
+            return answerPage.map(answerMapper::toDomain);
         } else {
-            answerPage = answerRepository.findAllByMemberIdAndCategory(memberId, category, pageable);
+            // Use CategorizedAnswerRepository when a category ID is provided
+            Page<CategorizedAnswer> categorizedAnswerPage = categorizedAnswerRepository.findByAnswer_Member_IdAndCategory_Id(memberId, categoryId, pageable);
+            Page<Answer> answerPage = categorizedAnswerPage.map(CategorizedAnswer::getAnswer);
+            return answerPage.map(answerMapper::toDomain);
         }
-        return answerPage.map(answer -> answerMapper.toDomain(answer));
     }
 
     @Transactional
