@@ -73,8 +73,9 @@ public interface AnswerApi {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = Page.class)))
     @RequestMapping(method = RequestMethod.GET)
-    ResponseEntity<List<AnswerDetailResponse>> getAllAnswers(
+    ResponseEntity<Page<AnswerDetailResponse>> getAllAnswers(
             @RequestParam Long memberId,
+            @RequestParam(required = false) Long category,
             Pageable pageable);
     @Operation(
             summary = "답변 수정",

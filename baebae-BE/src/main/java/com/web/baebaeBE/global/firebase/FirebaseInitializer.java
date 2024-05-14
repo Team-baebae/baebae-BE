@@ -16,13 +16,15 @@ import org.slf4j.Logger;
 @Service
 public class FirebaseInitializer {
     private static final Logger logger = LoggerFactory.getLogger(FirebaseInitializer.class);
-    private static final String FIREBASE_CONFIG_PATH = "baebae-ff525-firebase-adminsdk-zbc8h-7fd10e518b.json";
+
+    @Value("${fcm.certificaiton}")
+    private String certification;
 
     @PostConstruct
     public void initialize() {
         try {
             FirebaseOptions options = new FirebaseOptions.Builder()
-                    .setCredentials(GoogleCredentials.fromStream(new ClassPathResource(FIREBASE_CONFIG_PATH).getInputStream())).build();
+                    .setCredentials(GoogleCredentials.fromStream(new ClassPathResource(certification).getInputStream())).build();
             if (FirebaseApp.getApps().isEmpty()) {
                 FirebaseApp.initializeApp(options);
                 logger.info("Firebase application has been initialized");

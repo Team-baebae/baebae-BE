@@ -9,5 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface CategorizedAnswerRepository extends JpaRepository<CategorizedAnswer, Long> {
-    Page<CategorizedAnswer> findAllByCategory(Long memberId, Category category, Pageable pageable);
+    Page<CategorizedAnswer> findByAnswer_Member_IdAndCategory_Id(Long memberId, Long categoryId, Pageable pageable);
+    Page<CategorizedAnswer> findByAnswer_Member_Id(Long memberId, Pageable pageable);
 }

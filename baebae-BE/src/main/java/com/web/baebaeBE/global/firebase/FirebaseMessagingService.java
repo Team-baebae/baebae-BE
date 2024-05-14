@@ -1,10 +1,8 @@
 package com.web.baebaeBE.global.firebase;
 
 import com.google.auth.oauth2.GoogleCredentials;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.FirebaseMessagingException;
-import com.google.firebase.messaging.Message;
-import com.google.firebase.messaging.Notification;
+import com.google.firebase.messaging.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
@@ -18,54 +16,45 @@ import java.util.List;
 @Service
 public class FirebaseMessagingService {
 
-    private static final String PROJECT_ID = "baebae-ff525";
-    private static final String BASE_URL = "https://fcm.googleapis.com";
-    private static final String FCM_SEND_ENDPOINT = "/v1/projects/" + PROJECT_ID + "/messages:send";
+    @Value("${fcm.certification}")
+    private String certification;
 
-    private static final String MESSAGING_SCOPE = "https://www.googleapis.com/auth/firebase.messaging";
-    private static final String[] SCOPES = { MESSAGING_SCOPE };
+    @Value("${fcm.projectId}")
+    private String projectId;
 
-    private static final String TITLE = "FCM Notification";
-    private static final String BODY = "Notification from FCM";
-    public static final String MESSAGE_KEY = "message";
+    @Value("${fcm.baseUrl}")
+    private String baseUrl;
+
+    @Value("${fcm.messageScope}")
+    private String messageScope;
+    private final String BASE_URL = baseUrl;
+    private final String FCM_SEND_ENDPOINT = "/v1/projects/" + projectId + "/messages:send";
+    private final String MESSAGING_SCOPE = messageScope;
+
+    private final String[] SCOPES = { MESSAGING_SCOPE };
+
     /**
      * Firebase를 통해 푸시 알림을 전송합니다.
      *
-     * @param token   대상 디바이스의 FCM 토큰
+     * @param subscription   대상 디바이스의 FCM 토큰
      * @param title   알림 제목
      * @param body    알림 내용
      * @return        전송된 메시지의 ID
      * @throws FirebaseMessagingException FCM 전송 중 오류 발생 시
      */
-    public String sendNotification(String token, String title, String body) throws FirebaseMessagingException {
-        Notification notification = Notification.builder()
-                .setTitle(title)
-                .setBody(body)
-                .build();
-
+    public String sendNotification(String subscription, String title, String body) throws FirebaseMessagingException {
         Message message = Message.builder()
-                .setToken(token)
-                .setNotification(notification)
+                .setWebpushConfig(WebpushConfig.builder()
+                        .setNotification(new WebpushNotification(title, body))
+                        .build())
+                .setToken(subscription)
                 .build();
 
-        // FirebaseMessaging 인스턴스를 통해 메시지 전송
-        return FirebaseMessaging.getInstance().send(message);
-    }
-    private static String getAccessToken() throws IOException {
-        GoogleCredentials googleCredentials = GoogleCredentials
-                .fromStream(new FileInputStream("baebae-ff525-firebase-adminsdk-zbc8h-7fd10e518b.json"))
-                .createScoped(Arrays.asList(SCOPES));
-        googleCredentials.refreshAccessToken();
-        return googleCredentials.getAccessToken().getTokenValue();
-     }
+        String response = FirebaseMessaging.getInstance().send(message);
+        System.out.println("Successfully sent message: " + response);
 
-//    private static HttpURLConnection getConnection() throws IOException {
-//        // [START use_access_token]
-//        URL url = new URL(BASE_URL + FCM_SEND_ENDPOINT);
-//        HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-//        httpURLConnection.setRequestProperty("Authorization", "Bearer " + getAccessToken());
-//        httpURLConnection.setRequestProperty("Content-Type", "application/json; UTF-8");
-//        return httpURLConnection;
-//        // [END use_access_token]
-//    }
+        return response;
+    }
+
+
 }

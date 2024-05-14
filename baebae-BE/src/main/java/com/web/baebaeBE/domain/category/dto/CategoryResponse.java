@@ -21,7 +21,7 @@ public class CategoryResponse {
 
         public static CategoryResponse.CategoryInformationResponse of(Category category) {
             return CategoryInformationResponse.builder()
-                    .categoryId(category.getCategoryId())
+                    .categoryId(category.getId())
                     .categoryName(category.getCategoryName())
                     .categoryImage(category.getCategoryImage())
                     .answerIds(category.getCategoryAnswers().stream()
@@ -45,4 +45,5 @@ public class CategoryResponse {
         }
 
     }
+
 }

@@ -29,7 +29,7 @@ public class CategoryController implements CategoryApi {
         Category category =
                 categoryService.createCategory(memberId, categoryImage, createCategory.getCategoryName());
 
-        return ResponseEntity.ok(categoryService.createAnswersToCategory(category.getCategoryId(), createCategory.getAnswerIds()));
+        return ResponseEntity.ok(categoryService.createAnswersToCategory(category.getId(), createCategory.getAnswerIds()));
     }
 
     @GetMapping("/{memberId}")
@@ -50,13 +50,12 @@ public class CategoryController implements CategoryApi {
     }
 
     @PatchMapping("/{categoryId}/image")
-    public ResponseEntity<Void> updateCategoryImage(
+    public ResponseEntity<CategoryResponse.CategoryInformationResponse> updateCategoryImage(
             @PathVariable Long categoryId,
             @RequestPart("imageFile") MultipartFile imageFile
     ) {
 
-        categoryService.updateCategoryImage(categoryId, imageFile);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(categoryService.updateCategoryImage(categoryId, imageFile));
     }
 
 

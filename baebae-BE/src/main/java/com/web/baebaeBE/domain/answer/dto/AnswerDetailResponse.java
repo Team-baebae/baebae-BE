@@ -23,12 +23,12 @@ public class AnswerDetailResponse {
     private Integer heartCount;
     private Integer curiousCount;
     private Integer sadCount;
-    private String fcmtoken;
+
 
     public AnswerDetailResponse(Long answerId, Long questionId, String questionContent, Long memberId, String content,
                                 List<String> linkAttachments, String musicName, String musicSinger,
                                 String musicAudioUrl, List<String> imageUrls, LocalDateTime createdDate,
-                                Integer heartCount, Integer curiousCount, Integer sadCount, String fcmtoken) {
+                                Integer heartCount, Integer curiousCount, Integer sadCount) {
         this.answerId = answerId;
         this.questionId = questionId;
         this.questionContent = questionContent;
@@ -43,15 +43,14 @@ public class AnswerDetailResponse {
         this.heartCount = heartCount;
         this.curiousCount = curiousCount;
         this.sadCount = sadCount;
-        this.fcmtoken = fcmtoken;
     }
 
     public static AnswerDetailResponse of(Long answerId, Long questionId, String questionContent, Long memberId,
                                           String content, List<String> linkAttachments, String musicName, String musicSinger,
                                           String musicAudioUrl, List<String> imageUrls, LocalDateTime createdDate,
-                                          Integer heartCount, Integer curiousCount, Integer sadCount, String fcmtoken) {
+                                          Integer heartCount, Integer curiousCount, Integer sadCount) {
         return new AnswerDetailResponse(answerId, questionId, questionContent, memberId, content, linkAttachments, musicName,
                 musicSinger, musicAudioUrl, imageUrls, createdDate,
-                heartCount, curiousCount, sadCount, fcmtoken);
+                heartCount, curiousCount, sadCount);
     }
 }
