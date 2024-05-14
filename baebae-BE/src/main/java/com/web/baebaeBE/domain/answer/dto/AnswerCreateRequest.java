@@ -13,22 +13,21 @@ public class AnswerCreateRequest {
     private List<String> linkAttachments;
     private String musicName;
     private String musicSinger;
-    private String musicAudioUrl;
+    private String musicPicture;
 
     public AnswerCreateRequest(Long questionId, String content, List<String> linkAttachments,
-                               String musicName, String musicSinger, String musicAudioUrl) {
+                               String musicName, String musicSinger, String musicPicture) {
         this.questionId = questionId;
         this.content = content;
         this.linkAttachments = linkAttachments;
         this.musicName = musicName;
         this.musicSinger = musicSinger;
-        this.musicAudioUrl = musicAudioUrl;
+        this.musicPicture = musicPicture;
     }
 
     public static AnswerCreateRequest of(Long questionId, String content, List<String> linkAttachments,
-                                         String musicName, String musicSinger, String musicAudioUrl,
-                                         List<String> imageUrls) {
+                                         String musicName, String musicSinger, String musicPicture) {
         return new AnswerCreateRequest(questionId, content, linkAttachments, musicName, musicSinger,
-                musicAudioUrl);
+                 musicPicture);
     }
 }

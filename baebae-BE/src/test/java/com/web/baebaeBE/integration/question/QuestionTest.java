@@ -1,7 +1,9 @@
 package com.web.baebaeBE.integration.question;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.web.baebaeBE.domain.question.dto.QuestionDetailResponse;
 import com.web.baebaeBE.domain.question.entity.Question;
+import com.web.baebaeBE.domain.question.service.QuestionService;
 import com.web.baebaeBE.global.jwt.JwtTokenProvider;
 import com.web.baebaeBE.domain.member.entity.Member;
 import com.web.baebaeBE.domain.member.entity.MemberType;
@@ -16,17 +18,25 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @SpringBootTest()
@@ -42,10 +52,14 @@ public class QuestionTest {
     @Autowired
     private QuestionRepository questionRepository;
     @Autowired
+    private QuestionService questionService;
+
+    @Autowired
     private JwtTokenProvider tokenProvider;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private Member testMember;
     private String refreshToken;
+    private QuestionDetailResponse testQuestionDetailResponse;
 
     @BeforeEach
     void setup() {
@@ -60,6 +74,7 @@ public class QuestionTest {
 
         testMember.updateRefreshToken(refreshToken);
         memberRepository.save(testMember);
+
     }
 
     @AfterEach
@@ -86,20 +101,43 @@ public class QuestionTest {
     }
 
     @Test
+    @DisplayName("Get Answered Questions Test")
+    public void getAnsweredQuestionsTest() throws Exception {
+        testQuestionDetailResponse = new QuestionDetailResponse(1L, "Test question?", "user123", true, LocalDateTime.now(), "test_token", true);
+        List<QuestionDetailResponse> questions = List.of(testQuestionDetailResponse);
+        PageImpl<QuestionDetailResponse> page = new PageImpl<>(questions);
+
+        when(questionService.getAnsweredQuestions(eq(1L), any(Pageable.class))).thenReturn(page);
+
+        mockMvc.perform(get("/api/questions/answered/{memberId}", 1L)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(1))
+                .andExpect(jsonPath("$[0].content").value("Test question?"))
+                .andExpect(jsonPath("$[0].nickname").value("user123"))
+                .andExpect(jsonPath("$[0].profileOnOff").value(true));
+    }
+    @Test
     @DisplayName("회원별 질문 조회 테스트(): 해당 회원의 질문을 조회한다.")
     public void getQuestionsByMemberIdTest() throws Exception {
+        // Setup mock response
         String content = "이것은 회원의 질문입니다.";
-        Question question = questionRepository.save(new Question(null, testMember, content, "닉네임", true, LocalDateTime.now(),true));
+        Question question = new Question(1L, testMember, content, "닉네임", true, LocalDateTime.now(), true);
+        List<Question> questions = List.of(question);
+        Page<Question> questionPage = new org.springframework.data.domain.PageImpl<>(questions, Pageable.unpaged(), 1);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/questions")
-                        .param("memberId", String.valueOf(testMember.getId()))
-                        .param("isAnswered", "true")
+        // Correct usage of matchers
+        when(questionRepository.findAllByMemberId(eq(testMember.getId()), any(Pageable.class)))
+                .thenReturn(questionPage);
+
+        mockMvc.perform(get("/api/questions/member/{memberId}", testMember.getId())
                         .header("Authorization", "Bearer " + refreshToken)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].content").value(content));
+                .andExpect(jsonPath("$[0].content").value(content))
+                .andExpect(jsonPath("$[0].nickname").value("닉네임"))
+                .andExpect(jsonPath("$[0].profileOnOff").value(true));
     }
-
 
     @Test
     @DisplayName("질문 수정 테스트(): 질문을 수정한다.")

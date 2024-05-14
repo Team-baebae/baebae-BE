@@ -17,7 +17,7 @@ import org.slf4j.Logger;
 public class FirebaseInitializer {
     private static final Logger logger = LoggerFactory.getLogger(FirebaseInitializer.class);
 
-    @Value("${fcm.certificaiton}")
+    @Value("${fcm.certification}")
     private String certification;
 
     @PostConstruct

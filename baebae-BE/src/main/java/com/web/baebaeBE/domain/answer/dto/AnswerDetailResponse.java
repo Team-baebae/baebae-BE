@@ -37,8 +37,6 @@ public class AnswerDetailResponse {
         this.linkAttachments = linkAttachments;
         this.musicName = musicName;
         this.musicSinger = musicSinger;
-        this.musicAudioUrl = musicAudioUrl;
-        this.imageUrls = imageUrls;
         this.createdDate = createdDate;
         this.heartCount = heartCount;
         this.curiousCount = curiousCount;

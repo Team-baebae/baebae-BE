@@ -44,6 +44,11 @@ public class AnswerRepositoryImpl implements AnswerRepository {
     }
 
     @Override
+    public Page<Answer> findAllByMemberIdAndCategory(Long memberId, Category category, Pageable pageable) {
+        return jpaRepository.findAllByMemberIdAndCategory(memberId, category, pageable);
+    }
+
+    @Override
     public void delete(Answer answer) {
         jpaRepository.delete(answer);
     }

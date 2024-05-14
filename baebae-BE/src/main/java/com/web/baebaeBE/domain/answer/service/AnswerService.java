@@ -74,7 +74,7 @@ public class AnswerService {
         question.setAnswered(true);
         questionRepository.save(question);
 
-        return answerMapper.toDomain(savedAnswer, "FCM token needed");
+        return answerMapper.toDomain(savedAnswer);
     }
 
     @Transactional
@@ -86,9 +86,14 @@ public class AnswerService {
     }
 
     @Transactional
-    public Page<AnswerDetailResponse> getAllAnswers(Long memberId, Pageable pageable) {
-        Page<Answer> answerPage = answerRepository.findAllByMemberId(memberId, pageable);
-        return answerPage.map(answer -> answerMapper.toDomain(answer, "FCM token needed"));
+    public Page<AnswerDetailResponse> getAllAnswers(Long memberId, Category category, Pageable pageable) {
+        Page<Answer> answerPage;
+        if (category == null) {
+            answerPage = answerRepository.findAllByMemberId(memberId, pageable);
+        } else {
+            answerPage = answerRepository.findAllByMemberIdAndCategory(memberId, category, pageable);
+        }
+        return answerPage.map(answer -> answerMapper.toDomain(answer));
     }
 
     @Transactional
@@ -97,8 +102,12 @@ public class AnswerService {
                 .orElseThrow(() -> new BusinessException(AnswerError.NO_EXIST_ANSWER));
         answer.setContent(request.getContent());
         answer.setLinkAttachments(request.getLinkAttachments());
-        answer.setMusicName(request.getMusicName());
-        answer.setMusicSinger(request.getMusicSinger());
+
+        // Update Music entity fields
+        answer.getMusic().setMusicName(request.getMusicName());
+        answer.getMusic().setMusicSinger(request.getMusicSinger());
+        answer.getMusic().setMusicPicture(request.getMusicPicture());
+
         if (!imageFile.isEmpty()) {
             try (InputStream inputStream = imageFile.getInputStream()) {
                 String imageUrl = s3ImageStorageService.uploadFile(answer.getMember().getId().toString(), answerId.toString(), "image", 0, inputStream, imageFile.getSize(), imageFile.getContentType());
@@ -107,13 +116,14 @@ public class AnswerService {
                 throw new BusinessException(AnswerError.IMAGE_PROCESSING_ERROR);
             }
         }
+
         // 질문의 isAnswered 상태를 true로 업데이트
         Question question = answer.getQuestion();
         question.setAnswered(true);
 
         questionRepository.save(question);
         answer = answerRepository.save(answer);
-        return answerMapper.toDomain(answer, "FCM token needed");
+        return answerMapper.toDomain(answer);
     }
 
     @Transactional

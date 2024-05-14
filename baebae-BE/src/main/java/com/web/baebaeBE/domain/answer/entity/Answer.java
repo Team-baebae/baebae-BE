@@ -3,6 +3,7 @@ package com.web.baebaeBE.domain.answer.entity;
 import com.web.baebaeBE.domain.categorized.answer.entity.CategorizedAnswer;
 import com.web.baebaeBE.domain.category.entity.Category;
 import com.web.baebaeBE.domain.member.entity.Member;
+import com.web.baebaeBE.domain.music.entity.Music;
 import com.web.baebaeBE.domain.question.entity.Question;
 import jakarta.persistence.*;
 import lombok.*;
@@ -47,14 +48,9 @@ public class Answer {
     @Column(name = "content", columnDefinition = "TEXT", nullable = false)
     private String content;
 
-    @Column(name = "music_name")
-    private String musicName;
 
-    @Column(name = "music_singer")
-    private String musicSinger;
-
-    @Column(name = "music_audio")
-    private String musicAudio;
+    @OneToOne(mappedBy = "answer", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private Music music;
 
     @ElementCollection
     @CollectionTable(name = "answer_link_attachments", joinColumns = @JoinColumn(name = "answer_id"))
@@ -79,12 +75,10 @@ public class Answer {
 
 
     public static Answer of(Long id, Question question, Category category, Member member, String content,
-                            List<String> imageFiles, String musicName, String musicPicture,
-                            String musicAudio, List<String> linkAttachments, int heartCount,
+                            List<String> imageFiles, Music music, List<String> linkAttachments, int heartCount,
                             int curiousCount, int sadCount, LocalDateTime createdDate) {
 
-        return new Answer(id, question, category, member, imageFiles, content, musicName,
-                musicPicture, musicAudio, linkAttachments, heartCount,
+        return new Answer(id, question, category, member, imageFiles, content, music, linkAttachments, heartCount,
                 curiousCount, sadCount, createdDate,null);
     }
 }
