@@ -27,8 +27,10 @@ public class AnswerMapper {
         Answer answer = Answer.builder()
                 .question(question)
                 .member(member)
+                .nickname(request.getNickname())
                 .content(request.getContent())
                 .linkAttachments(request.getLinkAttachments())
+                .profileOnOff(request.getProfileOnOff())
                 .createdDate(LocalDateTime.now())
                 .heartCount(0)
                 .curiousCount(0)
@@ -44,17 +46,21 @@ public class AnswerMapper {
 
     public AnswerDetailResponse toDomain(Answer answer) {
         Music music = answer.getMusic();
+        Member member = answer.getMember();
+        Question question = answer.getQuestion();
         return AnswerDetailResponse.of(
                 answer.getId(),
-                answer.getQuestion().getId(),
-                answer.getQuestion().getContent(),
-                answer.getMember().getId(),
+                question.getId(),
+                question.getContent(),
+                member.getId(),
                 answer.getContent(),
+                member.getNickname(),              // 실제 닉네임
+                answer.getNickname(),              // 익명 닉네임
+                answer.isProfileOnOff(),           // 프로필 공개 여부
                 answer.getLinkAttachments(),
                 music != null ? music.getMusicName() : null,
                 music != null ? music.getMusicSinger() : null,
                 music != null ? music.getMusicPicture() : null,
-                answer.getImageFiles(),
                 answer.getCreatedDate(),
                 answer.getHeartCount(),
                 answer.getCuriousCount(),

@@ -41,6 +41,9 @@ public class Answer {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
+    @Column(name = "nickname")
+    private String nickname;
+
     @ElementCollection
     @CollectionTable(name = "answer_image_files", joinColumns = @JoinColumn(name = "answer_id"))
     @Column(name = "image_file")
@@ -53,10 +56,8 @@ public class Answer {
     @OneToOne(mappedBy = "answer", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Music music;
 
-    @ElementCollection
-    @CollectionTable(name = "answer_link_attachments", joinColumns = @JoinColumn(name = "answer_id"))
     @Column(name = "link_attachment")
-    private List<String> linkAttachments;
+    private String linkAttachments;
 
     @Column(name = "heart_count", nullable = false)
     private int heartCount;
@@ -73,14 +74,15 @@ public class Answer {
     @OneToMany(mappedBy = "answer", cascade = CascadeType.REMOVE)
     private List<CategorizedAnswer> categorizedAnswers;
 
+    @Column(name = "profile_on_off", nullable = false)
+    private boolean profileOnOff;
 
+    public static Answer of(Long id, Question question, Category category, Member member, String nickname,String content,
+                            List<String> imageFiles, Music music, String linkAttachments, int heartCount,
+                            int curiousCount, int sadCount, LocalDateTime createdDate, boolean profileOnOff) {
 
-    public static Answer of(Long id, Question question, Category category, Member member, String content,
-                            List<String> imageFiles, Music music, List<String> linkAttachments, int heartCount,
-                            int curiousCount, int sadCount, LocalDateTime createdDate) {
-
-        return new Answer(id, question, category, member, imageFiles, content, music, linkAttachments, heartCount,
-                curiousCount, sadCount, createdDate,null);
+        return new Answer(id, question, category, member, nickname, imageFiles, content, music, linkAttachments, heartCount,
+                curiousCount, sadCount, createdDate,null, profileOnOff);
     }
 
     public void increaseReactionCount(ReactionValue reaction) {

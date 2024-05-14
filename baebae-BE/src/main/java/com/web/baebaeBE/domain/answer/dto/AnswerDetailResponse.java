@@ -14,29 +14,35 @@ public class AnswerDetailResponse {
     private String questionContent;
     private Long memberId;
     private String content;
-    private List<String> linkAttachments;
+    private String memberNickname;
+    private String nickname;
+    private Boolean profileOnOff;
+    private String linkAttachments;
     private String musicName;
     private String musicSinger;
-    private String musicAudioUrl;
-    private List<String> imageUrls;
+    private String musicPicture;
     private LocalDateTime createdDate;
     private Integer heartCount;
     private Integer curiousCount;
     private Integer sadCount;
 
-
-    public AnswerDetailResponse(Long answerId, Long questionId, String questionContent, Long memberId, String content,
-                                List<String> linkAttachments, String musicName, String musicSinger,
-                                String musicAudioUrl, List<String> imageUrls, LocalDateTime createdDate,
+    public AnswerDetailResponse(Long answerId, Long questionId, String questionContent, Long memberId,
+                                String content, String memberNickname, String nickname, Boolean profileOnOff,
+                                String linkAttachments, String musicName, String musicSinger, String musicPicture,
+                                 LocalDateTime createdDate,
                                 Integer heartCount, Integer curiousCount, Integer sadCount) {
         this.answerId = answerId;
         this.questionId = questionId;
         this.questionContent = questionContent;
         this.memberId = memberId;
         this.content = content;
+        this.memberNickname = memberNickname;
+        this.nickname = nickname;
+        this.profileOnOff = profileOnOff;
         this.linkAttachments = linkAttachments;
         this.musicName = musicName;
         this.musicSinger = musicSinger;
+        this.musicPicture = musicPicture;
         this.createdDate = createdDate;
         this.heartCount = heartCount;
         this.curiousCount = curiousCount;
@@ -44,11 +50,13 @@ public class AnswerDetailResponse {
     }
 
     public static AnswerDetailResponse of(Long answerId, Long questionId, String questionContent, Long memberId,
-                                          String content, List<String> linkAttachments, String musicName, String musicSinger,
-                                          String musicAudioUrl, List<String> imageUrls, LocalDateTime createdDate,
+                                          String content, String memberNickname, String nickname, Boolean profileOnOff,
+                                          String linkAttachments, String musicName, String musicSinger, String musicPicture,
+                                           LocalDateTime createdDate,
                                           Integer heartCount, Integer curiousCount, Integer sadCount) {
-        return new AnswerDetailResponse(answerId, questionId, questionContent, memberId, content, linkAttachments, musicName,
-                musicSinger, musicAudioUrl, imageUrls, createdDate,
+        return new AnswerDetailResponse(answerId, questionId, questionContent, memberId, content, memberNickname,
+                nickname, profileOnOff, linkAttachments, musicName, musicSinger, musicPicture, createdDate,
                 heartCount, curiousCount, sadCount);
+
     }
 }
