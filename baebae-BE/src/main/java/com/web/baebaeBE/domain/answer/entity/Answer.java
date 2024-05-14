@@ -4,6 +4,7 @@ import com.web.baebaeBE.domain.categorized.answer.entity.CategorizedAnswer;
 import com.web.baebaeBE.domain.category.entity.Category;
 import com.web.baebaeBE.domain.member.entity.Member;
 import com.web.baebaeBE.domain.question.entity.Question;
+import com.web.baebaeBE.domain.reaction.entity.ReactionValue;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
@@ -86,6 +87,20 @@ public class Answer {
         return new Answer(id, question, category, member, imageFiles, content, musicName,
                 musicPicture, musicAudio, linkAttachments, heartCount,
                 curiousCount, sadCount, createdDate,null);
+    }
+
+    public void increaseReactionCount(ReactionValue reaction) {
+        switch (reaction) {
+            case HEART: // 좋아요
+                this.heartCount++;
+                break;
+            case CURIOUS: // 궁금해요
+                this.curiousCount++;
+                break;
+            case SAD: // 슬퍼요
+                this.sadCount++;
+                break;
+        }
     }
 }
 
