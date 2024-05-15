@@ -1,6 +1,7 @@
 package com.web.baebaeBE.integration.manage.member;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.web.baebaeBE.domain.fcm.dto.FcmRequest;
 import com.web.baebaeBE.global.jwt.JwtTokenProvider;
 import com.web.baebaeBE.domain.member.entity.Member;
 import com.web.baebaeBE.domain.member.entity.MemberType;
@@ -127,18 +128,17 @@ public class ManageMemberTest {
     }
 
     @Test
-    @DisplayName("FCM 토큰 업데이트 테스트(): 해당 회원의 FCM 토큰을 업데이트한다.")
-    public void updateFcmTokenTest() throws Exception {
+    @DisplayName("FCM 토큰 추가 테스트(): 해당 회원에게 FCM 토큰을 추가한다.")
+    public void addFcmTokenTest() throws Exception {
         // given
-        MemberRequest.UpdateFcmTokenDto updateFcmTokenDto
-                = new MemberRequest.UpdateFcmTokenDto("fwef094938jweSIJDe8204gaskd390GK32G9HADF0809d8708U908ud9UHD9FH4e32982hF0ODH22E");
+        FcmRequest.Token tokenRequest = new FcmRequest.Token("fwef094938jweSIJDe8204gaskd390GK32G9HADF0809d8708U908ud9UHD9FH4e32982hF0ODH22E");
 
         // when
-        mockMvc.perform(patch("/api/member/fcm-token/{memberId}", testMember.getId())
+        mockMvc.perform(post("/api/fcm/{memberId}", testMember.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateFcmTokenDto))
+                        .content(objectMapper.writeValueAsString(tokenRequest))
                         .header("Authorization", "Bearer " + accessToken))
-        // then
+                // then
                 .andExpect(status().isOk());
     }
 

@@ -5,6 +5,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.web.baebaeBE.domain.fcm.entity.FcmToken;
+import com.web.baebaeBE.domain.fcm.repository.FcmTokenRepository;
 import com.web.baebaeBE.domain.oauth2.service.Oauth2Service;
 import com.web.baebaeBE.domain.login.service.LoginService;
 import com.web.baebaeBE.global.jwt.JwtTokenProvider;
@@ -29,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -53,6 +56,8 @@ public class MemberIntegrationTest {
     private JwtTokenProvider tokenProvider;
     @Autowired
     private MemberRepository memberRepository;
+    @Autowired
+    private FcmTokenRepository fcmTokenRepository;
     private ObjectMapper objectMapper = new ObjectMapper();
     private String accessToken;
     private String refreshToken;
@@ -67,11 +72,19 @@ public class MemberIntegrationTest {
                 .refreshToken("null")
                 .build());
 
+
         accessToken = tokenProvider.generateToken(testMember, Duration.ofDays(1)); // 임시 accessToken 생성
         refreshToken = tokenProvider.generateToken(testMember, Duration.ofDays(14)); // 임시 refreshToken 생성
 
         testMember.updateRefreshToken(refreshToken);
         memberRepository.save(testMember);
+
+        // FcmToken 생성 및 Member에 연결
+        FcmToken testFcmToken = new FcmToken();
+        testFcmToken.setToken("testFcmToken");
+        testFcmToken.setMember(testMember);
+        testFcmToken.setLastUsedTime(LocalDateTime.now());
+        fcmTokenRepository.save(testFcmToken);
     }
 
     //각 테스트 후마다 실행
@@ -141,10 +154,12 @@ public class MemberIntegrationTest {
     @DisplayName("로그아웃 테스트(): 테스트용 AccessToken을 전달해 사용자 로그아웃을 시킨다.")
     public void testLogout() throws Exception {
         // given
+        String fcmToken = "testFcmToken";
 
         // when
         mockMvc.perform(post("/api/auth/logout")
-                        .header("Authorization", "Bearer " + accessToken))
+                        .header("Authorization", "Bearer " + accessToken)
+                        .param("fcmToken", fcmToken))
         // then
                 .andExpect(status().isOk());
     }
