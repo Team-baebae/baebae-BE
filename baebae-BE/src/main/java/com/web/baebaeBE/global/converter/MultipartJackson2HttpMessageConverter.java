@@ -1,4 +1,4 @@
-package com.web.baebaeBE.global.util;
+package com.web.baebaeBE.global.converter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.MediaType;
