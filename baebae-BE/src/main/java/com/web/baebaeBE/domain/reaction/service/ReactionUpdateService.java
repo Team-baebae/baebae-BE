@@ -22,7 +22,7 @@ public class ReactionUpdateService {
             case SAD: // 슬퍼요
                 answer.setSadCount(answer.getSadCount() + 1);
                 break;
-            case CONNECTION: // 통했당
+            case CONNECT: // 통했당
                 answer.setConnectCount(answer.getConnectCount() + 1);
                 break;
         }
@@ -39,7 +39,7 @@ public class ReactionUpdateService {
             case SAD: // 슬퍼요
                 answer.setSadCount(answer.getSadCount() - 1);
                 break;
-            case CONNECTION: // 통했당
+            case CONNECT: // 통했당
                 answer.setConnectCount(answer.getConnectCount() - 1);
                 break;
         }
