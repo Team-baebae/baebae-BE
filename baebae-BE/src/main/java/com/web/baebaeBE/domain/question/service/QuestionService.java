@@ -33,7 +33,7 @@ public class QuestionService {
         Question question = questionMapper.toEntity(request, member);
         Question savedQuestion = questionRepository.save(question);
 
-        firebaseNotificationService.notifyNewQuestion(member, question); // 파이어베이스 메세지 송신
+        //firebaseNotificationService.notifyNewQuestion(member, question); // 파이어베이스 메세지 송신
 
         return questionMapper.toDomain(savedQuestion);
     }
@@ -54,7 +54,7 @@ public class QuestionService {
         // 질문 업데이트 후 저장
         Question updatedQuestion = questionRepository.save(question);
 
-        firebaseNotificationService.notifyNewQuestion(updatedQuestion.getMember(), updatedQuestion); // 파이어베이스 메세지 송신
+        //firebaseNotificationService.notifyNewQuestion(updatedQuestion.getMember(), updatedQuestion); // 파이어베이스 메세지 송신
 
         return questionMapper.toDomain(updatedQuestion);
 

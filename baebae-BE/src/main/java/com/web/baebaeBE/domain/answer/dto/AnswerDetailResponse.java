@@ -26,12 +26,13 @@ public class AnswerDetailResponse {
     private Integer heartCount;
     private Integer curiousCount;
     private Integer sadCount;
+    private Integer connectCount;
 
     public AnswerDetailResponse(Long answerId, Long questionId, String questionContent, Long memberId,
                                 String content, String memberNickname, String nickname, Boolean profileOnOff,
                                 String linkAttachments, String musicName, String musicSinger, String musicAudioUrl,
                                  String imageUrl, LocalDateTime createdDate,
-                                Integer heartCount, Integer curiousCount, Integer sadCount) {
+                                Integer heartCount, Integer curiousCount, Integer sadCount, Integer connectCount) {
         this.answerId = answerId;
         this.questionId = questionId;
         this.questionContent = questionContent;
@@ -49,16 +50,17 @@ public class AnswerDetailResponse {
         this.heartCount = heartCount;
         this.curiousCount = curiousCount;
         this.sadCount = sadCount;
+        this.connectCount = connectCount;
     }
 
     public static AnswerDetailResponse of(Long answerId, Long questionId, String questionContent, Long memberId,
                                           String content, String memberNickname, String nickname, Boolean profileOnOff,
                                           String linkAttachments, String musicName, String musicSinger, String musicAudioUrl,
                                           String imageUrl, LocalDateTime createdDate,
-                                          Integer heartCount, Integer curiousCount, Integer sadCount) {
+                                          Integer heartCount, Integer curiousCount, Integer sadCount, Integer connectCount) {
         return new AnswerDetailResponse(answerId, questionId, questionContent, memberId, content, memberNickname,
                 nickname, profileOnOff, linkAttachments, musicName, musicSinger, musicAudioUrl, imageUrl, createdDate,
-                heartCount, curiousCount, sadCount);
+                heartCount, curiousCount, sadCount, connectCount);
 
     }
 }
