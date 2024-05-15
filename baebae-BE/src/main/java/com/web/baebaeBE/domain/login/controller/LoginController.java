@@ -93,7 +93,7 @@ public class LoginController implements LoginApi {
   @PostMapping("/logout")
   public ResponseEntity<Void> logout(
           HttpServletRequest httpServletRequest,
-          @RequestParam String fcmToken
+          @RequestParam(required = false) String fcmToken
   ) {
     String authorizationHeader = httpServletRequest.getHeader("Authorization");
     String accessToken = null;
@@ -103,8 +103,10 @@ public class LoginController implements LoginApi {
 
     //로그아웃 진행
     manageTokenService.logoutMember(accessToken);
+
     //fcmToken 삭제
-    fcmService.deleteFcmToken(fcmToken);
+    if(fcmToken != null)
+      fcmService.deleteFcmToken(fcmToken);
 
     return ResponseEntity.ok().build();
   }
