@@ -3,6 +3,7 @@ package com.web.baebaeBE.domain.answer.controller.api;
 import com.web.baebaeBE.domain.answer.dto.AnswerCreateRequest;
 import com.web.baebaeBE.domain.answer.dto.AnswerDetailResponse;
 import com.web.baebaeBE.domain.answer.dto.AnswerResponse;
+import com.web.baebaeBE.domain.reaction.entity.ReactionValue;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -110,4 +111,39 @@ public interface AnswerApi {
     @RequestMapping(method = RequestMethod.DELETE, value = "/{answerId}")
     ResponseEntity<Void> deleteAnswer(
             @PathVariable Long answerId);
+
+    @Operation(
+            summary = "답변에 반응 업데이트",
+            description = "특정 답변에 대해 반응(좋아요, 궁금해요, 슬퍼요)을 업데이트합니다.",
+            security = @SecurityRequirement(name = "bearerAuth")
+    )
+    @Parameter(
+            in = ParameterIn.HEADER,
+            name = "Authorization", required = true,
+            schema = @Schema(type = "string"),
+            description = "Bearer [Access 토큰]")
+    @ApiResponse(responseCode = "200", description = "반응 업데이트 성공")
+    @PatchMapping("/{answerId}/react")
+    ResponseEntity<Void> updateAnswerReactions(
+            @PathVariable Long answerId,
+            @RequestParam int heartCount,
+            @RequestParam int curiousCount,
+            @RequestParam int sadCount);
+
+    @Operation(
+            summary = "특정 답변에 대한 사용자의 반응 여부 확인",
+            description = "특정 답변에 대해 사용자가 이미 반응(좋아요, 궁금해요, 슬퍼요)을 남겼는지 여부를 확인합니다.",
+            security = @SecurityRequirement(name = "bearerAuth")
+    )
+    @Parameter(
+            in = ParameterIn.HEADER,
+            name = "Authorization", required = true,
+            schema = @Schema(type = "string"),
+            description = "Bearer [Access 토큰]")
+    @ApiResponse(responseCode = "200", description = "반응 여부 확인 성공")
+    @GetMapping("/{answerId}/reacted")
+    ResponseEntity<Boolean> hasReacted(
+            @PathVariable Long answerId,
+            @RequestParam Long memberId,
+            @RequestParam ReactionValue reactionValue);
 }
