@@ -8,6 +8,7 @@ import com.web.baebaeBE.domain.answer.service.AnswerService;
 import com.web.baebaeBE.domain.categorized.answer.service.CategorizedAnswerService;
 
 import com.web.baebaeBE.domain.category.service.CategoryService;
+import com.web.baebaeBE.domain.reaction.entity.ReactionValue;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -67,7 +68,6 @@ public class AnswerController implements AnswerApi {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 
-    @Operation(summary = "반응 알림")
     @PatchMapping("/{answerId}/react")
     public ResponseEntity<Void> updateAnswerReactions(@PathVariable Long answerId,
                                                       @RequestParam int heartCount,
@@ -75,5 +75,13 @@ public class AnswerController implements AnswerApi {
                                                       @RequestParam int sadCount) {
         answerService.updateReactionCounts(answerId, heartCount, curiousCount, sadCount);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{answerId}/reacted")
+    public ResponseEntity<Boolean> hasReacted(@PathVariable Long answerId,
+                                              @RequestParam Long memberId,
+                                              @RequestParam ReactionValue reactionValue) {
+        boolean hasReacted = answerService.hasReacted(answerId, memberId, reactionValue);
+        return ResponseEntity.ok(hasReacted);
     }
 }
