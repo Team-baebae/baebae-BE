@@ -131,7 +131,7 @@ public class ManageMemberTest {
     @DisplayName("FCM 토큰 추가 테스트(): 해당 회원에게 FCM 토큰을 추가한다.")
     public void addFcmTokenTest() throws Exception {
         // given
-        FcmRequest.Token tokenRequest = new FcmRequest.Token("fwef094938jweSIJDe8204gaskd390GK32G9HADF0809d8708U908ud9UHD9FH4e32982hF0ODH22E");
+        FcmRequest.CreateToken tokenRequest = new FcmRequest.CreateToken("fwef094938jweSIJDe8204gaskd390GK32G9HADF0809d8708U908ud9UHD9FH4e32982hF0ODH22E");
 
         // when
         mockMvc.perform(post("/api/fcm/{memberId}", testMember.getId())
