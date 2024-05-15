@@ -20,7 +20,7 @@ public class AnswerMapper {
         Music music = Music.builder()
                 .musicName(request.getMusicName())
                 .musicSinger(request.getMusicSinger())
-                .musicPicture(request.getMusicPicture())
+                .musicAudioUrl(request.getMusicAudioUrl())
                 .build();
 
         // Answer 엔티티 생성 및 Music 설정
@@ -60,7 +60,7 @@ public class AnswerMapper {
                 answer.getLinkAttachments(),
                 music != null ? music.getMusicName() : null,
                 music != null ? music.getMusicSinger() : null,
-                music != null ? music.getMusicPicture() : null,
+                music != null ? music.getMusicAudioUrl() : null,
                 answer.getCreatedDate(),
                 answer.getHeartCount(),
                 answer.getCuriousCount(),

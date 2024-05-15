@@ -24,13 +24,13 @@ public class Music {
     @Column(name = "music_name", nullable = false)
     private String musicName;
 
-    @Column(name = "music_picture", nullable = false)
-    private String musicPicture;
+    @Column(name = "music_audo_url", nullable = false)
+    private String musicAudioUrl;
 
     @Column(name = "music_singer", nullable = false)
     private String musicSinger;
 
-    public static Music of(Long id, Answer answer, String  musicName, String  musicPicture, String musicSinger) {
-        return new Music(id, answer, musicName, musicPicture, musicSinger);
+    public static Music of(Long id, Answer answer, String  musicName, String  musicAudioUrl, String musicSinger) {
+        return new Music(id, answer, musicName, musicAudioUrl, musicSinger);
     }
 }

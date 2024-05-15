@@ -20,7 +20,7 @@ public class AnswerDetailResponse {
     private String linkAttachments;
     private String musicName;
     private String musicSinger;
-    private String musicPicture;
+    private String musicAudioUrl;
     private LocalDateTime createdDate;
     private Integer heartCount;
     private Integer curiousCount;
@@ -28,7 +28,7 @@ public class AnswerDetailResponse {
 
     public AnswerDetailResponse(Long answerId, Long questionId, String questionContent, Long memberId,
                                 String content, String memberNickname, String nickname, Boolean profileOnOff,
-                                String linkAttachments, String musicName, String musicSinger, String musicPicture,
+                                String linkAttachments, String musicName, String musicSinger, String musicAudioUrl,
                                  LocalDateTime createdDate,
                                 Integer heartCount, Integer curiousCount, Integer sadCount) {
         this.answerId = answerId;
@@ -42,7 +42,7 @@ public class AnswerDetailResponse {
         this.linkAttachments = linkAttachments;
         this.musicName = musicName;
         this.musicSinger = musicSinger;
-        this.musicPicture = musicPicture;
+        this.musicAudioUrl = musicAudioUrl;
         this.createdDate = createdDate;
         this.heartCount = heartCount;
         this.curiousCount = curiousCount;
@@ -51,11 +51,11 @@ public class AnswerDetailResponse {
 
     public static AnswerDetailResponse of(Long answerId, Long questionId, String questionContent, Long memberId,
                                           String content, String memberNickname, String nickname, Boolean profileOnOff,
-                                          String linkAttachments, String musicName, String musicSinger, String musicPicture,
+                                          String linkAttachments, String musicName, String musicSinger, String musicAudioUrl,
                                            LocalDateTime createdDate,
                                           Integer heartCount, Integer curiousCount, Integer sadCount) {
         return new AnswerDetailResponse(answerId, questionId, questionContent, memberId, content, memberNickname,
-                nickname, profileOnOff, linkAttachments, musicName, musicSinger, musicPicture, createdDate,
+                nickname, profileOnOff, linkAttachments, musicName, musicSinger, musicAudioUrl, createdDate,
                 heartCount, curiousCount, sadCount);
 
     }
