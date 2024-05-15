@@ -13,7 +13,17 @@ public class FcmRequest {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Token{
+    public static class CreateToken{
         private String fcmToken;
     }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateToken{
+        private String oldFcmToken;
+        private String newFcmToken;
+    }
+
 }

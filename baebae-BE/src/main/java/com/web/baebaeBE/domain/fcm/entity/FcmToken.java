@@ -31,6 +31,9 @@ public class FcmToken {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
+    public void updateToken(String newToken) {
+        this.token = newToken;
+    }
     public void updateLastUsedTime() {
         this.lastUsedTime = LocalDateTime.now();
     }
