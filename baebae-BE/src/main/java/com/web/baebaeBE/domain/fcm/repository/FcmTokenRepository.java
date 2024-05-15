@@ -8,4 +8,5 @@ import java.util.Optional;
 
 public interface FcmTokenRepository extends JpaRepository<FcmToken, Long> {
     List<FcmToken> findByMemberId(Long memberId);
+    Optional<FcmToken> findByToken(String token);
 }

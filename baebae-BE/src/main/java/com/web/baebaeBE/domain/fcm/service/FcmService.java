@@ -42,4 +42,12 @@ public class FcmService {
         fcmToken.updateLastUsedTime();
         fcmTokenRepository.save(fcmToken);
     }
+
+    // FCM 토큰 삭제 메서드
+    public void deleteFcmToken(String fcmToken) {
+        FcmToken token = fcmTokenRepository.findByToken(fcmToken)
+                .orElseThrow(() -> new BusinessException(FcmException.NOT_FOUND_FCM));
+
+        fcmTokenRepository.delete(token);
+    }
 }

@@ -1,6 +1,7 @@
 package com.web.baebaeBE.domain.login.controller;
 
 
+import com.web.baebaeBE.domain.fcm.service.FcmService;
 import com.web.baebaeBE.domain.login.controller.api.LoginApi;
 import com.web.baebaeBE.domain.login.dto.LoginRequest;
 import com.web.baebaeBE.domain.login.dto.LoginResponse;
@@ -21,6 +22,7 @@ public class LoginController implements LoginApi {
 
   private final LoginService loginService;
   private final ManageTokenService manageTokenService;
+  private final FcmService fcmService;
 
   //로그인
   @PostMapping("/login")
@@ -84,7 +86,10 @@ public class LoginController implements LoginApi {
 
   //로그아웃
   @PostMapping("/logout")
-  public ResponseEntity<Void> logout(HttpServletRequest httpServletRequest) {
+  public ResponseEntity<Void> logout(
+          HttpServletRequest httpServletRequest,
+          @RequestParam String fcmToken
+  ) {
     String authorizationHeader = httpServletRequest.getHeader("Authorization");
     String accessToken = null;
     if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
@@ -93,6 +98,8 @@ public class LoginController implements LoginApi {
 
     //로그아웃 진행
     manageTokenService.logoutMember(accessToken);
+    //fcmToken 삭제
+    fcmService.deleteFcmToken(fcmToken);
 
     return ResponseEntity.ok().build();
   }

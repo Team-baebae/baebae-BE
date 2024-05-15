@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "Login", description = "로그인 관련 API")
 public interface LoginApi {
@@ -169,5 +170,5 @@ public interface LoginApi {
                         "}"))
             )
     })
-    ResponseEntity<Void> logout(HttpServletRequest httpServletRequest);
+    ResponseEntity<Void> logout(HttpServletRequest httpServletRequest, @RequestParam String fcmToken);
 }
