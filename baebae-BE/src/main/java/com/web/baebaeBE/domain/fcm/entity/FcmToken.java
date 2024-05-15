@@ -3,6 +3,8 @@ package com.web.baebaeBE.domain.fcm.entity;
 import com.web.baebaeBE.domain.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
 
@@ -23,8 +25,9 @@ public class FcmToken {
     @Column(name = "expiration_time", nullable = false)
     private LocalDateTime lastUsedTime;
 
-    @ManyToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
     public void updateLastUsedTime() {
