@@ -71,7 +71,8 @@ public class AnswerMapper {
                 answer.getCreatedDate(),
                 answer.getHeartCount(),
                 answer.getCuriousCount(),
-                answer.getSadCount()
+                answer.getSadCount(),
+                answer.getConnectCount()
         );
     }
 

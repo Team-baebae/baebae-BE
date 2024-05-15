@@ -61,7 +61,7 @@ public interface MemberAnswerReactionApi {
                                                                            @Parameter(description = "답변의 ID", required = true) @PathVariable Long answerId,
                                                                            @RequestBody ReactionRequest.create reactionDto);
 
-    @Operation(
+   /* @Operation(
             summary = "통했당 생성",
             description = "지정된 멤버 ID, 답변 ID, 대상 멤버 ID에 대한 '통했당'을 생성합니다. " +
                     "다른 피드에 '통했당'을 남길경우 memberId, answerId만 필요합니다. " +
@@ -98,5 +98,5 @@ public interface MemberAnswerReactionApi {
     })
     ResponseEntity<ReactionResponse.ConnectionReactionInformationDto> createClickReaction(@Parameter(description = "멤버의 ID", required = true) @PathVariable Long memberId,
                                                                                           @Parameter(description = "답변의 ID", required = true) @PathVariable Long answerId,
-                                                                                          @Parameter(description = "대상 멤버의 ID (피드주인이 통했당 완료할때만 가능)", required = false) @RequestParam(required = false) Long destinationMemberId);
+                                                                                          @Parameter(description = "대상 멤버의 ID (피드주인이 통했당 완료할때만 가능)", required = false) @RequestParam(required = false) Long destinationMemberId);*/
 }
