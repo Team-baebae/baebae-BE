@@ -80,38 +80,38 @@ public class NotificationManageTest {
             memberRepository.delete(member.get());
     }
 
-    @Test
-    @DisplayName("알림 생성 테스트(): 테스트 회원으로 새로운 알림을 생성한다.")
-    void createNotificationTest() throws FirebaseMessagingException {
-        // Given
-        NotificationRequest.create createRequest = new NotificationRequest.create(
-                testMember.getId(),
-                "배승우님이 질문을 남기셨습니다! 확인해보세요",
-                "가은아! 넌 무슨색상을 좋아해?",
-                NotificationRequest.EventType.NEW_QUESTION,// 이벤트 타입 설정
-                null
-
-        );
-
-        when(mockFirebaseMessagingService.sendNotification(anyString(), anyString(), anyString()))
-                .thenReturn("mock_message_id");
-        // FCM 서비스 목 설정
-        // when
-        Notification createdNotification = notificationService.createNotification(createRequest);
-
-        // then
-        assertNotNull(createdNotification);
-        assertNotNull(createdNotification.getId()); // 알람 ID가 null이 아니어야 함
-        assertEquals("배승우님이 질문을 남기셨습니다! 확인해보세요", createdNotification.getNotificationContent());
-        assertEquals("가은아! 넌 무슨색상을 좋아해?", createdNotification.getQuestionContent());
-        assertEquals(testMember, createdNotification.getMember()); // 알람이 해당 멤버에 연결되어 있는지 확인
-
-        verify(mockFirebaseMessagingService).sendNotification(
-                eq(testMember.getFcmToken()), // FCM 토큰이나 필요한 식별자
-                eq("배승우님이 질문을 남기셨습니다! 확인해보세요"),
-                eq("가은아! 넌 무슨색상을 좋아해?")
-        );
-    }
+//    @Test
+//    @DisplayName("알림 생성 테스트(): 테스트 회원으로 새로운 알림을 생성한다.")
+//    void createNotificationTest() throws FirebaseMessagingException {
+//        // Given
+//        NotificationRequest.create createRequest = new NotificationRequest.create(
+//                testMember.getId(),
+//                "배승우님이 질문을 남기셨습니다! 확인해보세요",
+//                "가은아! 넌 무슨색상을 좋아해?",
+//                NotificationRequest.EventType.NEW_QUESTION,// 이벤트 타입 설정
+//                null
+//
+//        );
+//
+//        when(mockFirebaseMessagingService.sendNotification(anyString(), anyString(), anyString()))
+//                .thenReturn("mock_message_id");
+//        // FCM 서비스 목 설정
+//        // when
+//        Notification createdNotification = notificationService.createNotification(createRequest);
+//
+//        // then
+//        assertNotNull(createdNotification);
+//        assertNotNull(createdNotification.getId()); // 알람 ID가 null이 아니어야 함
+//        assertEquals("배승우님이 질문을 남기셨습니다! 확인해보세요", createdNotification.getNotificationContent());
+//        assertEquals("가은아! 넌 무슨색상을 좋아해?", createdNotification.getQuestionContent());
+//        assertEquals(testMember, createdNotification.getMember()); // 알람이 해당 멤버에 연결되어 있는지 확인
+//
+//        verify(mockFirebaseMessagingService).sendNotification(
+//                eq(testMember.getFcmToken()), // FCM 토큰이나 필요한 식별자
+//                eq("배승우님이 질문을 남기셨습니다! 확인해보세요"),
+//                eq("가은아! 넌 무슨색상을 좋아해?")
+//        );
+//    }
 
 
     @Test

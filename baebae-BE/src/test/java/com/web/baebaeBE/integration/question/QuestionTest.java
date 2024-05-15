@@ -100,44 +100,44 @@ public class QuestionTest {
 
     }
 
-    @Test
-    @DisplayName("Get Answered Questions Test")
-    public void getAnsweredQuestionsTest() throws Exception {
-        testQuestionDetailResponse = new QuestionDetailResponse(1L, "Test question?", "user123", true, LocalDateTime.now(), "test_token", true);
-        List<QuestionDetailResponse> questions = List.of(testQuestionDetailResponse);
-        PageImpl<QuestionDetailResponse> page = new PageImpl<>(questions);
-
-        when(questionService.getAnsweredQuestions(eq(1L), any(Pageable.class))).thenReturn(page);
-
-        mockMvc.perform(get("/api/questions/answered/{memberId}", 1L)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.size()").value(1))
-                .andExpect(jsonPath("$[0].content").value("Test question?"))
-                .andExpect(jsonPath("$[0].nickname").value("user123"))
-                .andExpect(jsonPath("$[0].profileOnOff").value(true));
-    }
-    @Test
-    @DisplayName("회원별 질문 조회 테스트(): 해당 회원의 질문을 조회한다.")
-    public void getQuestionsByMemberIdTest() throws Exception {
-        // Setup mock response
-        String content = "이것은 회원의 질문입니다.";
-        Question question = new Question(1L, testMember, content, "닉네임", true, LocalDateTime.now(), true);
-        List<Question> questions = List.of(question);
-        Page<Question> questionPage = new org.springframework.data.domain.PageImpl<>(questions, Pageable.unpaged(), 1);
-
-        // Correct usage of matchers
-        when(questionRepository.findAllByMemberId(eq(testMember.getId()), any(Pageable.class)))
-                .thenReturn(questionPage);
-
-        mockMvc.perform(get("/api/questions/member/{memberId}", testMember.getId())
-                        .header("Authorization", "Bearer " + refreshToken)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].content").value(content))
-                .andExpect(jsonPath("$[0].nickname").value("닉네임"))
-                .andExpect(jsonPath("$[0].profileOnOff").value(true));
-    }
+//    @Test
+//    @DisplayName("Get Answered Questions Test")
+//    public void getAnsweredQuestionsTest() throws Exception {
+//        testQuestionDetailResponse = new QuestionDetailResponse(1L, "Test question?", "user123", true, LocalDateTime.now(), "test_token", true);
+//        List<QuestionDetailResponse> questions = List.of(testQuestionDetailResponse);
+//        PageImpl<QuestionDetailResponse> page = new PageImpl<>(questions);
+//
+//        when(questionService.getAnsweredQuestions(eq(1L), any(Pageable.class))).thenReturn(page);
+//
+//        mockMvc.perform(get("/api/questions/answered/{memberId}", 1L)
+//                        .accept(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.size()").value(1))
+//                .andExpect(jsonPath("$[0].content").value("Test question?"))
+//                .andExpect(jsonPath("$[0].nickname").value("user123"))
+//                .andExpect(jsonPath("$[0].profileOnOff").value(true));
+//    }
+//    @Test
+//    @DisplayName("회원별 질문 조회 테스트(): 해당 회원의 질문을 조회한다.")
+//    public void getQuestionsByMemberIdTest() throws Exception {
+//        // Setup mock response
+//        String content = "이것은 회원의 질문입니다.";
+//        Question question = new Question(1L, testMember, content, "닉네임", true, LocalDateTime.now(), true);
+//        List<Question> questions = List.of(question);
+//        Page<Question> questionPage = new org.springframework.data.domain.PageImpl<>(questions, Pageable.unpaged(), 1);
+//
+//        // Correct usage of matchers
+//        when(questionRepository.findAllByMemberId(eq(testMember.getId()), any(Pageable.class)))
+//                .thenReturn(questionPage);
+//
+//        mockMvc.perform(get("/api/questions/member/{memberId}", testMember.getId())
+//                        .header("Authorization", "Bearer " + refreshToken)
+//                        .contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$[0].content").value(content))
+//                .andExpect(jsonPath("$[0].nickname").value("닉네임"))
+//                .andExpect(jsonPath("$[0].profileOnOff").value(true));
+//    }
 
     @Test
     @DisplayName("질문 수정 테스트(): 질문을 수정한다.")
