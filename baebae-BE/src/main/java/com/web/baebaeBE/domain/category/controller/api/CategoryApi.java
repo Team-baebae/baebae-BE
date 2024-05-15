@@ -43,8 +43,8 @@ public interface CategoryApi {
 
 
     @Operation(summary = "멤버의 모든 카테고리 조회",
-            description = "멤버 ID를 받아 해당 멤버의 모든 카테고리를 조회합니다.",
-            security = @SecurityRequirement(name = "bearerAuth")
+            description = "멤버 ID를 받아 해당 멤버의 모든 카테고리를 조회합니다."
+
     )
     @Parameter(
             in = ParameterIn.HEADER,

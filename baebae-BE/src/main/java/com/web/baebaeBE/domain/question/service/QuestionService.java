@@ -80,7 +80,8 @@ public class QuestionService {
     }
 
     @Transactional(readOnly = true)
-    public long countQuestionsByMemberId(Long memberId) {
-        return questionRepository.countByMemberId(memberId);
+    public long getUnansweredQuestionCount(Long memberId) {
+        return questionRepository.countByMemberIdAndIsAnsweredFalse(memberId);
     }
+
 }

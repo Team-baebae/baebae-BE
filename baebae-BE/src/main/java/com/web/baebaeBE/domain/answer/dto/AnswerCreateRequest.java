@@ -16,10 +16,11 @@ public class AnswerCreateRequest {
     private String musicName;
     private String musicSinger;
     private String musicAudioUrl;
+    private String imageUrl;
 
     public AnswerCreateRequest(Long questionId, String content,String nickname,
                                Boolean profileOnOff, String linkAttachments,
-                               String musicName, String musicSinger, String musicAudioUrl) {
+                               String musicName, String musicSinger, String musicAudioUrl, String imageUrl) {
         this.questionId = questionId;
         this.content = content;
         this.nickname = nickname;
@@ -28,12 +29,13 @@ public class AnswerCreateRequest {
         this.musicName = musicName;
         this.musicSinger = musicSinger;
         this.musicAudioUrl = musicAudioUrl;
+        this.imageUrl = imageUrl;
     }
 
     public static AnswerCreateRequest of(Long questionId, String content, String  nickname,
                                          Boolean profileOnOff, String linkAttachments,
-                                         String musicName, String musicSinger, String musicAudioUrl) {
+                                         String musicName, String musicSinger, String musicAudioUrl, String imageUrl) {
         return new AnswerCreateRequest(questionId, content, nickname, profileOnOff, linkAttachments,
-                musicName, musicSinger, musicAudioUrl);
+                musicName, musicSinger, musicAudioUrl, imageUrl);
     }
 }

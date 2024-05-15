@@ -68,14 +68,6 @@ public class AnswerController implements AnswerApi {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 
-    @PatchMapping("/{answerId}/react")
-    public ResponseEntity<Void> updateAnswerReactions(@PathVariable Long answerId,
-                                                      @RequestParam int heartCount,
-                                                      @RequestParam int curiousCount,
-                                                      @RequestParam int sadCount) {
-        answerService.updateReactionCounts(answerId, heartCount, curiousCount, sadCount);
-        return ResponseEntity.ok().build();
-    }
 
     @GetMapping("/{answerId}/reacted")
     public ResponseEntity<Boolean> hasReacted(@PathVariable Long answerId,

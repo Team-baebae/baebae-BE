@@ -48,7 +48,8 @@ public class QuestionRepositoryImpl implements QuestionRepository {
     }
 
     @Override
-    public Long countByMemberId(Long memberId) {
-        return questionJpaRepository.countByMemberId(memberId);
+    public long countByMemberIdAndIsAnsweredFalse(Long memberId) {
+        return questionJpaRepository.countByMemberIdAndIsAnsweredFalse(memberId);
     }
+
 }

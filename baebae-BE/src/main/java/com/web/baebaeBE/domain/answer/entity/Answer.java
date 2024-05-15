@@ -59,6 +59,9 @@ public class Answer {
     @Column(name = "link_attachment")
     private String linkAttachments;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
     @Column(name = "heart_count", nullable = false)
     private int heartCount;
 
@@ -78,11 +81,11 @@ public class Answer {
     private boolean profileOnOff;
 
     public static Answer of(Long id, Question question, Category category, Member member, String nickname,String content,
-                            List<String> imageFiles, Music music, String linkAttachments, int heartCount,
+                            List<String> imageFiles, Music music, String linkAttachments, String  imageUrl, int heartCount,
                             int curiousCount, int sadCount, LocalDateTime createdDate, boolean profileOnOff) {
 
-        return new Answer(id, question, category, member, nickname, imageFiles, content, music, linkAttachments, heartCount,
-                curiousCount, sadCount, createdDate,null, profileOnOff);
+        return new Answer(id, question, category, member, nickname, imageFiles, content, music, linkAttachments,imageUrl, heartCount,
+                 curiousCount, sadCount, createdDate,null, profileOnOff);
     }
 
     public void increaseReactionCount(ReactionValue reaction) {
