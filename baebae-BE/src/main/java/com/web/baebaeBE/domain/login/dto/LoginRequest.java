@@ -20,6 +20,7 @@ public class LoginRequest {
     private MemberType memberType;
     @Schema(example = "김예찬")
     private String nickname;
+    private String fcmToken;
   }
 
   @Getter

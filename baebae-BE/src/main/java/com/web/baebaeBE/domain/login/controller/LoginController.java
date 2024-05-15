@@ -34,11 +34,15 @@ public class LoginController implements LoginApi {
     KakaoUserInfoDto kakaoUserInfo = loginService.getKakaoUserInfo(httpServletRequest);
 
     // 이미 회원이 존재하면 로그인, 없을 시 회원가입 진행
-    if (loginService.isExistingUser(kakaoUserInfo.getKakaoAccount().getEmail())) {
-      return ResponseEntity.ok(loginService.loginWithExistingUser(kakaoUserInfo, signUpRequest));
-    } else {
-      return ResponseEntity.ok(loginService.signUpNewUser(kakaoUserInfo, signUpRequest));
-    }
+    LoginResponse.SignUpResponse response = null;
+    if (loginService.isExistingUser(kakaoUserInfo.getKakaoAccount().getEmail()))
+      response = loginService.loginWithExistingUser(kakaoUserInfo, signUpRequest);
+    else
+      response = loginService.signUpNewUser(kakaoUserInfo, signUpRequest);
+
+    fcmService.addFcmToken(response.getId(), signUpRequest.getFcmToken());
+
+    return ResponseEntity.ok(response);
   }
 
   //회원가입 유무 판별
