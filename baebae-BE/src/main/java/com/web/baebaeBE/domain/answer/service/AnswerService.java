@@ -110,7 +110,7 @@ public class AnswerService {
         // Update Music entity fields
         answer.getMusic().setMusicName(request.getMusicName());
         answer.getMusic().setMusicSinger(request.getMusicSinger());
-        answer.getMusic().setMusicPicture(request.getMusicPicture());
+        answer.getMusic().setMusicAudioUrl(request.getMusicAudioUrl());
 
         if (!imageFile.isEmpty()) {
             try (InputStream inputStream = imageFile.getInputStream()) {
