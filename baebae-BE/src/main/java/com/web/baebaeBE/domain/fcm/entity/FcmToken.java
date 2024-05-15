@@ -21,16 +21,14 @@ public class FcmToken {
     private String token;
 
     @Column(name = "expiration_time", nullable = false)
-    private LocalDateTime expirationTime;
+    private LocalDateTime lastUsedTime;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    // 토큰 만료 여부 확인
-    public boolean isExpired() {
-        return LocalDateTime.now().isAfter(expirationTime);
+    public void updateLastUsedTime() {
+        this.lastUsedTime = LocalDateTime.now();
     }
-
 
 }

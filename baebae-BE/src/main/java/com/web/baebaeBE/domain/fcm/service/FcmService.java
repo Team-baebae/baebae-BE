@@ -1,6 +1,7 @@
 package com.web.baebaeBE.domain.fcm.service;
 
 import com.web.baebaeBE.domain.fcm.entity.FcmToken;
+import com.web.baebaeBE.domain.fcm.exception.FcmException;
 import com.web.baebaeBE.domain.fcm.repository.FcmTokenRepository;
 import com.web.baebaeBE.domain.member.entity.Member;
 import com.web.baebaeBE.domain.member.exception.MemberException;
@@ -30,9 +31,15 @@ public class FcmService {
         FcmToken token = FcmToken.builder()
                 .token(fcmToken)
                 .member(member)
-                .expirationTime(LocalDateTime.now().plusDays(14))
+                .lastUsedTime(LocalDateTime.now())
                 .build();
 
         return fcmTokenRepository.save(token);
+    }
+
+    // FCM 토큰의 마지막 사용 시간을 현재 시간으로 업데이트
+    public void updateLastUsedTime(FcmToken fcmToken) {
+        fcmToken.updateLastUsedTime();
+        fcmTokenRepository.save(fcmToken);
     }
 }
