@@ -38,6 +38,17 @@ public class FcmService {
         return fcmTokenRepository.save(token);
     }
 
+    public void updateFcmToken(String oldFcmToken, String newFcmToken, Long memberId) {
+        FcmToken token = fcmTokenRepository.findByToken(oldFcmToken)
+                .orElseThrow(() -> new BusinessException(FcmException.NOT_FOUND_FCM));
+
+        if (!token.getMember().getId().equals(memberId))
+            throw new BusinessException(FcmException.NOT_MATCH_MEMBER);
+
+        token.updateToken(newFcmToken);
+        fcmTokenRepository.save(token);
+    }
+
     public void verifyFcmToken(Long memberId, String fcmToken) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(MemberException.NOT_EXIST_MEMBER));
@@ -53,6 +64,9 @@ public class FcmService {
             fcmTokenRepository.save(token);
         }
     }
+
+
+
 
     // FCM 토큰의 마지막 사용 시간을 현재 시간으로 업데이트
     public void updateLastUsedTime(FcmToken fcmToken) {
