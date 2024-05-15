@@ -98,4 +98,15 @@ public interface QuestionApi {
     @ApiResponse(responseCode = "204", description = "질문 삭제 성공")
     @DeleteMapping("/{questionId}")
     ResponseEntity<Void> deleteQuestion(@PathVariable Long questionId);
+
+    @Operation(
+            summary = "질문 개수 조회",
+            description = "특정 회원이 받은 모든 질문의 개수를 조회합니다.",
+            security = @SecurityRequirement(name = "bearerAuth")
+    )
+    @ApiResponse(responseCode = "200", description = "질문 개수 조회 성공",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = Long.class)))
+    @GetMapping("/count/{memberId}")
+    ResponseEntity<Long> countQuestionsByMemberId(@PathVariable Long memberId);
 }

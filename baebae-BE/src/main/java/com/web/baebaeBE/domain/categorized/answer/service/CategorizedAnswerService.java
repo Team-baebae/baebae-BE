@@ -26,6 +26,7 @@ public class CategorizedAnswerService {
         } else  // 카테고리 정보가 있을 경우 -> 해당 카테고리 피드 조회
             categorizedAnswers = categorizedAnswerRepository.findByAnswer_Member_IdAndCategory_Id(memberId, categoryId, pageable);
 
-        return categorizedAnswers.map(categorizedAnswer -> answerMapper.toDomain(categorizedAnswer.getAnswer(), null));
+        return categorizedAnswers.map(categorizedAnswer -> answerMapper.toDomain(categorizedAnswer.getAnswer()));
+
     }
 }

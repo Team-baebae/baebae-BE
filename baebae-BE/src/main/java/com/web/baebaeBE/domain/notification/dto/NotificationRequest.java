@@ -16,6 +16,13 @@ public class NotificationRequest {
     private Long memberId;
     private String notificationContent;
     private String questionContent;
+    private EventType eventType;
+    private String reactionType;
   }
 
+  public enum EventType {
+    NEW_QUESTION, // 새로운 질문
+    NEW_ANSWER,   // 새로운 답변
+    REACTION      // 반응
+  }
 }

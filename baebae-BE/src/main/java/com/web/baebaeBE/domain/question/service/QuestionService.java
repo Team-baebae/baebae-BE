@@ -33,7 +33,7 @@ public class QuestionService {
         Question question = questionMapper.toEntity(request, member);
         Question savedQuestion = questionRepository.save(question);
 
-        firebaseNotificationService.notifyNewQuestion(member, question);// 파이어베이스 메세지 송신
+        firebaseNotificationService.notifyNewQuestion(member, question); // 파이어베이스 메세지 송신
 
         return questionMapper.toDomain(savedQuestion);
     }
@@ -77,5 +77,10 @@ public class QuestionService {
     public Page<QuestionDetailResponse> getUnansweredQuestions(Long memberId, Pageable pageable) {
         Page<Question> questions = questionRepository.findAllByMemberIdAndIsAnsweredFalse(memberId, pageable);
         return questions.map(question -> questionMapper.toDomain(question));
+    }
+
+    @Transactional(readOnly = true)
+    public long countQuestionsByMemberId(Long memberId) {
+        return questionRepository.countByMemberId(memberId);
     }
 }

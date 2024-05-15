@@ -61,41 +61,18 @@ public interface AnswerApi {
             @PathVariable Long memberId);
     @Operation(
             summary = "모든 답변 조회",
-            description = "주어진 회원 ID와 선택적 카테고리에 따라 모든 답변을 페이지네이션으로 조회합니다.",
+            description = "모든 답변을 페이지네이션으로 조회합니다.",
             security = @SecurityRequirement(name = "bearerAuth")
     )
     @Parameter(
             in = ParameterIn.HEADER,
             name = "Authorization", required = true,
             schema = @Schema(type = "string"),
-            description = "Bearer [Access token]"
-    )
-    @Parameter(
-            in = ParameterIn.QUERY,
-            name = "memberId",
-            required = true,
-            schema = @Schema(type = "integer"),
-            description = "회원 ID"
-    )
-    @Parameter(
-            in = ParameterIn.QUERY,
-            name = "category",
-            required = false,
-            schema = @Schema(type = "Integer"),
-            description = "카테고리 ID"
-    )
-    @ApiResponse(
-            responseCode = "200",
-            description = "답변 조회 성공",
+            description = "Bearer [Access 토큰]")
+    @ApiResponse(responseCode = "200", description = "답변 조회 성공",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = Page.class))
-    )
-    @ApiResponse(
-            responseCode = "404",
-            description = "카테고리를 찾을 수 없습니다",
-            content = @Content(mediaType = "application/json")
-    )
-    @GetMapping()
+                    schema = @Schema(implementation = Page.class)))
+    @RequestMapping(method = RequestMethod.GET)
     ResponseEntity<Page<AnswerDetailResponse>> getAllAnswers(
             @RequestParam Long memberId,
             @RequestParam(required = false) Long category,

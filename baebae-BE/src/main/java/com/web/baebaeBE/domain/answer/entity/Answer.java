@@ -3,6 +3,7 @@ package com.web.baebaeBE.domain.answer.entity;
 import com.web.baebaeBE.domain.categorized.answer.entity.CategorizedAnswer;
 import com.web.baebaeBE.domain.category.entity.Category;
 import com.web.baebaeBE.domain.member.entity.Member;
+import com.web.baebaeBE.domain.music.entity.Music;
 import com.web.baebaeBE.domain.question.entity.Question;
 import com.web.baebaeBE.domain.reaction.entity.ReactionValue;
 import jakarta.persistence.*;
@@ -40,6 +41,9 @@ public class Answer {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
+    @Column(name = "nickname")
+    private String nickname;
+
     @ElementCollection
     @CollectionTable(name = "answer_image_files", joinColumns = @JoinColumn(name = "answer_id"))
     @Column(name = "image_file")
@@ -48,19 +52,12 @@ public class Answer {
     @Column(name = "content", columnDefinition = "TEXT", nullable = false)
     private String content;
 
-    @Column(name = "music_name")
-    private String musicName;
 
-    @Column(name = "music_singer")
-    private String musicSinger;
+    @OneToOne(mappedBy = "answer", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private Music music;
 
-    @Column(name = "music_audio")
-    private String musicAudio;
-
-    @ElementCollection
-    @CollectionTable(name = "answer_link_attachments", joinColumns = @JoinColumn(name = "answer_id"))
     @Column(name = "link_attachment")
-    private List<String> linkAttachments;
+    private String linkAttachments;
 
     @Column(name = "heart_count", nullable = false)
     private int heartCount;
@@ -77,16 +74,15 @@ public class Answer {
     @OneToMany(mappedBy = "answer", cascade = CascadeType.REMOVE)
     private List<CategorizedAnswer> categorizedAnswers;
 
+    @Column(name = "profile_on_off", nullable = false)
+    private boolean profileOnOff;
 
+    public static Answer of(Long id, Question question, Category category, Member member, String nickname,String content,
+                            List<String> imageFiles, Music music, String linkAttachments, int heartCount,
+                            int curiousCount, int sadCount, LocalDateTime createdDate, boolean profileOnOff) {
 
-    public static Answer of(Long id, Question question, Category category, Member member, String content,
-                            List<String> imageFiles, String musicName, String musicPicture,
-                            String musicAudio, List<String> linkAttachments, int heartCount,
-                            int curiousCount, int sadCount, LocalDateTime createdDate) {
-
-        return new Answer(id, question, category, member, imageFiles, content, musicName,
-                musicPicture, musicAudio, linkAttachments, heartCount,
-                curiousCount, sadCount, createdDate,null);
+        return new Answer(id, question, category, member, nickname, imageFiles, content, music, linkAttachments, heartCount,
+                curiousCount, sadCount, createdDate,null, profileOnOff);
     }
 
     public void increaseReactionCount(ReactionValue reaction) {
@@ -103,5 +99,3 @@ public class Answer {
         }
     }
 }
-
-

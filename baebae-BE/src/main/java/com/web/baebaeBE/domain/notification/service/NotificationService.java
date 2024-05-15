@@ -1,5 +1,6 @@
 package com.web.baebaeBE.domain.notification.service;
 
+import com.google.firebase.messaging.FirebaseMessagingException;
 import com.web.baebaeBE.domain.login.exception.LoginException;
 import com.web.baebaeBE.global.error.exception.BusinessException;
 import com.web.baebaeBE.domain.notification.entity.Notification;
@@ -8,6 +9,7 @@ import com.web.baebaeBE.domain.member.entity.Member;
 import com.web.baebaeBE.domain.member.repository.MemberRepository;
 import com.web.baebaeBE.domain.notification.dto.NotificationRequest;
 import com.web.baebaeBE.domain.notification.dto.NotificationResponse;
+import com.web.baebaeBE.global.firebase.FirebaseMessagingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,17 +23,20 @@ public class NotificationService {
 
     private final NotificationRepository notificationRepository;
     private final MemberRepository memberRepository;
+    private final FirebaseMessagingService firebaseMessagingService;
 
-    // 알림 생성
+    // 알림 생성 및 FCM 알림 전송
     public Notification createNotification(NotificationRequest.create createNotificationDto) {
         Member member = memberRepository.findById(createNotificationDto.getMemberId())
                 .orElseThrow(() -> new BusinessException(LoginException.NOT_EXIST_MEMBER));
 
-        return notificationRepository.save(Notification.builder()
+        Notification notification = notificationRepository.save(Notification.builder()
                 .member(member)
                 .notificationContent(createNotificationDto.getNotificationContent())
                 .questionContent(createNotificationDto.getQuestionContent())
                 .build());
+
+        return notification;
     }
 
 

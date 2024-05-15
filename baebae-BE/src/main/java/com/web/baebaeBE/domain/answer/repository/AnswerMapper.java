@@ -3,6 +3,7 @@ package com.web.baebaeBE.domain.answer.repository;
 import com.web.baebaeBE.domain.answer.dto.AnswerResponse;
 import com.web.baebaeBE.domain.answer.entity.Answer;
 import com.web.baebaeBE.domain.member.entity.Member;
+import com.web.baebaeBE.domain.music.entity.Music;
 import com.web.baebaeBE.domain.question.entity.Question;
 import com.web.baebaeBE.domain.answer.dto.AnswerCreateRequest;
 import com.web.baebaeBE.domain.answer.dto.AnswerDetailResponse;
@@ -15,38 +16,55 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class AnswerMapper {
     public Answer toEntity(AnswerCreateRequest request, Question question, Member member) {
-        return Answer.builder()
-                .question(question)
-                .member(member)
-                .content(request.getContent())
-                .linkAttachments(request.getLinkAttachments()) // 링크 첨부 리스트 처리
+        // Music 엔티티 생성
+        Music music = Music.builder()
                 .musicName(request.getMusicName())
                 .musicSinger(request.getMusicSinger())
-                .musicAudio(request.getMusicAudioUrl())
+                .musicPicture(request.getMusicPicture())
+                .build();
+
+        // Answer 엔티티 생성 및 Music 설정
+        Answer answer = Answer.builder()
+                .question(question)
+                .member(member)
+                .nickname(request.getNickname())
+                .content(request.getContent())
+                .linkAttachments(request.getLinkAttachments())
+                .profileOnOff(request.getProfileOnOff())
                 .createdDate(LocalDateTime.now())
                 .heartCount(0)
                 .curiousCount(0)
                 .sadCount(0)
+                .music(music)
                 .build();
+
+        // Music 엔티티에 Answer 설정
+        music.setAnswer(answer);
+
+        return answer;
     }
 
-    public AnswerDetailResponse toDomain(Answer answer, String fcmtoken) {
+    public AnswerDetailResponse toDomain(Answer answer) {
+        Music music = answer.getMusic();
+        Member member = answer.getMember();
+        Question question = answer.getQuestion();
         return AnswerDetailResponse.of(
                 answer.getId(),
-                answer.getQuestion().getId(),
-                answer.getQuestion().getContent(), //질문 내용
-                answer.getMember().getId(),
+                question.getId(),
+                question.getContent(),
+                member.getId(),
                 answer.getContent(),
+                member.getNickname(),              // 실제 닉네임
+                answer.getNickname(),              // 익명 닉네임
+                answer.isProfileOnOff(),           // 프로필 공개 여부
                 answer.getLinkAttachments(),
-                answer.getMusicName(),
-                answer.getMusicSinger(),
-                answer.getMusicAudio(),
-                answer.getImageFiles(),
+                music != null ? music.getMusicName() : null,
+                music != null ? music.getMusicSinger() : null,
+                music != null ? music.getMusicPicture() : null,
                 answer.getCreatedDate(),
                 answer.getHeartCount(),
                 answer.getCuriousCount(),
-                answer.getSadCount(),
-                fcmtoken
+                answer.getSadCount()
         );
     }
 
