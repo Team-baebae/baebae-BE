@@ -1,7 +1,7 @@
 package com.web.baebaeBE.domain.fcm.controller.api;
 
 import com.web.baebaeBE.domain.fcm.dto.FcmRequest;
-import com.web.baebaeBE.domain.member.dto.MemberRequest;
+import com.web.baebaeBE.domain.fcm.entity.FcmToken;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
