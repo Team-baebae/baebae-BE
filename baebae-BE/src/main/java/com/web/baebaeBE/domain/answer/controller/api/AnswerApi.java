@@ -27,7 +27,7 @@ public interface AnswerApi {
 
     @Operation(
             summary = "답변 생성",
-            description = "새로운 답변을 생성합니다. 이미지 파일과 오디오 파일을 포함할 수 있습니다.",
+            description = "새로운 답변을 생성합니다. 이미지 파일을 포함합니다.",
             security = @SecurityRequirement(name = "bearerAuth")
     )
     @Parameter(
@@ -62,8 +62,8 @@ public interface AnswerApi {
             @PathVariable Long memberId);
     @Operation(
             summary = "모든 답변 조회",
-            description = "모든 답변을 페이지네이션으로 조회합니다.",
-            security = @SecurityRequirement(name = "bearerAuth")
+            description = "모든 답변을 페이지네이션으로 조회합니다."
+
     )
     @Parameter(
             in = ParameterIn.HEADER,
@@ -112,23 +112,6 @@ public interface AnswerApi {
     ResponseEntity<Void> deleteAnswer(
             @PathVariable Long answerId);
 
-    @Operation(
-            summary = "답변에 반응 업데이트",
-            description = "특정 답변에 대해 반응(좋아요, 궁금해요, 슬퍼요)을 업데이트합니다.",
-            security = @SecurityRequirement(name = "bearerAuth")
-    )
-    @Parameter(
-            in = ParameterIn.HEADER,
-            name = "Authorization", required = true,
-            schema = @Schema(type = "string"),
-            description = "Bearer [Access 토큰]")
-    @ApiResponse(responseCode = "200", description = "반응 업데이트 성공")
-    @PatchMapping("/{answerId}/react")
-    ResponseEntity<Void> updateAnswerReactions(
-            @PathVariable Long answerId,
-            @RequestParam int heartCount,
-            @RequestParam int curiousCount,
-            @RequestParam int sadCount);
 
     @Operation(
             summary = "특정 답변에 대한 사용자의 반응 여부 확인",

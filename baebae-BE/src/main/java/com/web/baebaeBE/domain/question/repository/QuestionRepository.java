@@ -14,6 +14,5 @@ public interface QuestionRepository{
     Page<Question> findAllByMemberIdAndIsAnsweredTrue(Long memberId, Pageable pageable);
     Page<Question> findAllByMemberIdAndIsAnsweredFalse(Long memberId, Pageable pageable);
     void delete(Question questionEntity);
-    Long countByMemberId(Long memberId);
-
+    long countByMemberIdAndIsAnsweredFalse(Long memberId);
 }

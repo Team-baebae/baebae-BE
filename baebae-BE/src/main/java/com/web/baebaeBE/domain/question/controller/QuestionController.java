@@ -62,9 +62,9 @@ public class QuestionController implements QuestionApi {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 
-    @GetMapping("/count/{memberId}")
-    public ResponseEntity<Long> countQuestionsByMemberId(@PathVariable Long memberId) {
-        long count = questionService.countQuestionsByMemberId(memberId);
+    @GetMapping("/unanswered/count/{memberId}")
+    public ResponseEntity<Long> getUnansweredQuestionCount(@PathVariable Long memberId) {
+        long count = questionService.getUnansweredQuestionCount(memberId);
         return ResponseEntity.ok(count);
     }
 }

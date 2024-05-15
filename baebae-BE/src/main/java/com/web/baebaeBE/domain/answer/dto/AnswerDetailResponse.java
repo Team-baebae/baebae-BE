@@ -21,6 +21,7 @@ public class AnswerDetailResponse {
     private String musicName;
     private String musicSinger;
     private String musicAudioUrl;
+    private String imageUrl;
     private LocalDateTime createdDate;
     private Integer heartCount;
     private Integer curiousCount;
@@ -29,7 +30,7 @@ public class AnswerDetailResponse {
     public AnswerDetailResponse(Long answerId, Long questionId, String questionContent, Long memberId,
                                 String content, String memberNickname, String nickname, Boolean profileOnOff,
                                 String linkAttachments, String musicName, String musicSinger, String musicAudioUrl,
-                                 LocalDateTime createdDate,
+                                 String imageUrl, LocalDateTime createdDate,
                                 Integer heartCount, Integer curiousCount, Integer sadCount) {
         this.answerId = answerId;
         this.questionId = questionId;
@@ -43,6 +44,7 @@ public class AnswerDetailResponse {
         this.musicName = musicName;
         this.musicSinger = musicSinger;
         this.musicAudioUrl = musicAudioUrl;
+        this.imageUrl = imageUrl;
         this.createdDate = createdDate;
         this.heartCount = heartCount;
         this.curiousCount = curiousCount;
@@ -52,10 +54,10 @@ public class AnswerDetailResponse {
     public static AnswerDetailResponse of(Long answerId, Long questionId, String questionContent, Long memberId,
                                           String content, String memberNickname, String nickname, Boolean profileOnOff,
                                           String linkAttachments, String musicName, String musicSinger, String musicAudioUrl,
-                                           LocalDateTime createdDate,
+                                          String imageUrl, LocalDateTime createdDate,
                                           Integer heartCount, Integer curiousCount, Integer sadCount) {
         return new AnswerDetailResponse(answerId, questionId, questionContent, memberId, content, memberNickname,
-                nickname, profileOnOff, linkAttachments, musicName, musicSinger, musicAudioUrl, createdDate,
+                nickname, profileOnOff, linkAttachments, musicName, musicSinger, musicAudioUrl, imageUrl, createdDate,
                 heartCount, curiousCount, sadCount);
 
     }

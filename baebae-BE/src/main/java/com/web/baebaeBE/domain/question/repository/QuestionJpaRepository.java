@@ -9,6 +9,5 @@ public interface QuestionJpaRepository extends JpaRepository<Question, Long> {
     Page<Question> findAllByMemberId(Long memberId, Pageable pageable);
     Page<Question> findAllByMemberIdAndIsAnsweredTrue(Long memberId, Pageable pageable);
     Page<Question> findAllByMemberIdAndIsAnsweredFalse(Long memberId, Pageable pageable);
-    Long countByMemberId(Long memberId);
-
+    long countByMemberIdAndIsAnsweredFalse(Long memberId);
 }

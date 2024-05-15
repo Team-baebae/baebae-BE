@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Component
 @AllArgsConstructor
@@ -48,6 +49,8 @@ public class AnswerMapper {
         Music music = answer.getMusic();
         Member member = answer.getMember();
         Question question = answer.getQuestion();
+        List<String> imageFiles = answer.getImageFiles();
+        String imageUrl = (imageFiles != null && !imageFiles.isEmpty()) ? imageFiles.get(0) : null;
         return AnswerDetailResponse.of(
                 answer.getId(),
                 question.getId(),
@@ -61,6 +64,7 @@ public class AnswerMapper {
                 music != null ? music.getMusicName() : null,
                 music != null ? music.getMusicSinger() : null,
                 music != null ? music.getMusicAudioUrl() : null,
+                imageUrl,
                 answer.getCreatedDate(),
                 answer.getHeartCount(),
                 answer.getCuriousCount(),
