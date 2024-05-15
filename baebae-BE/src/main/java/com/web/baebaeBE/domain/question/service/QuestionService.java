@@ -3,13 +3,12 @@ package com.web.baebaeBE.domain.question.service;
 import com.web.baebaeBE.domain.login.exception.LoginException;
 import com.web.baebaeBE.domain.member.entity.Member;
 import com.web.baebaeBE.domain.member.repository.MemberRepository;
-import com.web.baebaeBE.domain.notification.dto.NotificationRequest;
-import com.web.baebaeBE.domain.notification.service.NotificationService;
 import com.web.baebaeBE.domain.question.dto.QuestionCreateRequest;
 import com.web.baebaeBE.domain.question.dto.QuestionDetailResponse;
 import com.web.baebaeBE.domain.question.exception.QuestionError;
 import com.web.baebaeBE.domain.question.repository.QuestionMapper;
 import com.web.baebaeBE.global.error.exception.BusinessException;
+import com.web.baebaeBE.global.firebase.FirebaseNotificationService;
 import com.web.baebaeBE.domain.question.entity.Question;
 import com.web.baebaeBE.domain.question.repository.QuestionRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +23,7 @@ public class QuestionService {
     private final QuestionRepository questionRepository;
     private final MemberRepository memberRepository;
     private final QuestionMapper questionMapper;
-    private final NotificationService notificationService;
+    private final FirebaseNotificationService firebaseNotificationService;
 
     @Transactional
     public QuestionDetailResponse createQuestion(QuestionCreateRequest request, Long memberId) {
@@ -34,24 +33,15 @@ public class QuestionService {
         Question question = questionMapper.toEntity(request, member);
         Question savedQuestion = questionRepository.save(question);
 
-        // 알림생성
-        NotificationRequest.create notificationDto = new NotificationRequest.create(
-                member.getId(),
-                "새로운 질문이 등록되었습니다!",
-                question.getContent(),
-                NotificationRequest.EventType.NEW_QUESTION,
-                null // reactionType
-        );
+        firebaseNotificationService.notifyNewQuestion(member, question); // 파이어베이스 메세지 송신
 
-        notificationService.createNotification(notificationDto);
-
-        return questionMapper.toDomain(savedQuestion, member.getFcmToken());
+        return questionMapper.toDomain(savedQuestion);
     }
 
     @Transactional(readOnly = true)
     public Page<QuestionDetailResponse> getQuestionsByMemberId(Long memberId, Pageable pageable) {
         Page<Question> questions = questionRepository.findAllByMemberId(memberId, pageable);
-        return questions.map(question -> questionMapper.toDomain(question, question.getMember().getFcmToken()));
+        return questions.map(question -> questionMapper.toDomain(question));
     }
 
     @Transactional
@@ -64,7 +54,9 @@ public class QuestionService {
         // 질문 업데이트 후 저장
         Question updatedQuestion = questionRepository.save(question);
 
-        return questionMapper.toDomain(updatedQuestion, updatedQuestion.getMember().getFcmToken());
+        firebaseNotificationService.notifyNewQuestion(updatedQuestion.getMember(), updatedQuestion); // 파이어베이스 메세지 송신
+
+        return questionMapper.toDomain(updatedQuestion);
 
     }
 
@@ -78,13 +70,13 @@ public class QuestionService {
     @Transactional(readOnly = true)
     public Page<QuestionDetailResponse> getAnsweredQuestions(Long memberId, Pageable pageable) {
         Page<Question> questions = questionRepository.findAllByMemberIdAndIsAnsweredTrue(memberId, pageable);
-        return questions.map(question -> questionMapper.toDomain(question, question.getMember().getFcmToken()));
+        return questions.map(question -> questionMapper.toDomain(question));
     }
 
     @Transactional(readOnly = true)
     public Page<QuestionDetailResponse> getUnansweredQuestions(Long memberId, Pageable pageable) {
         Page<Question> questions = questionRepository.findAllByMemberIdAndIsAnsweredFalse(memberId, pageable);
-        return questions.map(question -> questionMapper.toDomain(question, question.getMember().getFcmToken()));
+        return questions.map(question -> questionMapper.toDomain(question));
     }
 
     @Transactional(readOnly = true)

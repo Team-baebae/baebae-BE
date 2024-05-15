@@ -14,18 +14,16 @@ public class QuestionDetailResponse {
     private Boolean profileOnOff;
     private LocalDateTime createdDate;
     private Boolean isAnswered;
-    private String fcmtoken;
 
-    public QuestionDetailResponse(Long questionId, String content, String nickname, Boolean profileOnOff, LocalDateTime createdDate, String fcmtoken, Boolean isAnswered) {
+    public QuestionDetailResponse(Long questionId, String content, String nickname, Boolean profileOnOff, LocalDateTime createdDate, Boolean isAnswered) {
         this.questionId = questionId;
         this.content = content;
         this.nickname = nickname;
         this.profileOnOff = profileOnOff;
         this.createdDate = createdDate;
-        this.fcmtoken = fcmtoken;
         this.isAnswered = isAnswered;
     }
-    public static QuestionDetailResponse of(Long questionId, String content, String nickname, Boolean profileOnOff, LocalDateTime createdDate, String fcmtoken, Boolean isAnswered) {
-        return new QuestionDetailResponse(questionId, content, nickname, profileOnOff, createdDate, fcmtoken, isAnswered);
+    public static QuestionDetailResponse of(Long questionId, String content, String nickname, Boolean profileOnOff, LocalDateTime createdDate, Boolean isAnswered) {
+        return new QuestionDetailResponse(questionId, content, nickname, profileOnOff, createdDate, isAnswered);
     }
 }

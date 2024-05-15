@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "Login", description = "로그인 관련 API")
 public interface LoginApi {
@@ -144,7 +145,7 @@ public interface LoginApi {
 
     @Operation(
             summary = "로그아웃",
-            description = "Refresh Token 만료시간을 현재시간으로 설정해 로그아웃 시킵니다.",
+            description = "Refresh Token 만료시간을 현재시간으로 설정해 로그아웃 시킵니다. 추가적으로 해당 fcm토큰을 삭제합니다.",
             security = @SecurityRequirement(name = "bearerAuth")
     )
     @Parameter(
@@ -169,5 +170,5 @@ public interface LoginApi {
                         "}"))
             )
     })
-    ResponseEntity<Void> logout(HttpServletRequest httpServletRequest);
+    ResponseEntity<Void> logout(HttpServletRequest httpServletRequest, @RequestParam String fcmToken);
 }

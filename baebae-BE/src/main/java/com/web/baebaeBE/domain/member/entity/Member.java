@@ -48,8 +48,6 @@ public class Member implements UserDetails {
   @Column(name = "token_expiration_time")
   private LocalDateTime tokenExpirationTime;
 
-  @Column(name = "fcm_token")
-  private String fcmToken;
 
   @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
   private List<Answer> answers;
@@ -66,11 +64,6 @@ public class Member implements UserDetails {
   public void updateProfileImage(String profileImageKey){
     this.profileImage = profileImageKey;
   }
-  public void updateFcmToken(String fcmToken){
-    this.fcmToken = fcmToken;
-  }
-
-
   public void updateTokenExpirationTime(LocalDateTime time) {
     this.tokenExpirationTime = time;
   }

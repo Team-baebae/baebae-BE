@@ -144,16 +144,14 @@ public class AnswerService {
         answerRepository.save(answer);
 
         // 알림 생성 및 전송
-        if (answer.getMember().getFcmToken() != null) {
-            NotificationRequest.create notificationDto = new NotificationRequest.create(
-                    answer.getMember().getId(),
-                    "답변에 새로운 반응이 있습니다!",
-                    String.format("하트: %d, 궁금해요: %d, 슬퍼요: %d", heartCount, curiousCount, sadCount),
-                    NotificationRequest.EventType.REACTION,
-                    "updated"
-            );
-            notificationService.createNotification(notificationDto);
-        }
+        NotificationRequest.create notificationDto = new NotificationRequest.create(
+                answer.getMember().getId(),
+                "답변에 새로운 반응이 있습니다!",
+                String.format("하트: %d, 궁금해요: %d, 슬퍼요: %d", heartCount, curiousCount, sadCount),
+                NotificationRequest.EventType.REACTION,
+                "updated"
+        );
+        notificationService.createNotification(notificationDto);
     }
 
 }

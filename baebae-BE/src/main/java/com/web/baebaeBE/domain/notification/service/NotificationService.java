@@ -36,36 +36,9 @@ public class NotificationService {
                 .questionContent(createNotificationDto.getQuestionContent())
                 .build());
 
-        String token = member.getFcmToken();
-        if (token != null && !token.isEmpty()) {
-            switch (createNotificationDto.getEventType()) {
-                case NEW_QUESTION:
-                    sendNotificationToUser(member.getId(), "새 질문이 도착했습니다!", member.getNickname() + "님, 새로운 질문을 확인하세요: " + createNotificationDto.getQuestionContent());
-                    break;
-                case NEW_ANSWER:
-                    sendNotificationToUser(member.getId(), "새로운 답변이 도착했습니다!", member.getNickname() + "의 질문 \"" + createNotificationDto.getQuestionContent() + "\"에 새로운 답변이 등록되었습니다.");
-                    break;
-                case REACTION:
-                    sendNotificationToUser(member.getId(), "반응 알림!", member.getNickname() + "님의 답변에 " + createNotificationDto.getReactionType() + " 반응이 있습니다: " + createNotificationDto.getNotificationContent());
-                    break;
-            }
-        }
-
         return notification;
     }
 
-    public void sendNotificationToUser(Long memberId, String title, String body) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new RuntimeException("Member not found"));
-        String token = member.getFcmToken();
-        if (token != null && !token.isEmpty()) {
-            try {
-                firebaseMessagingService.sendNotification(token, title, body);
-            } catch (FirebaseMessagingException e) {
-                log.error("Failed to send FCM notification", e);
-            }
-        }
-    }
 
     // 특정 멤버의 모든 알람 조회
     public NotificationResponse.NotificationListResponse getNotificationsListByMember(Long memberId) {

@@ -23,14 +23,13 @@ public class QuestionMapper {
                 .build();
     }
 
-    public QuestionDetailResponse toDomain(Question question, String fcmtoken) {
+    public QuestionDetailResponse toDomain(Question question) {
         return QuestionDetailResponse.of(
                 question.getId(),
                 question.getContent(),
                 question.getNickname(),
                 question.getProfileOnOff(),
                 question.getCreatedDate(),
-                fcmtoken,
                 question.isAnswered()
         );
     }
