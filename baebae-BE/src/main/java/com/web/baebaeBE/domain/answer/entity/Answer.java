@@ -71,6 +71,9 @@ public class Answer {
     @Column(name = "sad_count", nullable = false)
     private int sadCount;
 
+    @Column(name = "connect_count", nullable = false)
+    private int connectCount;
+
     @Column(name = "created_date", nullable = false)
     private LocalDateTime createdDate;
 
@@ -82,10 +85,10 @@ public class Answer {
 
     public static Answer of(Long id, Question question, Category category, Member member, String nickname,String content,
                             List<String> imageFiles, Music music, String linkAttachments, String  imageUrl, int heartCount,
-                            int curiousCount, int sadCount, LocalDateTime createdDate, boolean profileOnOff) {
+                            int curiousCount, int sadCount, int connectCount, LocalDateTime createdDate, boolean profileOnOff) {
 
         return new Answer(id, question, category, member, nickname, imageFiles, content, music, linkAttachments,imageUrl, heartCount,
-                 curiousCount, sadCount, createdDate,null, profileOnOff);
+                 curiousCount, sadCount, connectCount, createdDate,null, profileOnOff);
     }
 
     public void increaseReactionCount(ReactionValue reaction) {
@@ -98,6 +101,9 @@ public class Answer {
                 break;
             case SAD: // 슬퍼요
                 this.sadCount++;
+                break;
+            case CONNECTION: // 통했당
+                this.connectCount++;
                 break;
         }
     }
