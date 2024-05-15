@@ -6,15 +6,12 @@ import com.web.baebaeBE.domain.answer.exception.AnswerError;
 import com.web.baebaeBE.domain.answer.repository.AnswerMapper;
 import com.web.baebaeBE.domain.categorized.answer.entity.CategorizedAnswer;
 import com.web.baebaeBE.domain.categorized.answer.repository.CategorizedAnswerRepository;
-import com.web.baebaeBE.domain.category.entity.Category;
 import com.web.baebaeBE.domain.login.exception.LoginException;
 import com.web.baebaeBE.domain.member.entity.Member;
 import com.web.baebaeBE.domain.member.repository.MemberRepository;
 import com.web.baebaeBE.domain.notification.dto.NotificationRequest;
 import com.web.baebaeBE.domain.notification.service.NotificationService;
 import com.web.baebaeBE.domain.question.repository.QuestionRepository;
-import com.web.baebaeBE.domain.reaction.entity.ReactionValue;
-import com.web.baebaeBE.domain.reaction.repository.MemberAnswerReactionRepository;
 import com.web.baebaeBE.global.error.exception.BusinessException;
 import com.web.baebaeBE.global.image.s3.S3ImageStorageService;
 import com.web.baebaeBE.domain.answer.entity.Answer;
@@ -30,7 +27,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,7 +37,6 @@ public class AnswerService {
     private final MemberRepository memberRepository;
     private final QuestionRepository questionRepository;
     private final CategorizedAnswerRepository categorizedAnswerRepository;
-    private final MemberAnswerReactionRepository memberAnswerReactionRepository;
     private final NotificationService notificationService;
     private final S3ImageStorageService s3ImageStorageService;
     private final AnswerMapper answerMapper;
@@ -156,11 +151,5 @@ public class AnswerService {
         );
         notificationService.createNotification(notificationDto);
     }
-    public boolean hasReacted(Long answerId, Long memberId, ReactionValue reactionValue) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BusinessException(LoginException.NOT_EXIST_MEMBER));
-        Answer answer = answerRepository.findByAnswerId(answerId)
-                .orElseThrow(() -> new BusinessException(AnswerError.NO_EXIST_ANSWER));
-        return memberAnswerReactionRepository.findByMemberAndAnswerAndReaction(member, answer, reactionValue).isPresent();
-    }
+
 }

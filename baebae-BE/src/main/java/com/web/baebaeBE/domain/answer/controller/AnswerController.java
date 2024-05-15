@@ -69,11 +69,4 @@ public class AnswerController implements AnswerApi {
     }
 
 
-    @GetMapping("/{answerId}/reacted")
-    public ResponseEntity<Boolean> hasReacted(@PathVariable Long answerId,
-                                              @RequestParam Long memberId,
-                                              @RequestParam ReactionValue reactionValue) {
-        boolean hasReacted = answerService.hasReacted(answerId, memberId, reactionValue);
-        return ResponseEntity.ok(hasReacted);
-    }
 }
