@@ -40,7 +40,7 @@ public class LoginController implements LoginApi {
     else
       response = loginService.signUpNewUser(kakaoUserInfo, signUpRequest);
 
-    fcmService.addFcmToken(response.getId(), signUpRequest.getFcmToken());
+    fcmService.verifyFcmToken(response.getId(), signUpRequest.getFcmToken());
 
     return ResponseEntity.ok(response);
   }
