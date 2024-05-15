@@ -12,6 +12,8 @@ import com.web.baebaeBE.domain.member.repository.MemberRepository;
 import com.web.baebaeBE.domain.notification.dto.NotificationRequest;
 import com.web.baebaeBE.domain.notification.service.NotificationService;
 import com.web.baebaeBE.domain.question.repository.QuestionRepository;
+import com.web.baebaeBE.domain.reaction.entity.ReactionValue;
+import com.web.baebaeBE.domain.reaction.repository.MemberAnswerReactionRepository;
 import com.web.baebaeBE.global.error.exception.BusinessException;
 import com.web.baebaeBE.global.image.s3.S3ImageStorageService;
 import com.web.baebaeBE.domain.answer.entity.Answer;
@@ -27,7 +29,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -37,6 +41,7 @@ public class AnswerService {
     private final MemberRepository memberRepository;
     private final QuestionRepository questionRepository;
     private final CategorizedAnswerRepository categorizedAnswerRepository;
+    private final MemberAnswerReactionRepository memberAnswerReactionRepository;
     private final NotificationService notificationService;
     private final S3ImageStorageService s3ImageStorageService;
     private final AnswerMapper answerMapper;
@@ -152,4 +157,18 @@ public class AnswerService {
         notificationService.createNotification(notificationDto);
     }
 
+    @Transactional
+    public Map<ReactionValue, Boolean> hasReacted(Long answerId, Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new BusinessException(LoginException.NOT_EXIST_MEMBER));
+        Answer answer = answerRepository.findByAnswerId(answerId)
+                .orElseThrow(() -> new BusinessException(AnswerError.NO_EXIST_ANSWER));
+
+        Map<ReactionValue, Boolean> reactionStatus = new HashMap<>();
+        for (ReactionValue reactionValue : ReactionValue.values()) {
+            boolean hasReacted = memberAnswerReactionRepository.findByMemberAndAnswerAndReaction(member, answer, reactionValue).isPresent();
+            reactionStatus.put(reactionValue, hasReacted);
+        }
+        return reactionStatus;
+    }
 }

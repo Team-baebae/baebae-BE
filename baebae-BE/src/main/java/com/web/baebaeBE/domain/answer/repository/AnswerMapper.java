@@ -53,7 +53,7 @@ public class AnswerMapper {
         Question question = answer.getQuestion();
         List<String> imageFiles = answer.getImageFiles();
         String imageUrl = (imageFiles != null && !imageFiles.isEmpty()) ? imageFiles.get(0) : null;
-        boolean isClicked = memberAnswerReactionRepository.findByMemberIdAndAnswerId(member.getId(), answer.getId()).isPresent();
+
         return AnswerDetailResponse.of(
                 answer.getId(),
                 question.getId(),
@@ -71,8 +71,7 @@ public class AnswerMapper {
                 answer.getCreatedDate(),
                 answer.getHeartCount(),
                 answer.getCuriousCount(),
-                answer.getSadCount(),
-                isClicked
+                answer.getSadCount()
         );
     }
 

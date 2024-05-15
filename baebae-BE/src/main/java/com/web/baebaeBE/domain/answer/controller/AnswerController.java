@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @AllArgsConstructor
@@ -68,5 +69,10 @@ public class AnswerController implements AnswerApi {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 
-
+    @GetMapping("/{answerId}/reacted")
+    public ResponseEntity<Map<ReactionValue, Boolean>> hasReacted(@PathVariable Long answerId,
+                                                                  @RequestParam Long memberId) {
+        Map<ReactionValue, Boolean> hasReacted = answerService.hasReacted(answerId, memberId);
+        return ResponseEntity.ok(hasReacted);
+    }
 }
