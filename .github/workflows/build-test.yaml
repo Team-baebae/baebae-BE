@@ -31,7 +31,7 @@ jobs:
         run: |
           echo "${{ secrets.APPLICATION_YML }}" > baebae-BE/src/main/resources/application.yml
           echo "${{ secrets.APPLICATION_DEPLOY_YML }}" > baebae-BE/src/main/resources/application-deploy.yml
-
+#
       - name: Build with Gradle
         run: |
           cd baebae-BE
