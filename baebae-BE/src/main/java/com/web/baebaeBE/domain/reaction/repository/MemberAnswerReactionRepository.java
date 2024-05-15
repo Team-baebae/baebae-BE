@@ -10,4 +10,5 @@ import java.util.Optional;
 
 public interface MemberAnswerReactionRepository extends JpaRepository<MemberAnswerReaction, Long> {
     Optional<MemberAnswerReaction> findByMemberAndAnswerAndReaction(Member member, Answer answer, ReactionValue reaction);
+    Optional<MemberAnswerReaction> findByMemberIdAndAnswerId(Long memberId, Long answerId);
 }
