@@ -145,7 +145,7 @@ public interface LoginApi {
 
     @Operation(
             summary = "로그아웃",
-            description = "Refresh Token 만료시간을 현재시간으로 설정해 로그아웃 시킵니다.",
+            description = "Refresh Token 만료시간을 현재시간으로 설정해 로그아웃 시킵니다. 추가적으로 해당 fcm토큰을 삭제합니다.",
             security = @SecurityRequirement(name = "bearerAuth")
     )
     @Parameter(

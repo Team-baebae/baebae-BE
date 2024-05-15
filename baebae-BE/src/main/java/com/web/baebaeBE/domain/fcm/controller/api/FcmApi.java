@@ -8,13 +8,13 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -22,8 +22,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public interface FcmApi {
 
     @Operation(
-            summary = "FCM 토큰 업데이트",
-            description = "회원의 FCM 토큰을 업데이트합니다.",
+            summary = "FCM 토큰 추가",
+            description = "회원의 FCM 토큰을 추가합니다.",
             security = @SecurityRequirement(name = "bearerAuth")
     )
     @Parameter(
@@ -49,6 +49,6 @@ public interface FcmApi {
             )
     })
     @RequestMapping(method = RequestMethod.POST, value = "/{memberId}")
-    ResponseEntity<Void> updateFcmToken(@PathVariable Long id,
-                                        @RequestBody FcmRequest.Token requst);
+    ResponseEntity<Void> addFcmToken(@PathVariable Long memberId,
+                                     @RequestBody FcmRequest.Token request);
 }
