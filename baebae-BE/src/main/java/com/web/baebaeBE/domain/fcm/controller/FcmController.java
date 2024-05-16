@@ -20,9 +20,18 @@ public class FcmController implements FcmApi {
     @PostMapping("/{memberId}")
     public ResponseEntity<Void> addFcmToken(
             @PathVariable Long memberId,
-            @RequestBody FcmRequest.Token request
+            @RequestBody FcmRequest.CreateToken request
     ) {
         FcmToken token = fcmService.addFcmToken(memberId, request.getFcmToken());
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{memberId}")
+    public ResponseEntity<Void> updateFcmToken(
+            @PathVariable Long memberId,
+            @RequestBody FcmRequest.UpdateToken request
+    ) {
+        fcmService.updateFcmToken(request.getOldFcmToken(), request.getNewFcmToken(), memberId);
         return ResponseEntity.ok().build();
     }
 }

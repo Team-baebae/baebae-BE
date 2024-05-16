@@ -61,7 +61,7 @@ public class MemberAnswerReactionService {
         return ReactionResponse.ReactionInformationDto.of(answer,isClicked);
     }
 
-    // 피드 주인이 아닌 다른 사람이 통했당 신청
+    /*// 피드 주인이 아닌 다른 사람이 통했당 신청
     public ReactionResponse.ConnectionReactionInformationDto createConnectionReaction(Long memberId, Long answerId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(ReactionException.NOT_EXIST_MEMBER));
@@ -107,5 +107,5 @@ public class MemberAnswerReactionService {
         } else {
             throw new BusinessException(ReactionException.NOT_EXIST_CONNECTION_REACTION);
         }
-    }
+    }*/
 }

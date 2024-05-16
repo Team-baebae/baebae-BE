@@ -23,10 +23,13 @@ public class AnswerDetailResponse {
     private String imageUrl;
     private LocalDateTime createdDate;
 
+
     public AnswerDetailResponse(Long answerId, Long questionId, String questionContent, Long memberId,
                                 String content, String memberNickname, String nickname, Boolean profileOnOff,
                                 String linkAttachments, String musicName, String musicSinger, String musicAudioUrl,
                                  String imageUrl, LocalDateTime createdDate) {
+
+                               
         this.answerId = answerId;
         this.questionId = questionId;
         this.questionContent = questionContent;
@@ -50,5 +53,6 @@ public class AnswerDetailResponse {
         return new AnswerDetailResponse(answerId, questionId, questionContent, memberId, content, memberNickname,
                 nickname, profileOnOff, linkAttachments, musicName, musicSinger, musicAudioUrl, imageUrl, createdDate);
 
+      
     }
 }

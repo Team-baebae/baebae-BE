@@ -34,6 +34,7 @@ public class ReactionResponse {
         private int heartCount;
         private int curiousCount;
         private int sadCount;
+        private int connectCount;
 
         public static ReactionInformationDto of(Answer answer, boolean isClicked) {
             return ReactionInformationDto.builder()
@@ -41,11 +42,12 @@ public class ReactionResponse {
                     .heartCount(answer.getHeartCount())
                     .curiousCount(answer.getCuriousCount())
                     .sadCount(answer.getSadCount())
+                    .connectCount(answer.getConnectCount())
                     .build();
         }
     }
 
-    @Getter
+    /*@Getter
     @Setter
     @Builder
     @NoArgsConstructor
@@ -60,5 +62,5 @@ public class ReactionResponse {
                     .isMatched(isMatched)
                     .build();
         }
-    }
+    }*/
 }

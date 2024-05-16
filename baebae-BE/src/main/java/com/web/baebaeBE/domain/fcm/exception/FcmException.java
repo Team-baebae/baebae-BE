@@ -9,7 +9,8 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum FcmException implements ErrorCode {
 
-  NOT_FOUND_FCM(HttpStatus.CONFLICT, "F-001", "FCM 토큰을 찾을 수 없습니다.");
+  NOT_FOUND_FCM(HttpStatus.CONFLICT, "F-001", "FCM 토큰을 찾을 수 없습니다."),
+  NOT_MATCH_MEMBER(HttpStatus.CONFLICT, "F-002", "FCM 토큰과 회원 정보가 일치하지 않습니다.");
 
   private final HttpStatus httpStatus;
   private final String errorCode;

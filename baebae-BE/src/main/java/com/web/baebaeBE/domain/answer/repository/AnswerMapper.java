@@ -67,6 +67,7 @@ public class AnswerMapper {
                 music != null ? music.getMusicAudioUrl() : null,
                 imageUrl,
                 answer.getCreatedDate()
+
         );
     }
 

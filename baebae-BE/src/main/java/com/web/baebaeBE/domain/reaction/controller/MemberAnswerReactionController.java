@@ -24,7 +24,7 @@ public class MemberAnswerReactionController implements MemberAnswerReactionApi {
         return ResponseEntity.ok(memberAnswerReactionService.createReaction(memberId, answerId, reactionDto.getReaction()));
     }
 
-    // 통했당~
+    /*// 통했당~
     @PostMapping("/connection/{memberId}/{answerId}/{destinationMemberId}")
     public ResponseEntity<ReactionResponse.ConnectionReactionInformationDto> createClickReaction(
             @PathVariable Long memberId, // 자기자신 (통했당 하는 주체)
@@ -36,5 +36,5 @@ public class MemberAnswerReactionController implements MemberAnswerReactionApi {
             return ResponseEntity.ok(memberAnswerReactionService.createConnectionReaction(memberId, answerId));
         else
             return ResponseEntity.ok(memberAnswerReactionService.connectConnectionReaction(memberId, answerId, destinationMemberId));
-    }
+    }*/
 }

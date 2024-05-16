@@ -114,7 +114,7 @@ public class MemberIntegrationTest {
 
         // HttpRequest Body 설정
         LoginRequest.SignUp signUpRequest
-                = new LoginRequest.SignUp(MemberType.KAKAO, "김예찬"); // 요청
+                = new LoginRequest.SignUp(MemberType.KAKAO, "김예찬","fcmToken"); // 요청
 
 
         // when
