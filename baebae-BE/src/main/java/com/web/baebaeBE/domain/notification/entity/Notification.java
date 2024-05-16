@@ -37,6 +37,9 @@ public class Notification {
     @Column(name = "created_time", nullable = false)
     private LocalDateTime createdTime;
 
+    @Column(name = "is_checked", nullable = false)
+    private boolean isChecked;
+
     @Column(name = "notification_time", nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime notificationTime;

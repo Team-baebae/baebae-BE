@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -34,6 +35,8 @@ public class NotificationService {
                 .member(member)
                 .notificationContent(createNotificationDto.getNotificationContent())
                 .detailContent(createNotificationDto.getDetailContent())
+                .createdTime(LocalDateTime.now())
+                .isChecked(false)
                 .build());
 
         return notification;
