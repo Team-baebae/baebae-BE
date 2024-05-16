@@ -34,7 +34,7 @@ public interface CategoryApi {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = CategoryResponse.CategoryInformationResponse.class)))
     })
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE) // 이 부분에 주목하세요, 이제 multipart/form-data를 소비한다고 명시합니다.
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<CategoryResponse.CategoryInformationResponse> createCategory(
             @Parameter(description = "멤버의 ID", required = true) @PathVariable Long memberId,
             @Parameter(description = "카테고리 이미지 파일", required = true, schema = @Schema(type = "string", format = "binary")) @RequestPart(value = "categoryImage", required = false) MultipartFile categoryImage,
@@ -44,10 +44,10 @@ public interface CategoryApi {
 
     @Operation(summary = "멤버의 모든 카테고리 조회",
             description = "멤버 ID를 받아 해당 멤버의 모든 카테고리를 조회합니다."
-
     )
     @Parameter(
             in = ParameterIn.HEADER,
+            name = "Authorization", required = false,
             schema = @Schema(type = "string"),
             description = "Bearer [Access 토큰]")
     @ApiResponses(value = {
@@ -55,6 +55,7 @@ public interface CategoryApi {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = CategoryResponse.CategoryListResponse.class)))
     })
+    @GetMapping("/{memberId}")
     ResponseEntity<CategoryResponse.CategoryListResponse> getCategoriesByMember(
             @Parameter(description = "멤버의 ID", required = true) @PathVariable Long memberId
     );
@@ -71,6 +72,7 @@ public interface CategoryApi {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "추가 성공")
     })
+    @PostMapping("/{categoryId}/answers/{answerId}")
     ResponseEntity<Void> addAnswerToCategory(
             @Parameter(description = "카테고리의 ID", required = true) @PathVariable Long categoryId,
             @Parameter(description = "답변의 ID", required = true) @PathVariable Long answerId
@@ -88,6 +90,7 @@ public interface CategoryApi {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "수정 성공")
     })
+    @PatchMapping("/{categoryId}/image")
     ResponseEntity<CategoryResponse.CategoryInformationResponse> updateCategoryImage(
             @Parameter(description = "카테고리의 ID", required = true) @PathVariable Long categoryId,
             @Parameter(description = "이미지 파일", required = true) @RequestPart("imageFile") MultipartFile imageFile
@@ -107,6 +110,7 @@ public interface CategoryApi {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = CategoryResponse.CategoryInformationResponse.class)))
     })
+    @PatchMapping("/{categoryId}/image")
     ResponseEntity<CategoryResponse.CategoryInformationResponse> updateCategory(
             @Parameter(description = "카테고리의 ID", required = true) @PathVariable Long categoryId,
             @Parameter(description = "수정할 카테고리 정보", required = true) @RequestBody CategoryRequest.UpdateCategory updateCategory
@@ -124,6 +128,7 @@ public interface CategoryApi {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "삭제 성공")
     })
+    @DeleteMapping("/{categoryId}")
     ResponseEntity<Void> deleteCategory(
             @Parameter(description = "카테고리의 ID", required = true) @PathVariable Long categoryId
     );
