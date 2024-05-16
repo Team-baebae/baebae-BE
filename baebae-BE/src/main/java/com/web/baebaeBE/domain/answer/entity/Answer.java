@@ -91,17 +91,4 @@ public class Answer {
                  curiousCount, sadCount, connectCount, createdDate,null, profileOnOff);
     }
 
-    public void increaseReactionCount(ReactionValue reaction) {
-        switch (reaction) {
-            case HEART: // 좋아요
-                this.heartCount++;
-                break;
-            case CURIOUS: // 궁금해요
-                this.curiousCount++;
-                break;
-            case SAD: // 슬퍼요
-                this.sadCount++;
-                break;
-        }
-    }
 }
