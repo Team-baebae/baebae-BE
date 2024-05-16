@@ -2,10 +2,31 @@ package com.web.baebaeBE.domain.reaction.dto;
 
 import com.web.baebaeBE.domain.answer.entity.Answer;
 import com.web.baebaeBE.domain.reaction.entity.MemberAnswerReaction;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.*;
 
 public class ReactionResponse {
 
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class CountReactionInformationDto {
+        private Integer heartCount;
+        private Integer curiousCount;
+        private Integer sadCount;
+        private Integer connectCount;
+
+        public static CountReactionInformationDto of(Answer answer) {
+            return CountReactionInformationDto.builder()
+                    .heartCount(answer.getHeartCount())
+                    .curiousCount(answer.getCuriousCount())
+                    .sadCount(answer.getSadCount())
+                    .connectCount(answer.getConnectCount())
+                    .build();
+        }
+    }
     @Getter
     @Setter
     @Builder

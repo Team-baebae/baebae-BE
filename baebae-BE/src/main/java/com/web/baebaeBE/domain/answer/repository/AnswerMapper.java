@@ -7,7 +7,6 @@ import com.web.baebaeBE.domain.music.entity.Music;
 import com.web.baebaeBE.domain.question.entity.Question;
 import com.web.baebaeBE.domain.answer.dto.AnswerCreateRequest;
 import com.web.baebaeBE.domain.answer.dto.AnswerDetailResponse;
-import com.web.baebaeBE.domain.reaction.repository.MemberAnswerReactionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +16,6 @@ import java.util.List;
 @Component
 @AllArgsConstructor
 public class AnswerMapper {
-    private final MemberAnswerReactionRepository memberAnswerReactionRepository;
     public Answer toEntity(AnswerCreateRequest request, Question question, Member member) {
         // Music 엔티티 생성
         Music music = Music.builder()
@@ -38,6 +36,7 @@ public class AnswerMapper {
                 .heartCount(0)
                 .curiousCount(0)
                 .sadCount(0)
+                .connectCount(0)
                 .music(music)
                 .build();
 
@@ -60,19 +59,16 @@ public class AnswerMapper {
                 question.getContent(),
                 member.getId(),
                 answer.getContent(),
-                member.getNickname(),              // 실제 닉네임
-                answer.getNickname(),              // 익명 닉네임
-                answer.isProfileOnOff(),           // 프로필 공개 여부
+                member.getNickname(),
+                answer.getNickname(),
+                answer.isProfileOnOff(),
                 answer.getLinkAttachments(),
                 music != null ? music.getMusicName() : null,
                 music != null ? music.getMusicSinger() : null,
                 music != null ? music.getMusicAudioUrl() : null,
                 imageUrl,
-                answer.getCreatedDate(),
-                answer.getHeartCount(),
-                answer.getCuriousCount(),
-                answer.getSadCount(),
-                answer.getConnectCount()
+                answer.getCreatedDate()
+
         );
     }
 

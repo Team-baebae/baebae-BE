@@ -5,11 +5,9 @@ import com.web.baebaeBE.domain.answer.dto.AnswerCreateRequest;
 import com.web.baebaeBE.domain.answer.dto.AnswerDetailResponse;
 import com.web.baebaeBE.domain.answer.dto.AnswerResponse;
 import com.web.baebaeBE.domain.answer.service.AnswerService;
-import com.web.baebaeBE.domain.categorized.answer.service.CategorizedAnswerService;
 
-import com.web.baebaeBE.domain.category.service.CategoryService;
+import com.web.baebaeBE.domain.reaction.dto.ReactionResponse;
 import com.web.baebaeBE.domain.reaction.entity.ReactionValue;
-import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,7 +26,6 @@ import java.util.Map;
 public class AnswerController implements AnswerApi {
     private final AnswerService answerService;
 
-    private final CategorizedAnswerService categorizedAnswerService;
     @PostMapping(value = "/{memberId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<AnswerDetailResponse> createAnswer(@PathVariable Long memberId,
                                                              @RequestPart(value = "imageFile") MultipartFile imageFile,
@@ -46,18 +43,15 @@ public class AnswerController implements AnswerApi {
     @GetMapping()
     public ResponseEntity<Page<AnswerDetailResponse>> getAllAnswers(
             @RequestParam Long memberId,
-            @RequestParam(required = false) Long categoryId, // Change this from Category to Long
+            @RequestParam(required = false) Long categoryId,
             Pageable pageable) {
 
-
         return ResponseEntity.ok(answerService.getAllAnswers(memberId, categoryId, pageable));
-
-
     }
 
     @PutMapping(value = "/{answerId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<AnswerDetailResponse> updateAnswer(@PathVariable Long answerId,
-                                                             @RequestPart(value = "imageFile") MultipartFile imageFile,
+                                                             @RequestPart(value = "imageFile", required = false) MultipartFile imageFile,
                                                              @RequestPart AnswerCreateRequest request) {
         AnswerDetailResponse updatedAnswer = answerService.updateAnswer(answerId, request, imageFile);
         return ResponseEntity.ok(updatedAnswer);
@@ -74,5 +68,11 @@ public class AnswerController implements AnswerApi {
                                                                   @RequestParam Long memberId) {
         Map<ReactionValue, Boolean> hasReacted = answerService.hasReacted(answerId, memberId);
         return ResponseEntity.ok(hasReacted);
+    }
+
+    @GetMapping("/{answerId}/reactionsCount")
+    public ResponseEntity<ReactionResponse.CountReactionInformationDto> getReactionCounts(@PathVariable Long answerId) {
+        ReactionResponse.CountReactionInformationDto reactionCounts = answerService.getReactionCounts(answerId);
+        return ResponseEntity.ok(reactionCounts);
     }
 }

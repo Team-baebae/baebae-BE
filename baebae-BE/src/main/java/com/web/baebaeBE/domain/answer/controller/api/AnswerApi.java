@@ -3,6 +3,7 @@ package com.web.baebaeBE.domain.answer.controller.api;
 import com.web.baebaeBE.domain.answer.dto.AnswerCreateRequest;
 import com.web.baebaeBE.domain.answer.dto.AnswerDetailResponse;
 import com.web.baebaeBE.domain.answer.dto.AnswerResponse;
+import com.web.baebaeBE.domain.reaction.dto.ReactionResponse;
 import com.web.baebaeBE.domain.reaction.entity.ReactionValue;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -47,8 +48,7 @@ public interface AnswerApi {
 
     @Operation(
             summary = "모든 답변 리스트 조회",
-            description = "해당 회원의 전체 답변을 간략하게 조회합니다.",
-            security = @SecurityRequirement(name = "bearerAuth")
+            description = "해당 회원의 전체 답변을 간략하게 조회합니다."
     )
     @Parameter(
             in = ParameterIn.HEADER,
@@ -64,17 +64,11 @@ public interface AnswerApi {
     @Operation(
             summary = "모든 답변 조회",
             description = "모든 답변을 페이지네이션으로 조회합니다."
-
     )
-    @Parameter(
-            in = ParameterIn.HEADER,
-            name = "Authorization", required = true,
-            schema = @Schema(type = "string"),
-            description = "Bearer [Access 토큰]")
     @ApiResponse(responseCode = "200", description = "답변 조회 성공",
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = Page.class)))
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     ResponseEntity<Page<AnswerDetailResponse>> getAllAnswers(
             @RequestParam Long memberId,
             @RequestParam(required = false) Long category,
@@ -95,8 +89,8 @@ public interface AnswerApi {
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<AnswerDetailResponse> updateAnswer(
             @PathVariable Long answerId,
-            @RequestPart(value = "imageFiles") MultipartFile imageFiles,
-            @RequestPart(name = "request") AnswerCreateRequest request);
+            @RequestPart(value = "imageFile", required = false) MultipartFile imageFile,
+            @RequestPart AnswerCreateRequest request);
 
     @Operation(
             summary = "답변 삭제",
@@ -131,5 +125,17 @@ public interface AnswerApi {
     ResponseEntity<Map<ReactionValue, Boolean>> hasReacted(
             @PathVariable Long answerId,
             @RequestParam Long memberId);
+
+    @Operation(
+            summary = "특정 답변의 반응 개수 조회",
+            description = "특정 답변에 대한 하트, 궁금해요, 슬퍼요, 통했당 반응의 개수를 조회합니다."
+    )
+
+    @ApiResponse(responseCode = "200", description = "반응 개수 조회 성공",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ReactionResponse.CountReactionInformationDto.class)))
+    @GetMapping("/{answerId}/reactionsCount")
+    ResponseEntity<ReactionResponse.CountReactionInformationDto> getReactionCounts(
+            @PathVariable Long answerId);
 
 }
