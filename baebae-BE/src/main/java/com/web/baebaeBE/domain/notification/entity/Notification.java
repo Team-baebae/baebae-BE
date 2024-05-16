@@ -34,6 +34,9 @@ public class Notification {
     @Column(name = "detail_content", columnDefinition = "TEXT")
     private String detailContent;
 
+    @Column(name = "created_time", nullable = false)
+    private LocalDateTime createdTime;
+
     @Column(name = "notification_time", nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime notificationTime;

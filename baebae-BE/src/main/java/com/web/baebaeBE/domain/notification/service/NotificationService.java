@@ -33,7 +33,7 @@ public class NotificationService {
         Notification notification = notificationRepository.save(Notification.builder()
                 .member(member)
                 .notificationContent(createNotificationDto.getNotificationContent())
-                .questionContent(createNotificationDto.getQuestionContent())
+                .detailContent(createNotificationDto.getDetailContent())
                 .build());
 
         return notification;

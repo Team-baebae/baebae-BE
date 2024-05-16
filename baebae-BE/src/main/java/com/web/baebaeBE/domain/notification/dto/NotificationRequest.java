@@ -15,7 +15,7 @@ public class NotificationRequest {
   public static class create{
     private Long memberId;
     private String notificationContent;
-    private String questionContent;
+    private String detailContent;
     private EventType eventType;
     private String reactionType;
   }
