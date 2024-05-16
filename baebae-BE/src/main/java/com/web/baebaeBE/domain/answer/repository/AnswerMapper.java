@@ -36,6 +36,7 @@ public class AnswerMapper {
                 .heartCount(0)
                 .curiousCount(0)
                 .sadCount(0)
+                .connectCount(0)
                 .music(music)
                 .build();
 
