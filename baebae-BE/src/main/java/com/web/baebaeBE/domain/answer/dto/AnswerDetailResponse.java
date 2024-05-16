@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter
@@ -23,15 +22,11 @@ public class AnswerDetailResponse {
     private String musicAudioUrl;
     private String imageUrl;
     private LocalDateTime createdDate;
-    private Integer heartCount;
-    private Integer curiousCount;
-    private Integer sadCount;
 
     public AnswerDetailResponse(Long answerId, Long questionId, String questionContent, Long memberId,
                                 String content, String memberNickname, String nickname, Boolean profileOnOff,
                                 String linkAttachments, String musicName, String musicSinger, String musicAudioUrl,
-                                 String imageUrl, LocalDateTime createdDate,
-                                Integer heartCount, Integer curiousCount, Integer sadCount) {
+                                 String imageUrl, LocalDateTime createdDate) {
         this.answerId = answerId;
         this.questionId = questionId;
         this.questionContent = questionContent;
@@ -46,19 +41,14 @@ public class AnswerDetailResponse {
         this.musicAudioUrl = musicAudioUrl;
         this.imageUrl = imageUrl;
         this.createdDate = createdDate;
-        this.heartCount = heartCount;
-        this.curiousCount = curiousCount;
-        this.sadCount = sadCount;
     }
 
     public static AnswerDetailResponse of(Long answerId, Long questionId, String questionContent, Long memberId,
                                           String content, String memberNickname, String nickname, Boolean profileOnOff,
                                           String linkAttachments, String musicName, String musicSinger, String musicAudioUrl,
-                                          String imageUrl, LocalDateTime createdDate,
-                                          Integer heartCount, Integer curiousCount, Integer sadCount) {
+                                          String imageUrl, LocalDateTime createdDate) {
         return new AnswerDetailResponse(answerId, questionId, questionContent, memberId, content, memberNickname,
-                nickname, profileOnOff, linkAttachments, musicName, musicSinger, musicAudioUrl, imageUrl, createdDate,
-                heartCount, curiousCount, sadCount);
+                nickname, profileOnOff, linkAttachments, musicName, musicSinger, musicAudioUrl, imageUrl, createdDate);
 
     }
 }

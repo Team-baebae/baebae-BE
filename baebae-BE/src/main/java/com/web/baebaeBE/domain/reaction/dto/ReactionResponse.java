@@ -11,6 +11,24 @@ public class ReactionResponse {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class CountReactionInformationDto {
+        private int heartCount;
+        private int curiousCount;
+        private int sadCount;
+
+        public static CountReactionInformationDto of(Answer answer) {
+            return CountReactionInformationDto.builder()
+                    .heartCount(answer.getHeartCount())
+                    .curiousCount(answer.getCuriousCount())
+                    .sadCount(answer.getSadCount())
+                    .build();
+        }
+    }
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class ReactionInformationDto {
         private boolean isClicked;
         private int heartCount;

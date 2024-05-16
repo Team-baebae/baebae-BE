@@ -2,7 +2,6 @@ package com.web.baebaeBE.domain.answer.dto;
 
 import lombok.*;
 
-import java.util.List;
 
 @Getter
 @Setter
@@ -17,10 +16,13 @@ public class AnswerCreateRequest {
     private String musicSinger;
     private String musicAudioUrl;
     private String imageUrl;
+    private boolean updateImage;
+
+
 
     public AnswerCreateRequest(Long questionId, String content,String nickname,
                                Boolean profileOnOff, String linkAttachments,
-                               String musicName, String musicSinger, String musicAudioUrl, String imageUrl) {
+                               String musicName, String musicSinger, String musicAudioUrl, String imageUrl, boolean updateImage) {
         this.questionId = questionId;
         this.content = content;
         this.nickname = nickname;
@@ -30,12 +32,14 @@ public class AnswerCreateRequest {
         this.musicSinger = musicSinger;
         this.musicAudioUrl = musicAudioUrl;
         this.imageUrl = imageUrl;
+        this.updateImage = updateImage;
+
     }
 
     public static AnswerCreateRequest of(Long questionId, String content, String  nickname,
                                          Boolean profileOnOff, String linkAttachments,
-                                         String musicName, String musicSinger, String musicAudioUrl, String imageUrl) {
+                                         String musicName, String musicSinger, String musicAudioUrl, String imageUrl, boolean updateImage) {
         return new AnswerCreateRequest(questionId, content, nickname, profileOnOff, linkAttachments,
-                musicName, musicSinger, musicAudioUrl, imageUrl);
+                musicName, musicSinger, musicAudioUrl, imageUrl, updateImage);
     }
 }

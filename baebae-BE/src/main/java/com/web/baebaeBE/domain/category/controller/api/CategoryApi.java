@@ -48,7 +48,6 @@ public interface CategoryApi {
     )
     @Parameter(
             in = ParameterIn.HEADER,
-            name = "Authorization", required = true,
             schema = @Schema(type = "string"),
             description = "Bearer [Access 토큰]")
     @ApiResponses(value = {
