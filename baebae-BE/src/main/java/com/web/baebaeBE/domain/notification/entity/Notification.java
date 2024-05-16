@@ -31,8 +31,8 @@ public class Notification {
     @Column(name = "notification_content", columnDefinition = "TEXT", nullable = false)
     private String notificationContent;
 
-    @Column(name = "question_content", columnDefinition = "TEXT")
-    private String questionContent;
+    @Column(name = "detail_content", columnDefinition = "TEXT")
+    private String detailContent;
 
     @Column(name = "notification_time", nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
