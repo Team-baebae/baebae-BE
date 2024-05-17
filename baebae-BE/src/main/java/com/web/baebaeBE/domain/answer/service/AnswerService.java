@@ -12,9 +12,10 @@ import com.web.baebaeBE.domain.member.repository.MemberRepository;
 import com.web.baebaeBE.domain.notification.dto.NotificationRequest;
 import com.web.baebaeBE.domain.notification.service.NotificationService;
 import com.web.baebaeBE.domain.question.repository.QuestionRepository;
-import com.web.baebaeBE.domain.reaction.dto.ReactionResponse;
+import com.web.baebaeBE.domain.reactioncount.dto.ReactionResponse;
 import com.web.baebaeBE.domain.reaction.entity.ReactionValue;
 import com.web.baebaeBE.domain.reaction.repository.MemberAnswerReactionRepository;
+import com.web.baebaeBE.domain.reactioncount.entity.ReactionCount;
 import com.web.baebaeBE.global.error.exception.BusinessException;
 import com.web.baebaeBE.global.image.s3.S3ImageStorageService;
 import com.web.baebaeBE.domain.answer.entity.Answer;
@@ -138,25 +139,6 @@ public class AnswerService {
         answerRepository.delete(answer);
     }
 
-    @Transactional
-    public void updateReactionCounts(Long answerId, int heartCount, int curiousCount, int sadCount) {
-        Answer answer = answerRepository.findByAnswerId(answerId)
-                .orElseThrow(() -> new BusinessException(AnswerError.NO_EXIST_ANSWER));
-        answer.setHeartCount(heartCount);
-        answer.setCuriousCount(curiousCount);
-        answer.setSadCount(sadCount);
-        answerRepository.save(answer);
-
-        // 알림 생성 및 전송
-        NotificationRequest.create notificationDto = new NotificationRequest.create(
-                answer.getMember().getId(),
-                "답변에 새로운 반응이 있습니다!",
-                String.format("하트: %d, 궁금해요: %d, 슬퍼요: %d", heartCount, curiousCount, sadCount),
-                NotificationRequest.EventType.REACTION,
-                "updated"
-        );
-        notificationService.createNotification(notificationDto);
-    }
 
     @Transactional
     public Map<ReactionValue, Boolean> hasReacted(Long answerId, Long memberId) {
@@ -173,11 +155,5 @@ public class AnswerService {
         return reactionStatus;
     }
 
-    @Transactional
-    public ReactionResponse.CountReactionInformationDto getReactionCounts(Long answerId) {
-        Answer answer = answerRepository.findByAnswerId(answerId)
-                .orElseThrow(() -> new BusinessException(AnswerError.NO_EXIST_ANSWER));
 
-        return ReactionResponse.CountReactionInformationDto.of(answer);
-    }
 }

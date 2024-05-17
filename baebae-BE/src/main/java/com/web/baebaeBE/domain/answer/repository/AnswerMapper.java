@@ -33,10 +33,6 @@ public class AnswerMapper {
                 .linkAttachments(request.getLinkAttachments())
                 .profileOnOff(request.getProfileOnOff())
                 .createdDate(LocalDateTime.now())
-                .heartCount(0)
-                .curiousCount(0)
-                .sadCount(0)
-                .connectCount(0)
                 .music(music)
                 .build();
 

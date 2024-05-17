@@ -8,7 +8,7 @@ public final class SecurityConstants {
             "/api/auth/login", "/api/auth/isExisting", "/api/auth/nickname/isExisting",
             "/api/member/profile-image/{memberId}", "/api/member/nickname/{nickname}",
             "/api/category/{memberId}", "/api/answers", "/api/answers/member/{memberId}",
-            "/api/answers/{answerId}/reactionsCount",
+            "/api/reactionsCount/{answerId}/reactionsCount",
             // Swagger 제외 과정
             "/v3/**", "/swagger-ui/**",
             // Error 페이지

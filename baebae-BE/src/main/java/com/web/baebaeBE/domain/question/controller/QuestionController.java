@@ -16,7 +16,6 @@ import java.util.List;
 @RequestMapping("/api/questions")
 public class QuestionController implements QuestionApi {
     private final QuestionService questionService;
-
     public QuestionController(QuestionService questionService) {
         this.questionService = questionService;
     }
