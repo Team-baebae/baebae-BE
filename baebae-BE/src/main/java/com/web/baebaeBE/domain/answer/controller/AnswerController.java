@@ -70,9 +70,4 @@ public class AnswerController implements AnswerApi {
         return ResponseEntity.ok(hasReacted);
     }
 
-    @GetMapping("/{answerId}/reactionsCount")
-    public ResponseEntity<ReactionResponse.CountReactionInformationDto> getReactionCounts(@PathVariable Long answerId) {
-        ReactionResponse.CountReactionInformationDto reactionCounts = answerService.getReactionCounts(answerId);
-        return ResponseEntity.ok(reactionCounts);
-    }
 }

@@ -1,7 +1,7 @@
 package com.web.baebaeBE.domain.reaction.controller.api;
 
 import com.web.baebaeBE.domain.reaction.dto.ReactionRequest;
-import com.web.baebaeBE.domain.reaction.dto.ReactionResponse;
+import com.web.baebaeBE.domain.reactioncount.dto.ReactionResponse;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

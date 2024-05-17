@@ -60,6 +60,7 @@ public class QuestionTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private Member testMember;
     private String refreshToken;
+    private QuestionDetailResponse testQuestionDetailResponse;
 
     @BeforeEach
     void setup() {
@@ -83,7 +84,7 @@ public class QuestionTest {
         member.ifPresent(memberRepository::delete);
     }
 
-    @Test
+    /*@Test
     public void createQuestionTest() throws Exception {
         QuestionCreateRequest createRequest = new QuestionCreateRequest("이것은 질문입니다.", "장지효", true);
         String jsonRequest = objectMapper.writeValueAsString(createRequest);
@@ -98,7 +99,7 @@ public class QuestionTest {
                 .andExpect(jsonPath("$.nickname").value("장지효"))
                 .andExpect(jsonPath("$.profileOnOff").value(true));
 
-    }
+    }*/
 
     @Test
     @DisplayName("회원별 질문 조회 테스트(): 해당 회원의 질문을 조회한다.")

@@ -7,11 +7,13 @@ import com.web.baebaeBE.domain.answer.repository.AnswerRepository;
 import com.web.baebaeBE.domain.login.exception.LoginException;
 import com.web.baebaeBE.domain.member.entity.Member;
 import com.web.baebaeBE.domain.member.repository.MemberRepository;
-import com.web.baebaeBE.domain.reaction.dto.ReactionResponse;
+import com.web.baebaeBE.domain.reactioncount.dto.ReactionResponse;
 import com.web.baebaeBE.domain.reaction.entity.MemberAnswerReaction;
 import com.web.baebaeBE.domain.reaction.entity.ReactionValue;
 import com.web.baebaeBE.domain.reaction.exception.ReactionException;
 import com.web.baebaeBE.domain.reaction.repository.MemberAnswerReactionRepository;
+import com.web.baebaeBE.domain.reactioncount.entity.ReactionCount;
+import com.web.baebaeBE.domain.reactioncount.repository.ReactionCountJpaRepository;
 import com.web.baebaeBE.global.error.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,7 @@ public class MemberAnswerReactionService {
 
     private final ReactionUpdateService reactionUpdateService;
     private final MemberAnswerReactionRepository memberAnswerReactionRepository;
+    private final ReactionCountJpaRepository reactionCountJpaRepository;
     private final MemberRepository memberRepository;
     private final AnswerRepository answerRepository;
 
@@ -36,6 +39,12 @@ public class MemberAnswerReactionService {
                 .orElseThrow(() -> new BusinessException(AnswerError.NO_EXIST_ANSWER));
         boolean isClicked = false;
 
+        // ReactionCount 엔터티를 가져옴
+        ReactionCount reactionCount = reactionCountJpaRepository.findByAnswerId(answerId);
+        if (reactionCount == null) {
+            throw new BusinessException(AnswerError.NO_EXIST_ANSWER);
+        }
+
         // 이미 해당 반응이 있는지 확인
         Optional<MemberAnswerReaction> existingReactionOpt = memberAnswerReactionRepository.findByMemberAndAnswerAndReaction(member, answer, reaction);
 
@@ -43,7 +52,7 @@ public class MemberAnswerReactionService {
             // 이미 해당 반응이 있다면 반응을 삭제
             MemberAnswerReaction existingReaction = existingReactionOpt.get();
             memberAnswerReactionRepository.delete(existingReaction);
-            reactionUpdateService.decreaseReactionCount(answer, reaction);
+            reactionUpdateService.decreaseReactionCount(reactionCount, reaction);
             isClicked = false;
         } else {
             // 해당 반응이 없다면 새로운 반응을 저장
@@ -54,11 +63,11 @@ public class MemberAnswerReactionService {
                     .build();
 
             memberAnswerReactionRepository.save(memberAnswerReaction);
-            reactionUpdateService.increaseReactionCount(answer, reaction);
+            reactionUpdateService.increaseReactionCount(reactionCount, reaction);
             isClicked = true;
         }
 
-        return ReactionResponse.ReactionInformationDto.of(answer,isClicked);
+        return ReactionResponse.ReactionInformationDto.of(reactionCount, isClicked);
     }
 
     /*// 피드 주인이 아닌 다른 사람이 통했당 신청

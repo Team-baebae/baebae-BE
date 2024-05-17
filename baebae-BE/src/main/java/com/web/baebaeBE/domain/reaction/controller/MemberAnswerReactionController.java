@@ -2,7 +2,7 @@ package com.web.baebaeBE.domain.reaction.controller;
 
 import com.web.baebaeBE.domain.reaction.controller.api.MemberAnswerReactionApi;
 import com.web.baebaeBE.domain.reaction.dto.ReactionRequest;
-import com.web.baebaeBE.domain.reaction.dto.ReactionResponse;
+import com.web.baebaeBE.domain.reactioncount.dto.ReactionResponse;
 import com.web.baebaeBE.domain.reaction.entity.MemberAnswerReaction;
 import com.web.baebaeBE.domain.reaction.service.MemberAnswerReactionService;
 import lombok.RequiredArgsConstructor;

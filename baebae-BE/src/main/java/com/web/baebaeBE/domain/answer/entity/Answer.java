@@ -6,6 +6,7 @@ import com.web.baebaeBE.domain.member.entity.Member;
 import com.web.baebaeBE.domain.music.entity.Music;
 import com.web.baebaeBE.domain.question.entity.Question;
 import com.web.baebaeBE.domain.reaction.entity.ReactionValue;
+import com.web.baebaeBE.domain.reactioncount.entity.ReactionCount;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
@@ -62,33 +63,23 @@ public class Answer {
     @Column(name = "image_url")
     private String imageUrl;
 
-    @Column(name = "heart_count", nullable = false)
-    private int heartCount;
-
-    @Column(name = "curious_count", nullable = false)
-    private int curiousCount;
-
-    @Column(name = "sad_count", nullable = false)
-    private int sadCount;
-
-    @Column(name = "connect_count", nullable = false)
-    private int connectCount;
-
     @Column(name = "created_date", nullable = false)
     private LocalDateTime createdDate;
 
     @OneToMany(mappedBy = "answer", cascade = CascadeType.REMOVE)
     private List<CategorizedAnswer> categorizedAnswers;
 
+    @OneToOne(mappedBy = "answer", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private ReactionCount reactionCount;
+
     @Column(name = "profile_on_off", nullable = false)
     private boolean profileOnOff;
 
-    public static Answer of(Long id, Question question, Category category, Member member, String nickname,String content,
-                            List<String> imageFiles, Music music, String linkAttachments, String  imageUrl, int heartCount,
-                            int curiousCount, int sadCount, int connectCount, LocalDateTime createdDate, boolean profileOnOff) {
-
-        return new Answer(id, question, category, member, nickname, imageFiles, content, music, linkAttachments,imageUrl, heartCount,
-                 curiousCount, sadCount, connectCount, createdDate,null, profileOnOff);
+    public static Answer of(Long id, Question question, Category category, Member member, String nickname, String content,
+                            List<String> imageFiles, Music music, String linkAttachments, String imageUrl, LocalDateTime createdDate,
+                            ReactionCount reactionCount, boolean profileOnOff) {
+        return new Answer(id, question, category, member, nickname, imageFiles, content, music, linkAttachments, imageUrl, createdDate, null, reactionCount, profileOnOff);
     }
+
 
 }
