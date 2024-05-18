@@ -4,6 +4,3 @@ spring:
 
   profiles:
     active: local
-
-server:
-  url: http://localhost:8080
