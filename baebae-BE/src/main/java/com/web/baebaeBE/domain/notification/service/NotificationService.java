@@ -20,7 +20,7 @@ import java.util.List;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class NotificationService {
+public class NotificationService {//
 
     private final NotificationRepository notificationRepository;
     private final MemberRepository memberRepository;

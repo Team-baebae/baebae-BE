@@ -30,6 +30,7 @@ public class FirebaseMessagingService {
 
         // FirebaseMessaging 인스턴스를 통해 메시지 전송
         try {
+            System.out.println("파이어베이스 실행!! " +token);
             return FirebaseMessaging.getInstance().send(message);
         } catch (FirebaseMessagingException e) {
             throw new RuntimeException(e);

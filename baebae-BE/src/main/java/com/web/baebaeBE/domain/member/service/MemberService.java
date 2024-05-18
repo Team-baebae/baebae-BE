@@ -96,6 +96,9 @@ public class MemberService {
 
     // 닉네임 기반으로 memberId를 찾아오는 메서드
     public MemberResponse.MemberIdResponse getMemberIdByNickname(String nickname) {
-        return MemberResponse.MemberIdResponse.of(memberRepository.findByNickname(nickname).get().getId());
+        Member member = memberRepository.findByNickname(nickname)
+                .orElseThrow(() -> new BusinessException(MemberException.NOT_EXIST_MEMBER));
+
+        return  MemberResponse.MemberIdResponse.of(member.getId());
     }
 }
