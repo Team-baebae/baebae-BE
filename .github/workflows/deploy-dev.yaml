@@ -24,10 +24,16 @@ jobs:
           echo "${{ secrets.APPLICATION_YML }}" > baebae-BE/src/main/resources/application.yml
           echo "${{ secrets.APPLICATION_DEPLOY_YML }}" > baebae-BE/src/main/resources/application-deploy.yml
 
-      - name: Create firebase-admin-sdk file
-        run: |
-          echo -e "${{ secrets.FCM_CERTIFICATION }}" > baebae-BE/src/main/resources/baebae-ff525-firebase-adminsdk-zbc8h-7fd10e518b.json
-          cat baebae-BE/src/main/resources/baebae-ff525-firebase-adminsdk-zbc8h-7fd10e518b.json
+      - name: create-json
+        id: create-json
+        uses: jsdaniell/create-json@1.1.2
+        with:
+          name: "baebae-BE/src/main/resources/baebae-ff525-firebase-adminsdk-zbc8h-7fd10e518b.json"
+          json: ${{ secrets.FCM_CERTIFICATION }}
+            cat baebae-BE/src/main/resources/baebae-ff525-firebase-adminsdk-zbc8h-7fd10e518b.json
+
+      - name: Print firebase-admin-sdk file
+        run: cat baebae-BE/src/main/resources/baebae-ff525-firebase-adminsdk-zbc8h-7fd10e518b.json
 
       - name: Build with Gradle
         run: |
