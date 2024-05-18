@@ -3,34 +3,41 @@ package com.web.baebaeBE.global.firebase;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import jakarta.annotation.PostConstruct;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.stereotype.Service;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import org.slf4j.Logger;
+import java.io.InputStream;
 
-@Service
+import javax.annotation.PostConstruct;
+
+@Configuration
 public class FirebaseInitializer {
-    private static final Logger logger = LoggerFactory.getLogger(FirebaseInitializer.class);
 
-    @Value("${fcm.certification}")
-    private String certification;
+    @Value("${firebase.service-account-file}")
+    private String serviceAccountFile;
+
+    @Value("${firebase.database-url}")
+    private String databaseUrl;
 
     @PostConstruct
     public void initialize() {
         try {
+            InputStream serviceAccount =
+                    new ClassPathResource(serviceAccountFile).getInputStream();
+
             FirebaseOptions options = new FirebaseOptions.Builder()
-                    .setCredentials(GoogleCredentials.fromStream(new ClassPathResource(certification).getInputStream())).build();
+                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                    .setDatabaseUrl(databaseUrl)
+                    .build();
+
             if (FirebaseApp.getApps().isEmpty()) {
                 FirebaseApp.initializeApp(options);
-                logger.info("Firebase application has been initialized");
             }
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            e.printStackTrace();
         }
     }
 }
