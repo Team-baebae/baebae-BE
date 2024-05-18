@@ -16,7 +16,10 @@ import com.web.baebaeBE.domain.reactioncount.dto.ReactionResponse;
 import com.web.baebaeBE.domain.reaction.entity.ReactionValue;
 import com.web.baebaeBE.domain.reaction.repository.MemberAnswerReactionRepository;
 import com.web.baebaeBE.domain.reactioncount.entity.ReactionCount;
+import com.web.baebaeBE.domain.reactioncount.repository.ReactionCountJpaRepository;
 import com.web.baebaeBE.global.error.exception.BusinessException;
+import com.web.baebaeBE.global.firebase.FirebaseMessagingService;
+import com.web.baebaeBE.global.firebase.FirebaseNotificationService;
 import com.web.baebaeBE.global.image.s3.S3ImageStorageService;
 import com.web.baebaeBE.domain.answer.entity.Answer;
 import com.web.baebaeBE.domain.answer.repository.AnswerRepository;
@@ -29,6 +32,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -47,6 +51,8 @@ public class AnswerService {
     private final NotificationService notificationService;
     private final S3ImageStorageService s3ImageStorageService;
     private final AnswerMapper answerMapper;
+    private final ReactionCountJpaRepository reactionCountJpaRepository;
+    private final FirebaseNotificationService firebaseNotificationService;
 
     @Transactional
     public AnswerDetailResponse createAnswer(AnswerCreateRequest request, Long memberId, MultipartFile imageFile) {
@@ -55,6 +61,7 @@ public class AnswerService {
         Question question = questionRepository.findById(request.getQuestionId())
                 .orElseThrow(() -> new BusinessException(AnswerError.NO_EXIST_QUESTION));
 
+        // Answer 생성
         Answer answer = answerMapper.toEntity(request, question, member);
         Answer savedAnswer = answerRepository.save(answer);
         if (!imageFile.isEmpty()) {
@@ -65,6 +72,17 @@ public class AnswerService {
                 throw new BusinessException(AnswerError.IMAGE_PROCESSING_ERROR);
             }
         }
+
+        // ReactionCount 생성
+        ReactionCount reactionCount = ReactionCount.builder()
+                .answer(savedAnswer)
+                .heartCount(0)
+                .curiousCount(0)
+                .sadCount(0)
+                .connectCount(0)
+                .build();
+        reactionCountJpaRepository.save(reactionCount);
+
         // 알림 생성 및 전송
         NotificationRequest.create notificationDto = new NotificationRequest.create(
                 member.getId(),
@@ -74,10 +92,11 @@ public class AnswerService {
                 null
         );
         notificationService.createNotification(notificationDto);
-
         // 질문의 isAnswered 상태를 true로 업데이트
         question.setAnswered(true);
         questionRepository.save(question);
+
+        firebaseNotificationService.notifyNewAnswer(member, savedAnswer); // 푸시 메세지 전송
 
         return answerMapper.toDomain(savedAnswer);
     }
