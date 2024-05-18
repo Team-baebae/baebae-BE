@@ -34,6 +34,7 @@ public class FirebaseInitializer {
                     .build();
 
             if (FirebaseApp.getApps().isEmpty()) {
+                System.out.println("파이어베이스 초기화");
                 FirebaseApp.initializeApp(options);
             }
         } catch (IOException e) {
