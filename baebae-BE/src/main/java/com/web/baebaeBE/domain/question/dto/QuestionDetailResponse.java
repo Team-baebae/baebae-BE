@@ -11,7 +11,6 @@ public class QuestionDetailResponse {
     private Long questionId;
     private String content;
     private String nickname;
-
     private String memberNickname;
     private Boolean profileOnOff;
     private LocalDateTime createdDate;
