@@ -29,10 +29,10 @@ public class Member implements UserDetails {
   @Column(name = "member_id", updatable = false, unique = true, nullable = false)
   private Long id;
 
-  @Column(nullable = false, unique = true)
+  @Column(nullable = false, length = 30,unique = true)
   private String email;
 
-  @Column(nullable = false, unique = true)
+  @Column(nullable = false, length=50,unique = true)
   private String nickname;
 
   @Column(name="profile_image")

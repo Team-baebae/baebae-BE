@@ -3,6 +3,7 @@ package com.web.baebaeBE.domain.reaction.service;
 import com.web.baebaeBE.domain.answer.entity.Answer;
 import com.web.baebaeBE.domain.reaction.entity.ReactionValue;
 import com.web.baebaeBE.domain.reactioncount.entity.ReactionCount;
+import com.web.baebaeBE.domain.reactioncount.repository.ReactionCountJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class ReactionUpdateService {
+
+    private final ReactionCountJpaRepository reactionCountJpaRepository;
 
     public void increaseReactionCount(ReactionCount reactionCount, ReactionValue reaction) {
         switch (reaction) {
@@ -27,6 +30,7 @@ public class ReactionUpdateService {
                 reactionCount.setConnectCount(reactionCount.getConnectCount() + 1);
                 break;
         }
+        reactionCountJpaRepository.save(reactionCount);
     }
 
     public void decreaseReactionCount(ReactionCount reactionCount, ReactionValue reaction) {
@@ -44,5 +48,6 @@ public class ReactionUpdateService {
                 reactionCount.setConnectCount(reactionCount.getConnectCount() - 1);
                 break;
         }
+        reactionCountJpaRepository.save(reactionCount);
     }
 }

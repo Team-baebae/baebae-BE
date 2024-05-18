@@ -13,8 +13,7 @@ import lombok.*;
 @Builder
 public class ReactionCount {
     @Id
-    @Column(name = "answer_id")
-    private Long answerId;
+    private Long id;
 
     @MapsId
     @OneToOne(fetch = FetchType.LAZY)
