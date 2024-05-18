@@ -55,7 +55,7 @@ public class AnswerMapper {
                 question.getContent(),
                 member.getId(),
                 answer.getContent(),
-                member.getNickname(),
+                question.getSender().getNickname(),
                 answer.getNickname(),
                 answer.isProfileOnOff(),
                 answer.getLinkAttachments(),
