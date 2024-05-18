@@ -14,16 +14,7 @@ public class ReactionCountController implements ReactionCountApi {
 
     private final ReactionService reactionService;
 
-    @PutMapping("/{answerId}")
-    @Override
-    public ResponseEntity<Void> updateReactionCounts(@PathVariable Long answerId,
-                                                     @RequestParam int heartCount,
-                                                     @RequestParam int curiousCount,
-                                                     @RequestParam int sadCount,
-                                                     @RequestParam int connectCount) {
-        reactionService.updateReactionCounts(answerId, heartCount, curiousCount, sadCount, connectCount);
-        return ResponseEntity.ok().build();
-    }
+
 
     @GetMapping("/{answerId}/reactionsCount")
     public ResponseEntity<ReactionResponse.CountReactionInformationDto> getReactionCounts(@PathVariable Long answerId) {
