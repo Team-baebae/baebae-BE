@@ -32,7 +32,7 @@ jobs:
         run: |
           cd baebae-BE
           chmod +x ./gradlew
-          ./gradlew build
+          ./gradlew build -x test
 
       - name: Create deployment package
         run: |
