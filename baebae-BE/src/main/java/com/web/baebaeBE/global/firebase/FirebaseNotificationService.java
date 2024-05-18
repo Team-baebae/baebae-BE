@@ -6,6 +6,7 @@ import com.web.baebaeBE.domain.fcm.service.FcmService;
 import com.web.baebaeBE.domain.member.entity.Member;
 import com.web.baebaeBE.domain.answer.entity.Answer;
 import com.web.baebaeBE.domain.question.entity.Question;
+import com.web.baebaeBE.domain.reaction.entity.MemberAnswerReaction;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +27,8 @@ public class FirebaseNotificationService {
 
 
     public void notifyNewQuestion(Member member, Question question) {
-        String notificationTitle = "새 질문이 도착했습니다!";
-        String notificationBody = member.getNickname() + "님, 새로운 질문을 확인하세요: " + question.getContent();
+        String notificationTitle = question.getNickname() + "님이 질문을 남겼어요!\n";
+        String notificationBody = question.getContent();
 
         // 모든 fcm 토큰 가져오기
         List<FcmToken> fcmTokens = fcmTokenRepository.findByMemberId(member.getId());
@@ -37,12 +38,12 @@ public class FirebaseNotificationService {
             fcmService.updateLastUsedTime(fcmToken);
         }
     }
-    public void notifyNewAnswer(Member member, Answer answer) {
-        String notificationTitle = "새로운 답변이 도착했습니다!";
-        String notificationBody = "귀하의 질문 \"" + answer.getQuestion().getContent() + "\"에 새로운 답변이 등록되었습니다.";
+    public void notifyNewAnswer(Member member, Question question, Answer answer) {
+        String notificationTitle = member.getNickname() + "님이 질문에 답변을 남겼어요!\n";
+        String notificationBody = answer.getContent();
 
         // 모든 fcm 토큰 가져오기
-        List<FcmToken> fcmTokens = fcmTokenRepository.findByMemberId(member.getId());
+        List<FcmToken> fcmTokens = fcmTokenRepository.findByMemberId(question.getMember().getId());
 
         for (FcmToken fcmToken : fcmTokens) {
             sendNotificationToUser(fcmToken.getToken(), notificationTitle, notificationBody);
@@ -51,21 +52,35 @@ public class FirebaseNotificationService {
     }
 
 
-    public void notifyReaction(Member member, String content, String reactionType) {
-        String notificationTitle = "반응 알림!";
-        String notificationBody = member.getNickname() + "님의 답변에 " + reactionType + " 반응이 있습니다: " + content;
+    public void notifyReaction(Member member, Answer answer, MemberAnswerReaction reaction) {
+        String emoticon = "";
+        switch (reaction.getReaction()) {
+            case HEART:
+                emoticon = "❤";
+                break;
+            case CURIOUS:
+                emoticon = "👀";
+                break;
+            case SAD:
+                emoticon = "😢";
+                break;
+            case CONNECT:
+                emoticon = "👉👈";
+                break;
+        }
+        String notificationTitle = member.getNickname()+"님이 " + emoticon + "을 남겼어요!\n";
 
         // 모든 fcm 토큰 가져오기
-        List<FcmToken> fcmTokens = fcmTokenRepository.findByMemberId(member.getId());
+        List<FcmToken> fcmTokens = fcmTokenRepository.findByMemberId(answer.getMember().getId());
 
         for (FcmToken fcmToken : fcmTokens) {
-            sendNotificationToUser(fcmToken.getToken(), notificationTitle, notificationBody);
+            sendNotificationToUser(fcmToken.getToken(), notificationTitle, "");
             fcmService.updateLastUsedTime(fcmToken);
         }
     }
 
     private void sendNotificationToUser(String token, String title, String body) {
-        String response = firebaseMessagingService.sendNotification(token, title, body);
-        System.out.println("Sent message: " + response);
+        firebaseMessagingService.sendNotification(token, title, body);
+        log.info(token);
     }
 }

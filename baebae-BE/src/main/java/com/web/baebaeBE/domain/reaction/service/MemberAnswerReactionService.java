@@ -15,6 +15,7 @@ import com.web.baebaeBE.domain.reaction.repository.MemberAnswerReactionRepositor
 import com.web.baebaeBE.domain.reactioncount.entity.ReactionCount;
 import com.web.baebaeBE.domain.reactioncount.repository.ReactionCountJpaRepository;
 import com.web.baebaeBE.global.error.exception.BusinessException;
+import com.web.baebaeBE.global.firebase.FirebaseNotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,19 +32,17 @@ public class MemberAnswerReactionService {
     private final ReactionCountJpaRepository reactionCountJpaRepository;
     private final MemberRepository memberRepository;
     private final AnswerRepository answerRepository;
+    private final FirebaseNotificationService firebaseNotificationService;
 
     public ReactionResponse.ReactionInformationDto createReaction(Long memberId, Long answerId, ReactionValue reaction) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(LoginException.NOT_EXIST_MEMBER));
         Answer answer = answerRepository.findByAnswerId(answerId)
                 .orElseThrow(() -> new BusinessException(AnswerError.NO_EXIST_ANSWER));
+        ReactionCount reactionCount = reactionCountJpaRepository.findByAnswerId(answerId)
+                .orElseThrow(() -> new BusinessException(AnswerError.NO_EXIST_ANSWER));
         boolean isClicked = false;
 
-        // ReactionCount 엔터티를 가져옴
-        ReactionCount reactionCount = reactionCountJpaRepository.findByAnswerId(answerId);
-        if (reactionCount == null) {
-            throw new BusinessException(AnswerError.NO_EXIST_ANSWER);
-        }
 
         // 이미 해당 반응이 있는지 확인
         Optional<MemberAnswerReaction> existingReactionOpt = memberAnswerReactionRepository.findByMemberAndAnswerAndReaction(member, answer, reaction);
@@ -65,6 +64,8 @@ public class MemberAnswerReactionService {
             memberAnswerReactionRepository.save(memberAnswerReaction);
             reactionUpdateService.increaseReactionCount(reactionCount, reaction);
             isClicked = true;
+
+            firebaseNotificationService.notifyReaction(member, answer,  memberAnswerReaction); // 푸시 메세지 전송
         }
 
         return ReactionResponse.ReactionInformationDto.of(reactionCount, isClicked);
