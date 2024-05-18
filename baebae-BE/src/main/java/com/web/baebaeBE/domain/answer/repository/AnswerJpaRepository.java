@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface AnswerJpaRepository extends JpaRepository<Answer, Long> {
     Page<Answer> findAllByMemberId(Long memberId, Pageable pageable);
-    Page<Answer> findAllByMemberIdAndCategory(Long memberId, Category category, Pageable pageable);
+//    Page<Answer> findAllByMemberIdAndCategory(Long memberId, Category category, Pageable pageable);
 
     List<Answer> findByMemberId(Long memberId);
 }

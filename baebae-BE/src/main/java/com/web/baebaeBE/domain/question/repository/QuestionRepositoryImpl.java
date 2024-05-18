@@ -26,18 +26,18 @@ public class QuestionRepositoryImpl implements QuestionRepository {
     }
 
     @Override
-    public Page<Question> findAllBySenderIdOrReceiverId(Long senderId, Long receiverId, Pageable pageable) {
-        return questionJpaRepository.findAllBySenderIdOrReceiverId(senderId, receiverId, pageable);
+    public Page<Question> findAllByReceiverId(Long receiverId, Pageable pageable) {
+        return questionJpaRepository.findAllByReceiverId(receiverId, pageable);
     }
 
     @Override
-    public Page<Question> findAllBySenderIdOrReceiverIdAndIsAnsweredTrue(Long senderId, Long receiverId, Pageable pageable) {
-        return questionJpaRepository.findAllBySenderIdOrReceiverIdAndIsAnsweredTrue(senderId, receiverId, pageable);
+    public Page<Question> findAllByReceiverIdAndIsAnsweredTrue(Long receiverId, Pageable pageable) {
+        return questionJpaRepository.findAllByReceiverIdAndIsAnsweredTrue(receiverId, pageable);
     }
 
     @Override
-    public Page<Question> findAllBySenderIdOrReceiverIdAndIsAnsweredFalse(Long senderId, Long receiverId, Pageable pageable) {
-        return questionJpaRepository.findAllBySenderIdOrReceiverIdAndIsAnsweredFalse(senderId, receiverId, pageable);
+    public Page<Question> findAllByReceiverIdAndIsAnsweredFalse(Long receiverId, Pageable pageable) {
+        return questionJpaRepository.findAllByReceiverIdAndIsAnsweredFalse(receiverId, pageable);
     }
 
     @Override
@@ -46,7 +46,7 @@ public class QuestionRepositoryImpl implements QuestionRepository {
     }
 
     @Override
-    public long countBySenderIdOrReceiverIdAndIsAnsweredFalse(Long senderId, Long receiverId) {
-        return questionJpaRepository.countBySenderIdOrReceiverIdAndIsAnsweredFalse(senderId, receiverId);
+    public long countByReceiverIdAndIsAnsweredFalse( Long receiverId) {
+        return questionJpaRepository.countByReceiverIdAndIsAnsweredFalse(receiverId);
     }
 }

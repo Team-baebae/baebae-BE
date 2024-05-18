@@ -59,6 +59,7 @@ public class QuestionTest {
     private JwtTokenProvider tokenProvider;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private Member testMember;
+    private Member testReceiver;
     private String refreshToken;
     private QuestionDetailResponse testQuestionDetailResponse;
 
@@ -71,11 +72,23 @@ public class QuestionTest {
                 .refreshToken("null")
                 .build());
 
+        testReceiver = memberRepository.save(Member.builder()
+                .email("test@gmail2.com")
+                .nickname("장지효2")
+                .memberType(MemberType.KAKAO)
+                .refreshToken("null")
+                .build());
 
-        refreshToken = tokenProvider.generateToken(testMember, Duration.ofDays(14)); // 임시 refreshToken 생성
+
+        refreshToken = tokenProvider.generateToken(testMember, Duration.ofDays(14));
 
         testMember.updateRefreshToken(refreshToken);
         memberRepository.save(testMember);
+
+        refreshToken = tokenProvider.generateToken(testReceiver, Duration.ofDays(14));
+
+        testReceiver.updateRefreshToken(refreshToken);
+        memberRepository.save(testReceiver);
 
     }
 
@@ -90,17 +103,18 @@ public class QuestionTest {
 
         // Given
         String content = "이것은 회원의 질문입니다.";
-        QuestionDetailResponse questionDetailResponse = new QuestionDetailResponse(1L, content, "장지효", true, LocalDateTime.now(), true);
-        Long memberId = 1L;
+        QuestionDetailResponse questionDetailResponse = new QuestionDetailResponse(1L, content, "장지효", true, LocalDateTime.now(), false);
+        Long senderId = testMember.getId();
+        Long receiverId = 2L;
         QuestionCreateRequest createRequest = new QuestionCreateRequest(content, "장지효", true);
         String jsonRequest = objectMapper.writeValueAsString(createRequest);
 
         // When
-        when(questionService.createQuestion(any(QuestionCreateRequest.class), eq(memberId)))
+        when(questionService.createQuestion(any(QuestionCreateRequest.class), eq(senderId), eq(receiverId)))
                 .thenReturn(questionDetailResponse);
 
         // Then
-        mockMvc.perform(post("/api/questions/member/{memberId}", memberId)
+        mockMvc.perform(post("/api/questions/sender/{senderId}/receiver/{receiverId}", senderId, receiverId)
                         .header("Authorization", "Bearer " + refreshToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonRequest))
@@ -108,6 +122,7 @@ public class QuestionTest {
                 .andExpect(jsonPath("$.content").value("이것은 회원의 질문입니다."))
                 .andExpect(jsonPath("$.nickname").value("장지효"))
                 .andExpect(jsonPath("$.profileOnOff").value(true));
+
     }
 
     @Test
@@ -120,10 +135,10 @@ public class QuestionTest {
         Page<QuestionDetailResponse> questionDetailResponsePage = new PageImpl<>(questionDetailResponseList, Pageable.unpaged(), 1);
 
         // Mock 설정
-        when(questionService.getQuestionsByMemberId(eq(testMember.getId()), any(Pageable.class)))
+        when(questionService.getQuestionsByMemberId(eq(testReceiver.getId()), any(Pageable.class)))
                 .thenReturn(questionDetailResponsePage);
 
-        mockMvc.perform(get("/api/questions/member/{memberId}", testMember.getId())
+        mockMvc.perform(get("/api/questions/member/{memberId}", testReceiver.getId())
                         .header("Authorization", "Bearer " + refreshToken)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -138,7 +153,7 @@ public class QuestionTest {
     public void updateQuestionTest() throws Exception {
         // 수정 전 질문 생성
         String content = "이것은 수정 전의 질문입니다.";
-        Question question = questionRepository.save(new Question(null, testMember, content, "닉네임", true, LocalDateTime.now(), true));
+        Question question = questionRepository.save(new Question(null, testMember,testReceiver,content, "닉네임", true, LocalDateTime.now(), true));
         String updatedContent = "이것은 수정 후의 질문입니다.";
 
         // 질문 수정 요청을 보내고 응답을 확인
@@ -155,7 +170,7 @@ public class QuestionTest {
     public void deleteQuestionTest() throws Exception {
 
         String content = "이것은 삭제할 질문입니다.";
-        Question question = questionRepository.save(new Question(null, testMember, content, "닉네임", true, LocalDateTime.now(), true));
+        Question question = questionRepository.save(new Question(null, testMember, testReceiver, content, "닉네임", true, LocalDateTime.now(), true));
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/questions/{questionId}", question.getId())
                         .header("Authorization", "Bearer " + refreshToken)

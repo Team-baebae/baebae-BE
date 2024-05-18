@@ -6,8 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface QuestionJpaRepository extends JpaRepository<Question, Long> {
-    Page<Question> findAllBySenderIdOrReceiverId(Long senderId, Long receiverId, Pageable pageable);
-    Page<Question> findAllBySenderIdOrReceiverIdAndIsAnsweredTrue(Long senderId, Long receiverId, Pageable pageable);
-    Page<Question> findAllBySenderIdOrReceiverIdAndIsAnsweredFalse(Long senderId, Long receiverId, Pageable pageable);
-    long countBySenderIdOrReceiverIdAndIsAnsweredFalse(Long senderId, Long receiverId);
+    Page<Question> findAllByReceiverId(Long receiverId, Pageable pageable);
+    Page<Question> findAllByReceiverIdAndIsAnsweredTrue(Long receiverId, Pageable pageable);
+    Page<Question> findAllByReceiverIdAndIsAnsweredFalse(Long receiverId, Pageable pageable);
+    long countByReceiverIdAndIsAnsweredFalse(Long receiverId);
 }

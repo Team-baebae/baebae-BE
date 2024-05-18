@@ -69,6 +69,7 @@ public class AnswerTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private Member testMember;
+    private Member testReceiver;
     private String refreshToken;
     private Question testQuestion;
 
@@ -81,11 +82,22 @@ public class AnswerTest {
                 .refreshToken("null")
                 .build());
 
+        testReceiver = memberRepository.save(Member.builder()
+                .email("test@gmail2.com")
+                .nickname("장지효2")
+                .memberType(MemberType.KAKAO)
+                .refreshToken("null")
+                .build());
+
         refreshToken = tokenProvider.generateToken(testMember, Duration.ofDays(14));
         testMember.updateRefreshToken(refreshToken);
         memberRepository.save(testMember);
 
-        testQuestion = questionRepository.save(new Question(null, testMember, "이것은 질문입니다.", "장지효", true, LocalDateTime.now(), false));
+        refreshToken = tokenProvider.generateToken(testReceiver, Duration.ofDays(14));
+        testReceiver.updateRefreshToken(refreshToken);
+        memberRepository.save(testReceiver);
+
+        testQuestion = questionRepository.save(new Question(null, testMember, testReceiver,"이것은 질문입니다.", "장지효", true, LocalDateTime.now(), false));
     }
 
     @AfterEach

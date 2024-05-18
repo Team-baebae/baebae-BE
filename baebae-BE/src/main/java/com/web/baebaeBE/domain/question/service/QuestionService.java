@@ -43,7 +43,7 @@ public class QuestionService {
 
     @Transactional(readOnly = true)
     public Page<QuestionDetailResponse> getQuestionsByMemberId(Long memberId, Pageable pageable) {
-        Page<Question> questions = questionRepository.findAllBySenderIdOrReceiverId(memberId, memberId, pageable);
+        Page<Question> questions = questionRepository.findAllByReceiverId(memberId, pageable);
         return questions.map(question -> questionMapper.toDomain(question));
     }
 
@@ -68,19 +68,19 @@ public class QuestionService {
 
     @Transactional(readOnly = true)
     public Page<QuestionDetailResponse> getAnsweredQuestions(Long memberId, Pageable pageable) {
-        Page<Question> questions = questionRepository.findAllBySenderIdOrReceiverIdAndIsAnsweredTrue(memberId, memberId, pageable);
+        Page<Question> questions = questionRepository.findAllByReceiverIdAndIsAnsweredTrue(memberId, pageable);
         return questions.map(question -> questionMapper.toDomain(question));
     }
 
     @Transactional(readOnly = true)
     public Page<QuestionDetailResponse> getUnansweredQuestions(Long memberId, Pageable pageable) {
-        Page<Question> questions = questionRepository.findAllBySenderIdOrReceiverIdAndIsAnsweredFalse(memberId, memberId, pageable);
+        Page<Question> questions = questionRepository.findAllByReceiverIdAndIsAnsweredFalse(memberId, pageable);
         return questions.map(question -> questionMapper.toDomain(question));
     }
 
     @Transactional(readOnly = true)
     public long getUnansweredQuestionCount(Long memberId) {
-        return questionRepository.countBySenderIdOrReceiverIdAndIsAnsweredFalse(memberId, memberId);
+        return questionRepository.countByReceiverIdAndIsAnsweredFalse(memberId);
     }
 
 }
