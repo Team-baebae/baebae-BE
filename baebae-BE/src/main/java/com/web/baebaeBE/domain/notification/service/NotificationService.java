@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -50,7 +51,17 @@ public class NotificationService {//
 
         List<Notification> notificationList = notificationRepository.findByMemberOrderByNotificationTimeDesc(member);
 
-        return  NotificationResponse.NotificationContentResponse.ListOf(notificationList);
+        // 사용자에게 반환할 알림 목록을 복사
+        List<Notification> notificationsToReturn = new ArrayList<>(notificationList);
+
+        // 원본 알림 목록의 isChecked 필드를 true로 설정하고, 데이터베이스에 변경 사항을 저장
+        for (Notification notification : notificationList) {
+            notification.checkNotification();
+        }
+        notificationRepository.saveAll(notificationList);
+
+        // 복사한 알림 목록을 사용하여 응답을 생성
+        return NotificationResponse.NotificationContentResponse.ListOf(notificationsToReturn);
     }
 
     // 알림 세부정보 조회
