@@ -49,6 +49,11 @@ public interface QuestionApi {
             description = "특정 회원의 모든 질문을 페이지네이션으로 조회합니다.",
             security = @SecurityRequirement(name = "bearerAuth")
     )
+    @Parameter(
+            in = ParameterIn.HEADER,
+            name = "Authorization", required = true,
+            schema = @Schema(type = "string"),
+            description = "Bearer [Access 토큰]")
     @ApiResponse(responseCode = "200", description = "질문 조회 성공",
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = List.class)))
@@ -61,6 +66,11 @@ public interface QuestionApi {
             description = "특정 회원의 답변된 모든 질문을 페이지네이션으로 조회합니다.",
             security = @SecurityRequirement(name = "bearerAuth")
     )
+    @Parameter(
+            in = ParameterIn.HEADER,
+            name = "Authorization", required = true,
+            schema = @Schema(type = "string"),
+            description = "Bearer [Access 토큰]")
     @ApiResponse(responseCode = "200", description = "답변된 질문 조회 성공")
     @GetMapping("/answered/{memberId}")
     ResponseEntity<List<QuestionDetailResponse>> getAnsweredQuestions(
