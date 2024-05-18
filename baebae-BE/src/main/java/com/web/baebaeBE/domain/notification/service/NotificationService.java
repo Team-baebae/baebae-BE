@@ -27,7 +27,7 @@ public class NotificationService {//
     private final MemberRepository memberRepository;
     private final FirebaseMessagingService firebaseMessagingService;
 
-    // 알림 생성 및 FCM 알림 전송
+    // 알림 생성
     public Notification createNotification(NotificationRequest.create createNotificationDto) {
         Member member = memberRepository.findById(createNotificationDto.getMemberId())
                 .orElseThrow(() -> new BusinessException(LoginException.NOT_EXIST_MEMBER));
@@ -64,15 +64,5 @@ public class NotificationService {//
         return NotificationResponse.NotificationContentResponse.ListOf(notificationsToReturn);
     }
 
-    // 알림 세부정보 조회
-    public NotificationResponse.NotificationContentResponse getNotificationById(Long notificationId) {
-        return NotificationResponse.NotificationContentResponse
-                .of(notificationRepository.findById(notificationId).get());
-    }
 
-
-    // 알람 삭제
-    public void deleteNotification(Long notificationId) {
-        notificationRepository.deleteById(notificationId);
-    }
 }
