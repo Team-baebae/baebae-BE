@@ -1,1 +1,0 @@
-insert into member ( nickname,member_type, email, refresh_token) values ( 'admin', 'KAKAO', 'ujj3900@naver.com','none');

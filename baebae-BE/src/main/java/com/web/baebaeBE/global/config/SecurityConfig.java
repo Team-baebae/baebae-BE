@@ -42,7 +42,7 @@ public class SecurityConfig {
     public WebSecurityCustomizer configure() {
         return web -> {
             web.ignoring()
-                    .requestMatchers(toH2Console())
+                    //.requestMatchers(toH2Console())
                     .requestMatchers(NO_AUTH_LIST);
                     //.requestMatchers("/**");
         };
