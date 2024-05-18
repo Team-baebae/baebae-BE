@@ -25,10 +25,4 @@ public class NotificationController implements NotificationApi {
         return ResponseEntity.ok(notificationService.getNotificationsListByMember(memberId));
     }
 
-    // 알람 세부정보 조회
-    @GetMapping("/{notificationId}")
-    public ResponseEntity<NotificationResponse.NotificationContentResponse> getNotificationById(@PathVariable Long notificationId) {
-
-        return ResponseEntity.ok(notificationService.getNotificationById(notificationId));
-    }
 }
