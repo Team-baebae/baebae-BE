@@ -43,7 +43,7 @@ public class FirebaseNotificationService {
         String notificationBody = answer.getContent();
 
         // 모든 fcm 토큰 가져오기
-        List<FcmToken> fcmTokens = fcmTokenRepository.findByMemberId(question.getMember().getId());
+        List<FcmToken> fcmTokens = fcmTokenRepository.findByMemberId(question.getSender().getId());
 
         for (FcmToken fcmToken : fcmTokens) {
             sendNotificationToUser(fcmToken.getToken(), notificationTitle, notificationBody);
