@@ -97,10 +97,10 @@ public class SecurityConfig {
     }
 
     //H2 Security 제외 설정
-    @Bean
+    /*@Bean
     @ConditionalOnProperty(name = "spring.h2.console.enabled",havingValue = "true")
     public WebSecurityCustomizer configureH2ConsoleEnable() {
         return web -> web.ignoring()
                 .requestMatchers(PathRequest.toH2Console());
-    }
+    }*/
 }
