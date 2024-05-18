@@ -23,7 +23,7 @@ public class FcmToken {
     @Column(name = "fcm_token", nullable = false)
     private String token;
 
-    @Column(name = "expiration_time", nullable = false)
+    @Column(name = "last_used_time", nullable = false)
     private LocalDateTime lastUsedTime;
 
     @ManyToOne(fetch = FetchType.LAZY)

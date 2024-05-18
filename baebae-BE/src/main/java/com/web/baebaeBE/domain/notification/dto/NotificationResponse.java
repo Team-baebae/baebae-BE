@@ -31,7 +31,7 @@ public class NotificationResponse {
       return NotificationContentResponse.builder()
               .notificationId(notification.getId())
               .notificationContent(notification.getNotificationContent())
-              .questionContent(notification.getQuestionContent())
+              .questionContent(notification.getDetailContent())
               .notificationTime(notification.getNotificationTime())
               .build();
     }
@@ -41,7 +41,7 @@ public class NotificationResponse {
               .map(notification -> NotificationResponse.NotificationContentResponse.builder()
                       .notificationId(notification.getId())
                       .notificationContent(notification.getNotificationContent())
-                      .questionContent(notification.getQuestionContent())
+                      .questionContent(notification.getDetailContent())
                       .notificationTime(notification.getNotificationTime())
                       .build())
               .collect(Collectors.toList());

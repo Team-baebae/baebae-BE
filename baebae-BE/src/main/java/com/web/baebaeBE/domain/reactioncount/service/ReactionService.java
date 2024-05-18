@@ -19,13 +19,9 @@ public class ReactionService {
 
     @Transactional
     public ReactionResponse.CountReactionInformationDto getReactionCounts(Long answerId) {
-        ReactionCount reactionCount = reactionCountJpaRepository.findByAnswerId(answerId);
-        if (reactionCount == null) {
-            Answer answer = answerRepository.findByAnswerId(answerId)
-                    .orElseThrow(() -> new BusinessException(AnswerError.NO_EXIST_ANSWER));
-            reactionCount = ReactionCount.of(answer, 0, 0, 0, 0);
-            reactionCountJpaRepository.save(reactionCount);
-        }
+        ReactionCount reactionCount = reactionCountJpaRepository.findByAnswerId(answerId)
+                .orElseThrow(() -> new BusinessException(AnswerError.NO_EXIST_ANSWER));
+
         return ReactionResponse.CountReactionInformationDto.of(reactionCount);
     }
 }
