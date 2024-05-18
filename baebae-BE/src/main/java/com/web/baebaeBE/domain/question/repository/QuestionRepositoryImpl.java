@@ -13,6 +13,7 @@ import java.util.Optional;
 @Primary
 @RequiredArgsConstructor
 public class QuestionRepositoryImpl implements QuestionRepository {
+
     private final QuestionJpaRepository questionJpaRepository;
 
     @Override

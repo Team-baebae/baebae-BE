@@ -12,13 +12,11 @@ import com.web.baebaeBE.domain.member.repository.MemberRepository;
 import com.web.baebaeBE.domain.notification.dto.NotificationRequest;
 import com.web.baebaeBE.domain.notification.service.NotificationService;
 import com.web.baebaeBE.domain.question.repository.QuestionRepository;
-import com.web.baebaeBE.domain.reactioncount.dto.ReactionResponse;
 import com.web.baebaeBE.domain.reaction.entity.ReactionValue;
 import com.web.baebaeBE.domain.reaction.repository.MemberAnswerReactionRepository;
 import com.web.baebaeBE.domain.reactioncount.entity.ReactionCount;
 import com.web.baebaeBE.domain.reactioncount.repository.ReactionCountJpaRepository;
 import com.web.baebaeBE.global.error.exception.BusinessException;
-import com.web.baebaeBE.global.firebase.FirebaseMessagingService;
 import com.web.baebaeBE.global.firebase.FirebaseNotificationService;
 import com.web.baebaeBE.global.image.s3.S3ImageStorageService;
 import com.web.baebaeBE.domain.answer.entity.Answer;
@@ -32,7 +30,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -128,7 +125,7 @@ public class AnswerService {
         answer.setContent(request.getContent());
         answer.setLinkAttachments(request.getLinkAttachments());
 
-        // Update Music entity fields
+        // Music 엔티티 업데이트
         answer.getMusic().setMusicName(request.getMusicName());
         answer.getMusic().setMusicSinger(request.getMusicSinger());
         answer.getMusic().setMusicAudioUrl(request.getMusicAudioUrl());
@@ -154,7 +151,7 @@ public class AnswerService {
     @Transactional
     public void deleteAnswer(Long answerId) {
         Answer answer = answerRepository.findByAnswerId(answerId)
-                .orElseThrow(() -> new IllegalArgumentException("No answer found with id " + answerId));
+                .orElseThrow(() -> new BusinessException(AnswerError.NO_EXIST_ANSWER));
         answerRepository.delete(answer);
     }
 
@@ -173,6 +170,4 @@ public class AnswerService {
         }
         return reactionStatus;
     }
-
-
 }

@@ -171,8 +171,6 @@ public class AnswerTest {
                 .andExpect(jsonPath("$.content[0].content").value("이것은 답변입니다."));
     }
 
-
-
     @Test
     @DisplayName("답변 수정 테스트(): 답변을 수정한다.")
     public void updateAnswerTest() throws Exception {
@@ -234,19 +232,4 @@ public class AnswerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(0));
     }
-
-//    @Test
-//    @DisplayName("답변 반응 카운트 조회 테스트(): 답변의 반응 카운트를 조회한다.")
-//    public void getReactionCountsTest() throws Exception {
-//        when(answerService.getReactionCounts(eq(1L))).thenReturn(new ReactionResponse.CountReactionInformationDto(1, 2, 3, 4));
-//
-//        mockMvc.perform(get("/api/answers/{answerId}/reactionsCount", 1L)
-//                        .header("Authorization", "Bearer " + refreshToken)
-//                        .contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.heartCount").value(1))
-//                .andExpect(jsonPath("$.curiousCount").value(2))
-//                .andExpect(jsonPath("$.sadCount").value(3))
-//                .andExpect(jsonPath("$.connectCount").value(4));
-//    }
 }

@@ -21,11 +21,6 @@ public class MusicRepositoryImpl implements MusicRepository{
     }
 
     @Override
-    public List<Music> findByAnswerId(Long answerId) {
-        return jpaRepository.findByAnswerId(answerId);
-    }
-
-    @Override
     public void delete(Music music) {
         jpaRepository.delete(music);
     }
