@@ -12,9 +12,10 @@ import java.time.LocalDateTime;
 @Component
 @RequiredArgsConstructor
 public class QuestionMapper {
-    public Question toEntity(QuestionCreateRequest request, Member member) {
+    public Question toEntity(QuestionCreateRequest request, Member sender, Member receiver) {
         return Question.builder()
-                .member(member)
+                .sender(sender)
+                .receiver(receiver)
                 .content(request.getContent())
                 .nickname(request.getNickname())
                 .profileOnOff(request.getProfileOnOff())

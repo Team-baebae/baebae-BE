@@ -26,20 +26,18 @@ public class QuestionRepositoryImpl implements QuestionRepository {
     }
 
     @Override
-    public Page<Question> findAllByMemberId(Long memberId, Pageable pageable) {
-        return questionJpaRepository.findAllByMemberId(memberId, pageable);
+    public Page<Question> findAllBySenderIdOrReceiverId(Long senderId, Long receiverId, Pageable pageable) {
+        return questionJpaRepository.findAllBySenderIdOrReceiverId(senderId, receiverId, pageable);
     }
 
     @Override
-    public Page<Question> findAllByMemberIdAndIsAnsweredTrue(Long memberId, Pageable pageable) {
-        // 이 메서드는 답변된 질문만 필터링하여 반환합니다.
-        return questionJpaRepository.findAllByMemberIdAndIsAnsweredTrue(memberId, pageable);
+    public Page<Question> findAllBySenderIdOrReceiverIdAndIsAnsweredTrue(Long senderId, Long receiverId, Pageable pageable) {
+        return questionJpaRepository.findAllBySenderIdOrReceiverIdAndIsAnsweredTrue(senderId, receiverId, pageable);
     }
 
     @Override
-    public Page<Question> findAllByMemberIdAndIsAnsweredFalse(Long memberId, Pageable pageable) {
-        // 이 메서드는 답변되지 않은 질문만 필터링하여 반환합니다.
-        return questionJpaRepository.findAllByMemberIdAndIsAnsweredFalse(memberId, pageable);
+    public Page<Question> findAllBySenderIdOrReceiverIdAndIsAnsweredFalse(Long senderId, Long receiverId, Pageable pageable) {
+        return questionJpaRepository.findAllBySenderIdOrReceiverIdAndIsAnsweredFalse(senderId, receiverId, pageable);
     }
 
     @Override
@@ -48,8 +46,7 @@ public class QuestionRepositoryImpl implements QuestionRepository {
     }
 
     @Override
-    public long countByMemberIdAndIsAnsweredFalse(Long memberId) {
-        return questionJpaRepository.countByMemberIdAndIsAnsweredFalse(memberId);
+    public long countBySenderIdOrReceiverIdAndIsAnsweredFalse(Long senderId, Long receiverId) {
+        return questionJpaRepository.countBySenderIdOrReceiverIdAndIsAnsweredFalse(senderId, receiverId);
     }
-
 }

@@ -16,14 +16,15 @@ import java.util.List;
 @RequestMapping("/api/questions")
 public class QuestionController implements QuestionApi {
     private final QuestionService questionService;
+
     public QuestionController(QuestionService questionService) {
         this.questionService = questionService;
     }
 
-    @PostMapping("/member/{memberId}")
+    @PostMapping("/sender/{senderId}/receiver/{receiverId}")
     public ResponseEntity<QuestionDetailResponse> createQuestion(
-            @RequestBody QuestionCreateRequest request, @PathVariable Long memberId) {
-        QuestionDetailResponse createdQuestion = questionService.createQuestion(request, memberId);
+            @RequestBody QuestionCreateRequest request, @PathVariable Long senderId, @PathVariable Long receiverId) {
+        QuestionDetailResponse createdQuestion = questionService.createQuestion(request, senderId, receiverId);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdQuestion);
     }
 
@@ -50,8 +51,8 @@ public class QuestionController implements QuestionApi {
 
     @PutMapping("/{questionId}")
     public ResponseEntity<Void> updateQuestion(
-            @PathVariable Long questionId, @RequestParam String content, @RequestParam boolean isAnswered) {
-        questionService.updateQuestion(questionId, content, isAnswered);
+            @PathVariable Long questionId, @RequestParam String content) {
+        questionService.updateQuestion(questionId, content);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 

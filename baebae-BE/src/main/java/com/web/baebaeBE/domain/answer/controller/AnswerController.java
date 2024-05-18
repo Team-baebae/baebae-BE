@@ -6,7 +6,6 @@ import com.web.baebaeBE.domain.answer.dto.AnswerDetailResponse;
 import com.web.baebaeBE.domain.answer.dto.AnswerResponse;
 import com.web.baebaeBE.domain.answer.service.AnswerService;
 
-import com.web.baebaeBE.domain.reaction.dto.ReactionResponse;
 import com.web.baebaeBE.domain.reaction.entity.ReactionValue;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -31,7 +30,7 @@ public class AnswerController implements AnswerApi {
                                                              @RequestPart(value = "imageFile") MultipartFile imageFile,
                                                              @RequestPart AnswerCreateRequest request) {
         AnswerDetailResponse createdAnswer = answerService.createAnswer(request, memberId, imageFile);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdAnswer);
+        return ResponseEntity.ok(createdAnswer);
     }
 
     @GetMapping("/member/{memberId}")

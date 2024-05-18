@@ -18,23 +18,6 @@ public class ReactionService {
     private final AnswerRepository answerRepository;
 
     @Transactional
-    public void updateReactionCounts(Long answerId, int heartCount, int curiousCount, int sadCount, int connectCount) {
-        ReactionCount reactionCount = reactionCountJpaRepository.findByAnswerId(answerId);
-        if (reactionCount == null) {
-            Answer answer = answerRepository.findByAnswerId(answerId)
-                    .orElseThrow(() -> new BusinessException(AnswerError.NO_EXIST_ANSWER));
-            reactionCount = ReactionCount.of(answer, heartCount, curiousCount, sadCount, connectCount);
-            reactionCountJpaRepository.save(reactionCount);
-        } else {
-            reactionCount.setHeartCount(heartCount);
-            reactionCount.setCuriousCount(curiousCount);
-            reactionCount.setSadCount(sadCount);
-            reactionCount.setConnectCount(connectCount);
-            reactionCountJpaRepository.save(reactionCount);
-        }
-    }
-
-    @Transactional
     public ReactionResponse.CountReactionInformationDto getReactionCounts(Long answerId) {
         ReactionCount reactionCount = reactionCountJpaRepository.findByAnswerId(answerId);
         if (reactionCount == null) {

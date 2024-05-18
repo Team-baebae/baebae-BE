@@ -71,6 +71,7 @@ public class QuestionTest {
                 .refreshToken("null")
                 .build());
 
+
         refreshToken = tokenProvider.generateToken(testMember, Duration.ofDays(14)); // 임시 refreshToken 생성
 
         testMember.updateRefreshToken(refreshToken);
@@ -84,22 +85,30 @@ public class QuestionTest {
         member.ifPresent(memberRepository::delete);
     }
 
-    /*@Test
+    @Test
     public void createQuestionTest() throws Exception {
-        QuestionCreateRequest createRequest = new QuestionCreateRequest("이것은 질문입니다.", "장지효", true);
-        String jsonRequest = objectMapper.writeValueAsString(createRequest);
-        Long memberId = 1L;
 
+        // Given
+        String content = "이것은 회원의 질문입니다.";
+        QuestionDetailResponse questionDetailResponse = new QuestionDetailResponse(1L, content, "장지효", true, LocalDateTime.now(), true);
+        Long memberId = 1L;
+        QuestionCreateRequest createRequest = new QuestionCreateRequest(content, "장지효", true);
+        String jsonRequest = objectMapper.writeValueAsString(createRequest);
+
+        // When
+        when(questionService.createQuestion(any(QuestionCreateRequest.class), eq(memberId)))
+                .thenReturn(questionDetailResponse);
+
+        // Then
         mockMvc.perform(post("/api/questions/member/{memberId}", memberId)
-                        .header("Authorization", "Bearer "+ refreshToken)
+                        .header("Authorization", "Bearer " + refreshToken)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonRequest)) // 'content' 메소드는 여기서 사용
+                        .content(jsonRequest))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.content").value("이것은 질문입니다."))
+                .andExpect(jsonPath("$.content").value("이것은 회원의 질문입니다."))
                 .andExpect(jsonPath("$.nickname").value("장지효"))
                 .andExpect(jsonPath("$.profileOnOff").value(true));
-
-    }*/
+    }
 
     @Test
     @DisplayName("회원별 질문 조회 테스트(): 해당 회원의 질문을 조회한다.")

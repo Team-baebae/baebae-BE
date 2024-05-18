@@ -1,4 +1,4 @@
-package com.web.baebaeBE.answer;
+package com.web.baebaeBE.integration.answer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.web.baebaeBE.domain.answer.dto.AnswerCreateRequest;
@@ -11,7 +11,6 @@ import com.web.baebaeBE.domain.member.repository.MemberRepository;
 import com.web.baebaeBE.domain.question.entity.Question;
 import com.web.baebaeBE.domain.question.repository.QuestionJpaRepository;
 import com.web.baebaeBE.domain.question.repository.QuestionRepository;
-import com.web.baebaeBE.domain.reaction.dto.ReactionResponse;
 import com.web.baebaeBE.global.jwt.JwtTokenProvider;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +23,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -41,6 +41,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -116,10 +117,16 @@ public class AnswerTest {
                         .file(requestFile)
                         .header("Authorization", "Bearer " + refreshToken)
                         .contentType(MediaType.MULTIPART_FORM_DATA))
-                .andExpect(status().isCreated())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content").value("이것은 답변입니다."))
                 .andExpect(jsonPath("$.nickname").value("장지효"))
-                .andExpect(jsonPath("$.profileOnOff").value(true));
+                .andExpect(jsonPath("$.profileOnOff").value(true))
+                .andExpect(jsonPath("$.linkAttachments").value("https://link.com"))
+                .andExpect(jsonPath("$.musicName").value("노래 제목"))
+                .andExpect(jsonPath("$.musicSinger").value("가수 이름"))
+                .andExpect(jsonPath("$.musicAudioUrl").value("https://audio.url"))
+                .andExpect(jsonPath("$.imageUrl").value("https://image.url"));
+
     }
 
     @Test
@@ -152,33 +159,47 @@ public class AnswerTest {
                 .andExpect(jsonPath("$.content[0].content").value("이것은 답변입니다."));
     }
 
-    /*@Test
+
+
+    @Test
     @DisplayName("답변 수정 테스트(): 답변을 수정한다.")
     public void updateAnswerTest() throws Exception {
-        AnswerCreateRequest updateRequest = new AnswerCreateRequest(testQuestion.getId(), "이것은 수정된 답변입니다.", "장지효", true, "https://link.com", "노래 제목", "가수 이름", "https://audio.url", "https://image.url", true);
-        String jsonRequest = objectMapper.writeValueAsString(updateRequest);
+        // Given
+        AnswerCreateRequest updateRequest = new AnswerCreateRequest(
+                testQuestion.getId(), "이것은 수정된답변입니다.", "장지효", true, "https://link.com",
+                "노래 제목", "가수 이름", "https://audio.url", "https://image.url", true
+        );
         MockMultipartFile imageFile = new MockMultipartFile("imageFile", "image.jpg", MediaType.IMAGE_JPEG_VALUE, "image content".getBytes());
+        MockMultipartFile requestFile = new MockMultipartFile("request", "", MediaType.APPLICATION_JSON_VALUE, objectMapper.writeValueAsBytes(updateRequest));
 
+        AnswerDetailResponse answerDetailResponse = new AnswerDetailResponse(
+                1L, testQuestion.getId(), testQuestion.getContent(), testMember.getId(), "이것은 수정된답변입니다.",
+                testMember.getNickname(), "장지효", true, "https://link.com", "노래 제목", "가수 이름", "https://audio.url",
+                "https://image.url", LocalDateTime.now()
+        );
+
+        // When
         when(answerService.updateAnswer(eq(1L), any(AnswerCreateRequest.class), any(MockMultipartFile.class)))
-                .thenReturn(new AnswerDetailResponse(1L, testQuestion.getId(), testQuestion.getContent(), testMember.getId(), "이것은 수정된 답변입니다.", testMember.getNickname(), "장지효", true, "https://link.com", "노래 제목", "가수 이름", "https://audio.url", "https://image.url", LocalDateTime.now()));
+                .thenReturn(answerDetailResponse);
 
-        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/answers/{answerId}", 1L)
+        // Then
+        mockMvc.perform(MockMvcRequestBuilders.multipart(HttpMethod.PUT, "/api/answers/{answerId}", 1L)
                         .file(imageFile)
+                        .file(requestFile)
                         .header("Authorization", "Bearer " + refreshToken)
-                        .param("questionId", String.valueOf(testQuestion.getId()))
-                        .param("content", "이것은 수정된 답변입니다.")
-                        .param("nickname", "장지효")
-                        .param("profileOnOff", "true")
-                        .param("linkAttachments", "https://link.com")
-                        .param("musicName", "노래 제목")
-                        .param("musicSinger", "가수 이름")
-                        .param("musicAudioUrl", "https://audio.url")
-                        .param("imageUrl", "https://image.url")
-                        .param("updateImage", "true")
                         .contentType(MediaType.MULTIPART_FORM_DATA))
+                .andDo(print()) // 응답 내용 출력
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content").value("이것은 수정된 답변입니다."));
-    }*/
+                .andExpect(jsonPath("$.content").value("이것은 수정된답변입니다."))
+                .andExpect(jsonPath("$.nickname").value("장지효"))
+                .andExpect(jsonPath("$.profileOnOff").value(true))
+                .andExpect(jsonPath("$.linkAttachments").value("https://link.com"))
+                .andExpect(jsonPath("$.musicName").value("노래 제목"))
+                .andExpect(jsonPath("$.musicSinger").value("가수 이름"))
+                .andExpect(jsonPath("$.musicAudioUrl").value("https://audio.url"))
+                .andExpect(jsonPath("$.imageUrl").value("https://image.url"));
+    }
+
 
     @Test
     @DisplayName("답변 삭제 테스트(): 답변을 삭제한다.")
