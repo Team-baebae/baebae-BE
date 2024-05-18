@@ -25,12 +25,12 @@ public class QuestionMapper {
     }
 
     public QuestionDetailResponse toDomain(Question question) {
-        Member member = question.getReceiver();
+        Member sender = question.getSender();
         return QuestionDetailResponse.of(
                 question.getId(),
                 question.getContent(),
                 question.getNickname(),
-                member.getNickname(),
+                sender.getNickname(),
                 question.getProfileOnOff(),
                 question.getCreatedDate(),
                 question.isAnswered()
