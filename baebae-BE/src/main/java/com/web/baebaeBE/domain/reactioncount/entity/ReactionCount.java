@@ -16,7 +16,7 @@ public class ReactionCount {
     private Long id;
 
     @MapsId
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "answer_id", nullable = false)
     private Answer answer;
 

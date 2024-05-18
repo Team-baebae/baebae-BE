@@ -3,4 +3,4 @@ spring:
     name: baebae-BE
 
   profiles:
-    active: deploy
+    active: local
