@@ -22,8 +22,12 @@ public class Question {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
-    private Member member;
+    @JoinColumn(name = "sender_id", nullable = false)
+    private Member sender;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "receiver_id", nullable = false)
+    private Member receiver;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
@@ -45,8 +49,8 @@ public class Question {
     }
 
 
-    public static Question of(Long id, Member member, String content, String nickname, Boolean profileOnOff,
+    public static Question of(Long id, Member sender, Member receiver, String content, String nickname, Boolean profileOnOff,
                               LocalDateTime createdDate, Boolean isAnswered) {
-        return new Question(id, member, content, nickname, profileOnOff, createdDate, isAnswered);
+        return new Question(id, sender, receiver, content, nickname, profileOnOff, createdDate, isAnswered);
     }
 }

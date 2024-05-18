@@ -23,7 +23,6 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class Answer {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "answer_id")
@@ -32,10 +31,6 @@ public class Answer {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id", nullable = false)
     private Question question;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
-    private Category category;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
@@ -52,7 +47,6 @@ public class Answer {
 
     @Column(name = "content", columnDefinition = "TEXT", nullable = false)
     private String content;
-
 
     @OneToOne(mappedBy = "answer", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Music music;
@@ -75,11 +69,10 @@ public class Answer {
     @Column(name = "profile_on_off", nullable = false)
     private boolean profileOnOff;
 
-    public static Answer of(Long id, Question question, Category category, Member member, String nickname, String content,
+    public static Answer of(Long id, Question question, Member member, String nickname, String content,
                             List<String> imageFiles, Music music, String linkAttachments, String imageUrl, LocalDateTime createdDate,
                             ReactionCount reactionCount, boolean profileOnOff) {
-        return new Answer(id, question, category, member, nickname, imageFiles, content, music, linkAttachments, imageUrl, createdDate, null, reactionCount, profileOnOff);
+        return new Answer(id, question, member, nickname, imageFiles, content, music, linkAttachments, imageUrl, createdDate, null, reactionCount, profileOnOff);
     }
-
 
 }

@@ -26,38 +26,38 @@ public class QuestionService {
     private final FirebaseNotificationService firebaseNotificationService;
 
     @Transactional
-    public QuestionDetailResponse createQuestion(QuestionCreateRequest request, Long memberId) {
-        Member member = memberRepository.findById(memberId)
+    public QuestionDetailResponse createQuestion(QuestionCreateRequest request, Long senderId, Long receiverId) {
+        Member sender = memberRepository.findById(senderId)
                 .orElseThrow(() -> new BusinessException(LoginException.NOT_EXIST_MEMBER));
 
-        Question question = questionMapper.toEntity(request, member);
+        Member receiver = memberRepository.findById(receiverId)
+                .orElseThrow(() -> new BusinessException(LoginException.NOT_EXIST_MEMBER));
+
+        Question question = questionMapper.toEntity(request, sender, receiver);
         Question savedQuestion = questionRepository.save(question);
 
-        firebaseNotificationService.notifyNewQuestion(member, question); // 파이어베이스 메세지 송신
+        firebaseNotificationService.notifyNewQuestion(receiver, question); // 파이어베이스 메세지 송신
+
 
         return questionMapper.toDomain(savedQuestion);
     }
 
     @Transactional(readOnly = true)
     public Page<QuestionDetailResponse> getQuestionsByMemberId(Long memberId, Pageable pageable) {
-        Page<Question> questions = questionRepository.findAllByMemberId(memberId, pageable);
+        Page<Question> questions = questionRepository.findAllByReceiverId(memberId, pageable);
         return questions.map(question -> questionMapper.toDomain(question));
     }
 
     @Transactional
-    public QuestionDetailResponse updateQuestion(Long questionId, String content, Boolean isAnswered) {
+    public QuestionDetailResponse updateQuestion(Long questionId, String content) {
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new BusinessException(QuestionError.NO_EXIST_QUESTION));
-        // 내용과 답변 상태 업데이트
         question.updateContent(content);
-        question.setAnswered(isAnswered);
-        // 질문 업데이트 후 저장
         Question updatedQuestion = questionRepository.save(question);
 
-        //firebaseNotificationService.notifyNewQuestion(updatedQuestion.getMember(), updatedQuestion); // 파이어베이스 메세지 송신
+        //firebaseNotificationService.notifyNewQuestion(updatedQuestion.getSender(), updatedQuestion); // 파이어베이스 메세지 송신
 
         return questionMapper.toDomain(updatedQuestion);
-
     }
 
     @Transactional
@@ -69,19 +69,19 @@ public class QuestionService {
 
     @Transactional(readOnly = true)
     public Page<QuestionDetailResponse> getAnsweredQuestions(Long memberId, Pageable pageable) {
-        Page<Question> questions = questionRepository.findAllByMemberIdAndIsAnsweredTrue(memberId, pageable);
+        Page<Question> questions = questionRepository.findAllByReceiverIdAndIsAnsweredTrue(memberId, pageable);
         return questions.map(question -> questionMapper.toDomain(question));
     }
 
     @Transactional(readOnly = true)
     public Page<QuestionDetailResponse> getUnansweredQuestions(Long memberId, Pageable pageable) {
-        Page<Question> questions = questionRepository.findAllByMemberIdAndIsAnsweredFalse(memberId, pageable);
+        Page<Question> questions = questionRepository.findAllByReceiverIdAndIsAnsweredFalse(memberId, pageable);
         return questions.map(question -> questionMapper.toDomain(question));
     }
 
     @Transactional(readOnly = true)
     public long getUnansweredQuestionCount(Long memberId) {
-        return questionRepository.countByMemberIdAndIsAnsweredFalse(memberId);
+        return questionRepository.countByReceiverIdAndIsAnsweredFalse(memberId);
     }
 
 }

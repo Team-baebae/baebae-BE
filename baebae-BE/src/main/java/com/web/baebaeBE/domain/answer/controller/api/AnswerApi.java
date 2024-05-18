@@ -3,7 +3,6 @@ package com.web.baebaeBE.domain.answer.controller.api;
 import com.web.baebaeBE.domain.answer.dto.AnswerCreateRequest;
 import com.web.baebaeBE.domain.answer.dto.AnswerDetailResponse;
 import com.web.baebaeBE.domain.answer.dto.AnswerResponse;
-import com.web.baebaeBE.domain.reaction.dto.ReactionResponse;
 import com.web.baebaeBE.domain.reaction.entity.ReactionValue;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -83,7 +82,7 @@ public interface AnswerApi {
             name = "Authorization", required = true,
             schema = @Schema(type = "string"),
             description = "Bearer [Access 토큰]")
-    @ApiResponse(responseCode = "200", description = "답변 수정 성공",
+    @ApiResponse(responseCode = "201", description = "답변 수정 성공",
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = AnswerDetailResponse.class)))
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

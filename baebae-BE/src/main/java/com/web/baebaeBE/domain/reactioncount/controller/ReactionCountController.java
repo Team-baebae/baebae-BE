@@ -14,8 +14,6 @@ public class ReactionCountController implements ReactionCountApi {
 
     private final ReactionService reactionService;
 
-
-
     @GetMapping("/{answerId}/reactionsCount")
     public ResponseEntity<ReactionResponse.CountReactionInformationDto> getReactionCounts(@PathVariable Long answerId) {
         ReactionResponse.CountReactionInformationDto reactionCounts = reactionService.getReactionCounts(answerId);
