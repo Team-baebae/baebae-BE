@@ -49,4 +49,8 @@ public class Notification {
     protected void onCreate() {
         notificationTime = LocalDateTime.now();
     }
+
+    public void checkNotification() {
+        this.isChecked = true;
+    }
 }
