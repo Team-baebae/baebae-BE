@@ -27,6 +27,7 @@ jobs:
       - name: Create firebase-admin-sdk file
         run: |
           echo "${{ secrets.FCM_CERTIFICATION }}" > baebae-BE/src/main/resources/baebae-ff525-firebase-adminsdk-zbc8h-7fd10e518b.json
+          cat baebae-BE/src/main/resources/baebae-ff525-firebase-adminsdk-zbc8h-7fd10e518b.json
 
       - name: Build with Gradle
         run: |
