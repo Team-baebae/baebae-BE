@@ -36,7 +36,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -103,7 +102,7 @@ public class QuestionTest {
 
         // Given
         String content = "이것은 회원의 질문입니다.";
-        QuestionDetailResponse questionDetailResponse = new QuestionDetailResponse(1L, content, "장지효", true, LocalDateTime.now(), false);
+        QuestionDetailResponse questionDetailResponse = new QuestionDetailResponse(1L, content, "장지효", "장지효",true, LocalDateTime.now(), false);
         Long senderId = testMember.getId();
         Long receiverId = 2L;
         QuestionCreateRequest createRequest = new QuestionCreateRequest(content, "장지효", true);
@@ -130,7 +129,7 @@ public class QuestionTest {
     public void getQuestionsByMemberIdTest() throws Exception {
         // Mock 응답 설정
         String content = "이것은 회원의 질문입니다.";
-        QuestionDetailResponse questionDetailResponse = new QuestionDetailResponse(1L, content, "닉네임", true, LocalDateTime.now(), true);
+        QuestionDetailResponse questionDetailResponse = new QuestionDetailResponse(1L, content, "닉네임", "장지효",true, LocalDateTime.now(), true);
         List<QuestionDetailResponse> questionDetailResponseList = List.of(questionDetailResponse);
         Page<QuestionDetailResponse> questionDetailResponsePage = new PageImpl<>(questionDetailResponseList, Pageable.unpaged(), 1);
 

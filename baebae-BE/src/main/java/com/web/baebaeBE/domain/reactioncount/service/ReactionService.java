@@ -1,8 +1,6 @@
 package com.web.baebaeBE.domain.reactioncount.service;
 
-import com.web.baebaeBE.domain.answer.entity.Answer;
 import com.web.baebaeBE.domain.answer.exception.AnswerError;
-import com.web.baebaeBE.domain.answer.repository.AnswerRepository;
 import com.web.baebaeBE.domain.reactioncount.dto.ReactionResponse;
 import com.web.baebaeBE.domain.reactioncount.entity.ReactionCount;
 import com.web.baebaeBE.domain.reactioncount.repository.ReactionCountJpaRepository;
@@ -15,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ReactionService {
     private final ReactionCountJpaRepository reactionCountJpaRepository;
-    private final AnswerRepository answerRepository;
 
     @Transactional
     public ReactionResponse.CountReactionInformationDto getReactionCounts(Long answerId) {

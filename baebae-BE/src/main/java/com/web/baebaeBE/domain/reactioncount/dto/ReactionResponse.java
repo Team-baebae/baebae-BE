@@ -23,8 +23,6 @@ public class ReactionResponse {
         }
     }
 
-
-
     @Getter
     @Setter
     @Builder
