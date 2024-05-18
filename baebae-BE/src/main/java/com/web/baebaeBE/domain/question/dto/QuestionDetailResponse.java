@@ -25,7 +25,7 @@ public class QuestionDetailResponse {
         this.createdDate = createdDate;
         this.isAnswered = isAnswered;
     }
-    public static QuestionDetailResponse of(Long questionId, String content, String nickname, String memberNickname, Boolean profileOnOff, LocalDateTime createdDate, Boolean isAnswered) {
-        return new QuestionDetailResponse(questionId, content, nickname, memberNickname, profileOnOff, createdDate, isAnswered);
+    public static QuestionDetailResponse of(Long questionId, String content, String nickname, String senderNickname, Boolean profileOnOff, LocalDateTime createdDate, Boolean isAnswered) {
+        return new QuestionDetailResponse(questionId, content, nickname, senderNickname, profileOnOff, createdDate, isAnswered);
     }
 }
