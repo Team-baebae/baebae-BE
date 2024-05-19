@@ -28,7 +28,7 @@ public class LoginService {
   private final JwtTokenProvider jwtTokenProvider;
   private final S3ImageStorageService s3ImageStorageService;
   public static final Duration REFRESH_TOKEN_DURATION = Duration.ofMinutes(2); // 리프레시 토큰 유효기간.
-  public static final Duration ACCESS_TOKEN_DURATION = Duration.ofHours(1); // 액세스 토큰 유효기간.
+  public static final Duration ACCESS_TOKEN_DURATION = Duration.ofMinutes(2); // 액세스 토큰 유효기간.
 
 
   /**
