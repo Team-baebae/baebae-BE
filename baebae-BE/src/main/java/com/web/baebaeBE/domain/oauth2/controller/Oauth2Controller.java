@@ -57,12 +57,4 @@ public class Oauth2Controller implements Ouath2Api {
 
 
 
-  @Operation(summary = "백엔드용 TEST API입니다. (사용X)")
-  @GetMapping("api/test")
-  @ResponseBody
-  public void test(HttpServletRequest request) {
-    //System.out.println(request.getAttribute("id"));
-    return;
-  }
-
 }
