@@ -1,5 +1,6 @@
 package com.web.baebaeBE.global.firebase;
 
+import com.google.firebase.ErrorCode;
 import com.web.baebaeBE.domain.fcm.entity.FcmToken;
 import com.web.baebaeBE.domain.fcm.repository.FcmTokenRepository;
 import com.web.baebaeBE.domain.fcm.service.FcmService;
@@ -34,8 +35,8 @@ public class FirebaseNotificationService {
         List<FcmToken> fcmTokens = fcmTokenRepository.findByMemberId(member.getId());
 
         for (FcmToken fcmToken : fcmTokens) {
-            sendNotificationToUser(fcmToken.getToken(), notificationTitle, notificationBody);
             fcmService.updateLastUsedTime(fcmToken);
+            sendNotificationToUser(fcmToken, notificationTitle, notificationBody);
         }
     }
     public void notifyNewAnswer(Member member, Question question, Answer answer) {
@@ -46,8 +47,8 @@ public class FirebaseNotificationService {
         List<FcmToken> fcmTokens = fcmTokenRepository.findByMemberId(question.getSender().getId());
 
         for (FcmToken fcmToken : fcmTokens) {
-            sendNotificationToUser(fcmToken.getToken(), notificationTitle, notificationBody);
             fcmService.updateLastUsedTime(fcmToken);
+            sendNotificationToUser(fcmToken, notificationTitle, notificationBody);
         }
     }
 
@@ -74,13 +75,19 @@ public class FirebaseNotificationService {
         List<FcmToken> fcmTokens = fcmTokenRepository.findByMemberId(answer.getMember().getId());
 
         for (FcmToken fcmToken : fcmTokens) {
-            sendNotificationToUser(fcmToken.getToken(), notificationTitle, "");
             fcmService.updateLastUsedTime(fcmToken);
+            sendNotificationToUser(fcmToken, notificationTitle, "");
         }
     }
 
-    private void sendNotificationToUser(String token, String title, String body) {
-        firebaseMessagingService.sendNotification(token, title, body);
-        log.info(token);
+    private void sendNotificationToUser(FcmToken fcmToken, String title, String body) {
+        String response = firebaseMessagingService.sendNotification(fcmToken.getToken(), title, body);
+        if (ErrorCode.INVALID_ARGUMENT.name().equals(response)) {
+            // 토큰이 유효하지 않은 경우, 토큰을 삭제
+            fcmTokenRepository.delete(fcmToken);
+            log.info("Invalid token {} has been deleted", fcmToken.getToken());
+        } else {
+            log.info(fcmToken.getToken());
+        }
     }
 }

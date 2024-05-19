@@ -1,13 +1,22 @@
 package com.web.baebaeBE.global.firebase;
 
+import com.google.firebase.ErrorCode;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
+import com.web.baebaeBE.domain.fcm.entity.FcmToken;
+import com.web.baebaeBE.domain.fcm.repository.FcmTokenRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class FirebaseMessagingService {
+    private final FcmTokenRepository fcmTokenRepository;
+
     /**
      * Firebase를 통해 푸시 알림을 전송합니다.
      *
@@ -28,12 +37,16 @@ public class FirebaseMessagingService {
                 .setNotification(notification)
                 .build();
 
-        // FirebaseMessaging 인스턴스를 통해 메시지 전송
         try {
-            System.out.println("파이어베이스 실행!! " +token);
+            log.info("Send FCM message to {}", token);
             return FirebaseMessaging.getInstance().send(message);
         } catch (FirebaseMessagingException e) {
-            throw new RuntimeException(e);
+            if (e.getErrorCode().equals(ErrorCode.INVALID_ARGUMENT)) {
+                // 토큰이 유효하지 않은 경우, 오류 코드를 반환합니다.
+                return e.getErrorCode().toString();
+            } else {
+                throw new RuntimeException(e);
+            }
         }
     }
 }
