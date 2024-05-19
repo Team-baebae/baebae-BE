@@ -40,10 +40,8 @@ public class Answer {
     @Column(name = "nickname")
     private String nickname;
 
-    @ElementCollection
-    @CollectionTable(name = "answer_image_files", joinColumns = @JoinColumn(name = "answer_id"))
     @Column(name = "image_file")
-    private List<String> imageFiles;  // 이미지 파일 경로를 저장하는 리스트
+    private String imageFile;  // 이미지 파일 경로를 저장하는 리스트
 
     @Column(name = "content", columnDefinition = "TEXT", nullable = false)
     private String content;
@@ -70,9 +68,9 @@ public class Answer {
     private boolean profileOnOff;
 
     public static Answer of(Long id, Question question, Member member, String nickname, String content,
-                            List<String> imageFiles, Music music, String linkAttachments, String imageUrl, LocalDateTime createdDate,
+                            String imageFile, Music music, String linkAttachments, String imageUrl, LocalDateTime createdDate,
                             ReactionCount reactionCount, boolean profileOnOff) {
-        return new Answer(id, question, member, nickname, imageFiles, content, music, linkAttachments, imageUrl, createdDate, null, reactionCount, profileOnOff);
+        return new Answer(id, question, member, nickname, imageFile, content, music, linkAttachments, imageUrl, createdDate, null, reactionCount, profileOnOff);
     }
 
 }

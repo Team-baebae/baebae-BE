@@ -40,6 +40,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class AnswerService {
+
+
     private final AnswerRepository answerRepository;
     private final MemberRepository memberRepository;
     private final QuestionRepository questionRepository;
@@ -64,7 +66,7 @@ public class AnswerService {
         if (!imageFile.isEmpty()) {
             try (InputStream inputStream = imageFile.getInputStream()) {
                 String imageUrl = s3ImageStorageService.uploadFile(member.getId().toString(), answer.getId().toString(), "image", 0, inputStream, imageFile.getSize(), imageFile.getContentType());
-                answer.setImageFiles(List.of(imageUrl));
+                answer.setImageFile(imageUrl);
             } catch (IOException e) {
                 throw new BusinessException(AnswerError.IMAGE_PROCESSING_ERROR);
             }
@@ -133,7 +135,7 @@ public class AnswerService {
         if (request.isUpdateImage() && imageFile != null && !imageFile.isEmpty()) {
             try (InputStream inputStream = imageFile.getInputStream()) {
                 String imageUrl = s3ImageStorageService.uploadFile(answer.getMember().getId().toString(), answerId.toString(), "image", 0, inputStream, imageFile.getSize(), imageFile.getContentType());
-                answer.setImageFiles(List.of(imageUrl));
+                answer.setImageFile(imageUrl);
             } catch (IOException e) {
                 throw new BusinessException(AnswerError.IMAGE_PROCESSING_ERROR);
             }
@@ -154,7 +156,6 @@ public class AnswerService {
                 .orElseThrow(() -> new BusinessException(AnswerError.NO_EXIST_ANSWER));
         answerRepository.delete(answer);
     }
-
 
     @Transactional
     public Map<ReactionValue, Boolean> hasReacted(Long answerId, Long memberId) {
