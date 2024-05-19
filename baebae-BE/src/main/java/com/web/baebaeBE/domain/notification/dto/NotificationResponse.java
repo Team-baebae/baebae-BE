@@ -26,6 +26,7 @@ public class NotificationResponse {
     private String questionContent;
     @Schema(type = "string", example = "2024-05-02 07:10:48")
     private LocalDateTime notificationTime;
+    private boolean isChecked;
 
     public static NotificationResponse.NotificationContentResponse of(Notification notification) {
       return NotificationContentResponse.builder()
@@ -33,6 +34,7 @@ public class NotificationResponse {
               .notificationContent(notification.getNotificationContent())
               .questionContent(notification.getDetailContent())
               .notificationTime(notification.getNotificationTime())
+              .isChecked(notification.isChecked())
               .build();
     }
 
@@ -43,6 +45,7 @@ public class NotificationResponse {
                       .notificationContent(notification.getNotificationContent())
                       .questionContent(notification.getDetailContent())
                       .notificationTime(notification.getNotificationTime())
+                      .isChecked(notification.isChecked())
                       .build())
               .collect(Collectors.toList());
 
@@ -59,7 +62,5 @@ public class NotificationResponse {
   @AllArgsConstructor
   public static class NotificationListResponse{
     private List<NotificationContentResponse> notificationList;
-
-
   }
 }
