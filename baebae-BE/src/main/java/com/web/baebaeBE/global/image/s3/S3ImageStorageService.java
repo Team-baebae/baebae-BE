@@ -4,6 +4,7 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.S3Object;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -49,7 +50,18 @@ public class S3ImageStorageService implements ImageStorageService {
         return amazonS3Client.getUrl(bucketName,"default_image.jpg").toExternalForm();
     }
 
-    // 여기서 Id는 answerId OR categoryId
+    public InputStream getFileData(String fileUrl) {
+        try {
+            URL url = new URL(fileUrl);
+            String bucket = "baebae-bucket/";
+            String key = url.getPath().substring(bucket.length()+1);
+            System.out.println(key);
+            S3Object s3Object = amazonS3Client.getObject(bucketName, key);
+            return s3Object.getObjectContent();
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("Invalid file URL", e);
+        }
+    }
     public String generateFilePath(String memberId, String id, String fileType, int index) {
         switch (fileType) {
             case "profile":
