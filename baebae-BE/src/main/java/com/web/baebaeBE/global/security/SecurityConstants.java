@@ -6,7 +6,7 @@ public final class SecurityConstants {
             // oAuth2 인증 제외
             "/api/oauth/kakao", "/favicon.ico", "/oauth/kakao/callback",
             "/api/auth/login", "/api/auth/isExisting", "/api/auth/nickname/isExisting",
-            "/api/member/profile-image/{memberId}", "/api/member/nickname/{nickname}",
+            "/api/member/nickname/{nickname}",
             "/api/category/{memberId}", "/api/answers", "/api/answers/member/{memberId}",
             "/api/reactionsCount/{answerId}/reactionsCount",
             // Swagger 제외 과정

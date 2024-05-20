@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -42,6 +43,7 @@ public class SecurityConfig {
     public WebSecurityCustomizer configure() {
         return web -> {
             web.ignoring()
+                    .requestMatchers(HttpMethod.GET, "/api/member/profile-image/{memberId}")
                     //.requestMatchers(toH2Console())
                     .requestMatchers(NO_AUTH_LIST);
                     //.requestMatchers("/**");
