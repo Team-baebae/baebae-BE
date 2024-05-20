@@ -18,13 +18,13 @@ public class FcmTokenSchduler {
     // 매일 자정에 실행되는 스케줄러
     @Scheduled(cron = "0 0 0 * * ?")
     public void deleteUnusedTokens() {
-        // 한 달 전 시간 계산
-        LocalDateTime oneMonthAgo = LocalDateTime.now().minusMonths(1);
+        // 두 달 전 시간 계산
+        LocalDateTime oneMonthAgo = LocalDateTime.now().minusMonths(2);
 
         // 모든 FcmToken 조회
         List<FcmToken> tokens = fcmTokenRepository.findAll();
         for (FcmToken token : tokens) {
-            // 마지막 사용 시간이 한 달 이상 지난 토큰 삭제
+            // 마지막 사용 시간이 두 달 이상 지난 토큰 삭제
             if (token.getLastUsedTime().isBefore(oneMonthAgo)) {
                 fcmTokenRepository.delete(token);
             }
