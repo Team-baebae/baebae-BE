@@ -64,12 +64,17 @@ public interface AnswerApi {
             summary = "모든 답변 조회",
             description = "모든 답변을 페이지네이션으로 조회합니다."
     )
+    @Parameter(
+            in = ParameterIn.HEADER,
+            name = "Authorization", required = false,
+            schema = @Schema(type = "string"),
+            description = "Bearer [Access 토큰]")
     @ApiResponse(responseCode = "200", description = "답변 조회 성공",
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = Page.class)))
-    @GetMapping
+    @RequestMapping(method = RequestMethod.GET)
     ResponseEntity<Page<AnswerDetailResponse>> getAllAnswers(
-            @RequestParam Long memberId,
+            @PathVariable Long memberId,
             @RequestParam(required = false) Long category,
             Pageable pageable);
     @Operation(
