@@ -34,14 +34,8 @@ public class AnswerController implements AnswerApi {
     }
 
     @GetMapping("/member/{memberId}")
-    public ResponseEntity<List<AnswerResponse>> getAnswersByMemberId(@PathVariable Long memberId) {
-        List<AnswerResponse> answers = answerService.getAnswersByMemberId(memberId);
-        return ResponseEntity.ok(answers);
-    }
-
-    @GetMapping()
     public ResponseEntity<Page<AnswerDetailResponse>> getAllAnswers(
-            @RequestParam Long memberId,
+            @PathVariable Long memberId,
             @RequestParam(required = false) Long categoryId,
             Pageable pageable) {
 
