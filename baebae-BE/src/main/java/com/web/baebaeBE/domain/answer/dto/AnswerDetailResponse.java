@@ -13,7 +13,7 @@ public class AnswerDetailResponse {
     private String questionContent;
     private Long memberId;
     private String content;
-    private String memberNickname;
+    private String senderNickname;
     private String nickname;
     private Boolean profileOnOff;
     private String linkAttachments;
@@ -25,7 +25,7 @@ public class AnswerDetailResponse {
 
 
     public AnswerDetailResponse(Long answerId, Long questionId, String questionContent, Long memberId,
-                                String content, String memberNickname, String nickname, Boolean profileOnOff,
+                                String content, String senderNickname, String nickname, Boolean profileOnOff,
                                 String linkAttachments, String musicName, String musicSinger, String musicAudioUrl,
                                  String imageUrl, LocalDateTime createdDate) {
 
@@ -35,7 +35,7 @@ public class AnswerDetailResponse {
         this.questionContent = questionContent;
         this.memberId = memberId;
         this.content = content;
-        this.memberNickname = memberNickname;
+        this.senderNickname = senderNickname;
         this.nickname = nickname;
         this.profileOnOff = profileOnOff;
         this.linkAttachments = linkAttachments;

@@ -46,8 +46,6 @@ public class AnswerMapper {
         Music music = answer.getMusic();
         Member member = answer.getMember();
         Question question = answer.getQuestion();
-        List<String> imageFiles = answer.getImageFiles();
-        String imageUrl = (imageFiles != null && !imageFiles.isEmpty()) ? imageFiles.get(0) : null;
 
         return AnswerDetailResponse.of(
                 answer.getId(),
@@ -55,14 +53,14 @@ public class AnswerMapper {
                 question.getContent(),
                 member.getId(),
                 answer.getContent(),
-                member.getNickname(),
+                question.getSender().getNickname(),
                 answer.getNickname(),
                 answer.isProfileOnOff(),
                 answer.getLinkAttachments(),
                 music != null ? music.getMusicName() : null,
                 music != null ? music.getMusicSinger() : null,
                 music != null ? music.getMusicAudioUrl() : null,
-                imageUrl,
+                answer.getImageFile(),
                 answer.getCreatedDate()
 
         );

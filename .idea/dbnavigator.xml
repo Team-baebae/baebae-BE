@@ -13,7 +13,7 @@
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="3a9db6ca-0c2d-42f5-b226-3084272cd299">
-      <console name="Baebae-db" type="STANDARD" schema="babaeDB" session="Main" />
+      <console name="Baebae-db" type="STANDARD" schema="babaeDB" session="Main"><![CDATA[select * from member;]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseEditorStateManager">
@@ -21,6 +21,20 @@
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
     <open-files />
+  </component>
+  <component name="DBNavigator.Project.DatasetFilterManager">
+    <filter-actions connection-id="3a9db6ca-0c2d-42f5-b226-3084272cd299" dataset="babaeDB.fcm_token" active-filter-id="9c0cd08b-e71b-4ee0-8533-d0ae67948aa6">
+      <filter id="9c0cd08b-e71b-4ee0-8533-d0ae67948aa6" name="1" temporary="false" custom-name="false" type="basic" join-type="AND">
+        <condition column="id" operator="=" value="1" active="true" />
+      </filter>
+    </filter-actions>
+    <filter-actions connection-id="3a9db6ca-0c2d-42f5-b226-3084272cd299" dataset="babaeDB.answer" active-filter-id="6617c291-08c6-4c2b-a0d7-9dd73bb38883">
+      <filter id="6617c291-08c6-4c2b-a0d7-9dd73bb38883" name="Filter 1" temporary="false" custom-name="false" type="basic" join-type="AND">
+        <condition column="answer_id" operator="=" value="" active="true" />
+      </filter>
+    </filter-actions>
+    <filter-actions connection-id="3a9db6ca-0c2d-42f5-b226-3084272cd299" dataset="babaeDB.member" active-filter-id="" />
+    <filter-actions connection-id="3a9db6ca-0c2d-42f5-b226-3084272cd299" dataset="babaeDB.answer_image_files" active-filter-id="" />
   </component>
   <component name="DBNavigator.Project.ExecutionManager">
     <retain-sticky-names value="false" />
