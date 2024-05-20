@@ -42,7 +42,7 @@ public class SecurityConfig {
     public WebSecurityCustomizer configure() {
         return web -> {
             web.ignoring()
-                    //.requestMatchers(toH2Console())
+                    .requestMatchers(toH2Console())
                     .requestMatchers(NO_AUTH_LIST);
                     //.requestMatchers("/**");
         };
@@ -80,7 +80,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "https://api.flipit.co.kr")); // 허용할 오리진 설정
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "https://api.flipit.co.kr", "https://www.flipit.co.kr", "https://flipit.co.kr")); // 허용할 오리진 설정
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH")); // 허용할 HTTP 메소드 설정
         configuration.setAllowedHeaders(Collections.singletonList("*")); // 허용할 HTTP 헤더 설정
         configuration.setAllowCredentials(true); // 쿠키를 포함한 요청 허용 설정
@@ -97,10 +97,10 @@ public class SecurityConfig {
     }
 
     //H2 Security 제외 설정
-    /*@Bean
+    @Bean
     @ConditionalOnProperty(name = "spring.h2.console.enabled",havingValue = "true")
     public WebSecurityCustomizer configureH2ConsoleEnable() {
         return web -> web.ignoring()
                 .requestMatchers(PathRequest.toH2Console());
-    }*/
+    }
 }
