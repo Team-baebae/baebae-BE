@@ -3,6 +3,8 @@ package com.web.baebaeBE.domain.question.service;
 import com.web.baebaeBE.domain.login.exception.LoginException;
 import com.web.baebaeBE.domain.member.entity.Member;
 import com.web.baebaeBE.domain.member.repository.MemberRepository;
+import com.web.baebaeBE.domain.notification.dto.NotificationRequest;
+import com.web.baebaeBE.domain.notification.service.NotificationService;
 import com.web.baebaeBE.domain.question.dto.QuestionCreateRequest;
 import com.web.baebaeBE.domain.question.dto.QuestionDetailResponse;
 import com.web.baebaeBE.domain.question.exception.QuestionError;
@@ -23,6 +25,7 @@ public class QuestionService {
     private final QuestionRepository questionRepository;
     private final MemberRepository memberRepository;
     private final QuestionMapper questionMapper;
+    private final NotificationService notificationService;
     private final FirebaseNotificationService firebaseNotificationService;
 
     @Transactional

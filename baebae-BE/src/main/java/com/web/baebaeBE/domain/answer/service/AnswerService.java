@@ -82,15 +82,6 @@ public class AnswerService {
                 .build();
         reactionCountJpaRepository.save(reactionCount);
 
-        // 알림 생성 및 전송
-        NotificationRequest.create notificationDto = new NotificationRequest.create(
-                member.getId(),
-                "귀하의 질문에 새로운 답변이 등록되었습니다!",
-                question.getContent(),
-                NotificationRequest.EventType.NEW_ANSWER,
-                null
-        );
-        notificationService.createNotification(notificationDto);
         // 질문의 isAnswered 상태를 true로 업데이트
         question.setAnswered(true);
         questionRepository.save(question);
