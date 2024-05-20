@@ -1,6 +1,7 @@
 package com.web.baebaeBE.global.firebase;
 
 import com.google.firebase.ErrorCode;
+import com.google.firebase.messaging.MessagingErrorCode;
 import com.web.baebaeBE.domain.fcm.entity.FcmToken;
 import com.web.baebaeBE.domain.fcm.repository.FcmTokenRepository;
 import com.web.baebaeBE.domain.fcm.service.FcmService;
@@ -82,10 +83,10 @@ public class FirebaseNotificationService {
 
     private void sendNotificationToUser(FcmToken fcmToken, String title, String body) {
         String response = firebaseMessagingService.sendNotification(fcmToken.getToken(), title, body);
-        if (ErrorCode.INVALID_ARGUMENT.name().equals(response)) {
-            // 토큰이 유효하지 않은 경우, 토큰을 삭제
+        if (MessagingErrorCode.INVALID_ARGUMENT.name().equals(response) || MessagingErrorCode.UNREGISTERED.name().equals(response)) {
+            // 토큰이 유효하지 않은 경우, 삭제
             fcmTokenRepository.delete(fcmToken);
-            log.info("Invalid token {} has been deleted", fcmToken.getToken());
+            log.info("유효하지않은 토큰 {} 삭제", fcmToken.getToken());
         } else {
             log.info(fcmToken.getToken());
         }
