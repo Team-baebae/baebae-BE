@@ -46,21 +46,6 @@ public interface AnswerApi {
             @RequestPart(name = "request") AnswerCreateRequest request);
 
     @Operation(
-            summary = "모든 답변 리스트 조회",
-            description = "해당 회원의 전체 답변을 간략하게 조회합니다."
-    )
-    @Parameter(
-            in = ParameterIn.HEADER,
-            name = "Authorization", required = true,
-            schema = @Schema(type = "string"),
-            description = "Bearer [Access 토큰]")
-    @ApiResponse(responseCode = "200", description = "답변 조회 성공",
-            content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = Page.class)))
-    @RequestMapping(method = RequestMethod.GET)
-    ResponseEntity<List<AnswerResponse>> getAnswersByMemberId(
-            @PathVariable Long memberId);
-    @Operation(
             summary = "모든 답변 조회",
             description = "모든 답변을 페이지네이션으로 조회합니다."
     )

@@ -33,13 +33,7 @@ public class AnswerController implements AnswerApi {
         return ResponseEntity.ok(createdAnswer);
     }
 
-    @GetMapping("/member/{memberId}/list")
-    public ResponseEntity<List<AnswerResponse>> getAnswersByMemberId(@PathVariable Long memberId) {
-        List<AnswerResponse> answers = answerService.getAnswersByMemberId(memberId);
-        return ResponseEntity.ok(answers);
-    }
-
-    @GetMapping("/member/{memberId}/all")
+    @GetMapping("/member/{memberId}")
     public ResponseEntity<Page<AnswerDetailResponse>> getAllAnswers(
             @PathVariable Long memberId,
             @RequestParam(required = false) Long categoryId,
