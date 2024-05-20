@@ -3,6 +3,7 @@ package com.web.baebaeBE.domain.notification.controller;
 import com.web.baebaeBE.domain.notification.controller.api.NotificationApi;
 import com.web.baebaeBE.domain.notification.dto.NotificationResponse;
 import com.web.baebaeBE.domain.notification.service.NotificationService;
+import com.web.baebaeBE.global.authorization.annotation.AuthorizationMember;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +21,7 @@ public class NotificationController implements NotificationApi {
 
     // 특정 멤버의 모든 알람 조회
     @GetMapping("/member/{memberId}")
+    @AuthorizationMember
     public ResponseEntity<NotificationResponse.NotificationListResponse> getNotificationsListByMember(@PathVariable Long memberId) {
 
         return ResponseEntity.ok(notificationService.getNotificationsListByMember(memberId));
