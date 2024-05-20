@@ -53,7 +53,7 @@ public interface FcmApi {
                                      @RequestBody FcmRequest.CreateToken request);
 
 
-    @Operation(
+    /*@Operation(
             summary = "FCM 토큰 업데이트",
             description = "회원의 기존 FCM 토큰을 새로운 FCM 토큰으로 업데이트합니다.",
             security = @SecurityRequirement(name = "bearerAuth")
@@ -82,5 +82,5 @@ public interface FcmApi {
     })
     @RequestMapping(method = RequestMethod.PUT, value = "/{memberId}")
     ResponseEntity<Void> updateFcmToken(@PathVariable Long memberId,
-                                        @RequestBody FcmRequest.UpdateToken request);
+                                        @RequestBody FcmRequest.UpdateToken request);*/
 }

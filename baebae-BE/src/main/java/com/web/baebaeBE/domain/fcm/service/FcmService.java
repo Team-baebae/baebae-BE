@@ -38,7 +38,7 @@ public class FcmService {
         return fcmTokenRepository.save(token);
     }
 
-    public void updateFcmToken(String oldFcmToken, String newFcmToken, Long memberId) {
+    /*public void updateFcmToken(String oldFcmToken, String newFcmToken, Long memberId) {
         FcmToken token = fcmTokenRepository.findByToken(oldFcmToken)
                 .orElseThrow(() -> new BusinessException(FcmException.NOT_FOUND_FCM));
 
@@ -47,7 +47,7 @@ public class FcmService {
 
         token.updateToken(newFcmToken);
         fcmTokenRepository.save(token);
-    }
+    }*/
 
     public void verifyFcmToken(Long memberId, String fcmToken) {
         Member member = memberRepository.findById(memberId)
