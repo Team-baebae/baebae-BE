@@ -5,6 +5,7 @@ import com.web.baebaeBE.domain.member.service.MemberService;
 import com.web.baebaeBE.domain.member.controller.api.MemberApi;
 import com.web.baebaeBE.domain.member.dto.MemberRequest;
 import com.web.baebaeBE.domain.member.dto.MemberResponse;
+import com.web.baebaeBE.global.authorization.annotation.AuthorizationMember;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -48,6 +49,7 @@ public class MemberController implements MemberApi {
 
 
   @PatchMapping(value = "/profile-image/{memberId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @AuthorizationMember
   public ResponseEntity<MemberResponse.ProfileImageResponse> updateProfileImage(
           @PathVariable Long memberId,
           @RequestPart(value = "image") MultipartFile image) {
@@ -57,6 +59,7 @@ public class MemberController implements MemberApi {
 
 
   @PatchMapping("/nickname/{memberId}")
+  @AuthorizationMember
   public ResponseEntity<Void> updateNickname(
           @PathVariable Long memberId,
           @RequestBody MemberRequest.UpdateNicknameDto updateNicknameDto) {
@@ -66,11 +69,12 @@ public class MemberController implements MemberApi {
   }
 
   @DeleteMapping("/{memberId}")
+  @AuthorizationMember
   public ResponseEntity<Void> deleteMember(
           @PathVariable Long memberId,
           HttpServletRequest httpServletRequest) {
 
-    memberService.deleteMember(memberId, httpServletRequest);
+    memberService.deleteMember(memberId);
     return ResponseEntity.ok().build();
   }
 
