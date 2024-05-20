@@ -8,6 +8,7 @@ import com.web.baebaeBE.domain.answer.service.AnswerService;
 import com.web.baebaeBE.domain.member.entity.Member;
 import com.web.baebaeBE.domain.member.entity.MemberType;
 import com.web.baebaeBE.domain.member.repository.MemberRepository;
+import com.web.baebaeBE.domain.oauth2.controller.Oauth2Controller;
 import com.web.baebaeBE.domain.question.entity.Question;
 import com.web.baebaeBE.domain.question.repository.QuestionJpaRepository;
 import com.web.baebaeBE.domain.question.repository.QuestionRepository;
@@ -67,6 +68,10 @@ public class AnswerTest {
     @Autowired
     private JwtTokenProvider tokenProvider;
 
+    @MockBean
+    private Oauth2Controller oauth2Controller;
+
+    @Autowired
     private final ObjectMapper objectMapper = new ObjectMapper();
     private Member testMember;
     private Member testReceiver;
@@ -141,30 +146,22 @@ public class AnswerTest {
 
     }
 
-    @Test
-    @DisplayName("회원별 답변 조회 테스트(): 해당 회원의 답변을 조회한다.")
-    public void getAnswersByMemberIdTest() throws Exception {
-        AnswerResponse answerResponse = new AnswerResponse();
-        List<AnswerResponse> answerResponseList = List.of(answerResponse);
-        when(answerService.getAnswersByMemberId(testMember.getId())).thenReturn(answerResponseList);
-
-        mockMvc.perform(get("/api/answers/member/{memberId}", testMember.getId())
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0]").exists());
-    }
 
     @Test
     @DisplayName("모든 답변 조회 테스트(): 모든 답변을 조회한다.")
     public void getAllAnswersTest() throws Exception {
-        AnswerDetailResponse answerDetailResponse = new AnswerDetailResponse(1L, testQuestion.getId(), testQuestion.getContent(), testMember.getId(), "이것은 답변입니다.", testMember.getNickname(), "장지효", true, "https://link.com", "노래 제목", "가수 이름", "https://audio.url", "https://image.url", LocalDateTime.now());
+        AnswerDetailResponse answerDetailResponse = new AnswerDetailResponse(
+                1L, testQuestion.getId(), testQuestion.getContent(), testMember.getId(),
+                "이것은 답변입니다.", testMember.getNickname(), "장지효", true, "https://link.com",
+                "노래 제목", "가수 이름", "https://audio.url", "https://image.url", LocalDateTime.now()
+        );
         List<AnswerDetailResponse> answerDetailResponseList = List.of(answerDetailResponse);
         Page<AnswerDetailResponse> answerDetailResponsePage = new PageImpl<>(answerDetailResponseList, Pageable.unpaged(), 1);
 
-        when(answerService.getAllAnswers(eq(testMember.getId()), any(Long.class), any(Pageable.class))).thenReturn(answerDetailResponsePage);
+        when(answerService.getAllAnswers(eq(testMember.getId()), any(Long.class), any(Pageable.class)))
+                .thenReturn(answerDetailResponsePage);
 
-        mockMvc.perform(get("/api/answers")
-                        .param("memberId", String.valueOf(testMember.getId()))
+        mockMvc.perform(get("/api/answers/member/{memberId}", testMember.getId())
                         .param("categoryId", "1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())

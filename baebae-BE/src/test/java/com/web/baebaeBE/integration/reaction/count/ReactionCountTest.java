@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.web.baebaeBE.domain.member.entity.Member;
 import com.web.baebaeBE.domain.member.entity.MemberType;
 import com.web.baebaeBE.domain.member.repository.MemberRepository;
+import com.web.baebaeBE.domain.oauth2.controller.Oauth2Controller;
 import com.web.baebaeBE.domain.question.dto.QuestionDetailResponse;
 import com.web.baebaeBE.domain.question.repository.QuestionRepository;
 import com.web.baebaeBE.domain.question.service.QuestionService;
@@ -38,42 +39,52 @@ public class ReactionCountTest {
 
     @Autowired
     private MockMvc mockMvc;
-    @Autowired
+    @MockBean
     private MemberRepository memberRepository;
     @MockBean
+    private QuestionRepository questionRepository;
+    @MockBean
     private ReactionService reactionService;
+
     @Autowired
     private JwtTokenProvider tokenProvider;
+
+    @Autowired
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    @MockBean
+    private Oauth2Controller oauth2Controller;
     private Member testMember;
     private Member testReceiver;
     private String refreshToken;
+    private QuestionDetailResponse testQuestionDetailResponse;
 
     @BeforeEach
     void setup() {
-        testMember = memberRepository.save(Member.builder()
+        testMember = Member.builder()
                 .email("test@gmail.com")
                 .nickname("장지효")
                 .memberType(MemberType.KAKAO)
                 .refreshToken("null")
-                .build());
+                .build();
 
-        testReceiver = memberRepository.save(Member.builder()
+        testReceiver = Member.builder()
                 .email("test@gmail2.com")
                 .nickname("장지효2")
                 .memberType(MemberType.KAKAO)
                 .refreshToken("null")
-                .build());
-
+                .build();
 
         refreshToken = tokenProvider.generateToken(testMember, Duration.ofDays(14));
-
         testMember.updateRefreshToken(refreshToken);
         memberRepository.save(testMember);
 
         refreshToken = tokenProvider.generateToken(testReceiver, Duration.ofDays(14));
-
         testReceiver.updateRefreshToken(refreshToken);
         memberRepository.save(testReceiver);
+
+        when(memberRepository.findByEmail("test@gmail.com")).thenReturn(Optional.of(testMember));
+        when(memberRepository.findByEmail("test@gmail2.com")).thenReturn(Optional.of(testReceiver));
 
     }
 
