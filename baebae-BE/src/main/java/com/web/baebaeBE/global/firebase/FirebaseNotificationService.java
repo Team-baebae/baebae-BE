@@ -97,7 +97,7 @@ public class FirebaseNotificationService {
 
         //알림 생성 및 저장
         NotificationRequest.create notificationDto = new NotificationRequest.create(
-                member.getId(),
+                answer.getMember().getId(),
                 notificationTitle,
                 answer.getContent(),
                 NotificationRequest.EventType.NEW_ANSWER,
