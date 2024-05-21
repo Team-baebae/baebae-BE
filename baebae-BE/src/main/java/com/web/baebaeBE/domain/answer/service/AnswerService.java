@@ -93,7 +93,7 @@ public class AnswerService {
         question.setAnswered(true);
         questionRepository.save(question);
 
-        firebaseNotificationService.notifyNewAnswer(question.getSender(), question,savedAnswer); // 푸시 메세지 전송
+        firebaseNotificationService.notifyNewAnswer(member, question,savedAnswer); // 푸시 메세지 전송
 
         return answerMapper.toDomain(savedAnswer);
     }
