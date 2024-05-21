@@ -45,7 +45,7 @@ public class SecurityConfig {
             web.ignoring()
                     .requestMatchers(HttpMethod.GET, "/api/member/profile-image/{memberId}")
                     .requestMatchers(HttpMethod.GET, "/api/category/{memberId}")
-                    .requestMatchers(toH2Console())
+                    //.requestMatchers(toH2Console())
                     .requestMatchers(NO_AUTH_LIST);
                     //.requestMatchers("/**");
         };
