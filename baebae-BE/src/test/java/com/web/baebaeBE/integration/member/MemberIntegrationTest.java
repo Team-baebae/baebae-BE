@@ -1,12 +1,15 @@
 package com.web.baebaeBE.integration.member;
 
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.web.baebaeBE.domain.fcm.entity.FcmToken;
 import com.web.baebaeBE.domain.fcm.repository.FcmTokenRepository;
+import com.web.baebaeBE.domain.login.dto.LoginResponse;
+import com.web.baebaeBE.domain.oauth2.controller.Oauth2Controller;
 import com.web.baebaeBE.domain.oauth2.service.Oauth2Service;
 import com.web.baebaeBE.domain.login.service.LoginService;
 import com.web.baebaeBE.global.jwt.JwtTokenProvider;
@@ -15,6 +18,7 @@ import com.web.baebaeBE.domain.member.entity.MemberType;
 import com.web.baebaeBE.domain.member.repository.MemberRepository;
 import com.web.baebaeBE.domain.oauth2.dto.KakaoUserInfoDto;
 import com.web.baebaeBE.domain.login.dto.LoginRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -50,14 +54,16 @@ public class MemberIntegrationTest {
     private RestTemplate restTemplate;
     @MockBean
     private Oauth2Service oauth2Service;
-    @Autowired
+    @MockBean
     private LoginService loginService;
     @Autowired
     private JwtTokenProvider tokenProvider;
-    @Autowired
+    @MockBean
     private MemberRepository memberRepository;
-    @Autowired
+    @MockBean
     private FcmTokenRepository fcmTokenRepository;
+    @MockBean
+    private Oauth2Controller oauth2Controller;
     private ObjectMapper objectMapper = new ObjectMapper();
     private String accessToken;
     private String refreshToken;
@@ -65,70 +71,83 @@ public class MemberIntegrationTest {
     //각 테스트 전마다 실행
     @BeforeEach
     void setup() {
-        Member testMember = memberRepository.save(Member.builder()
+        Member testMember = Member.builder()
+                .id(1L)  // ID를 명시적으로 설정
                 .email("test@gmail.com")
                 .nickname("test")
                 .memberType(MemberType.KAKAO)
                 .refreshToken("null")
-                .build());
+                .build();
 
+        when(memberRepository.save(any(Member.class))).thenReturn(testMember);
+        when(memberRepository.findByEmail("test@gmail.com")).thenReturn(Optional.of(testMember));
+        when(memberRepository.findById(1L)).thenReturn(Optional.of(testMember));
 
-        accessToken = tokenProvider.generateToken(testMember, Duration.ofDays(1)); // 임시 accessToken 생성
-        refreshToken = tokenProvider.generateToken(testMember, Duration.ofDays(14)); // 임시 refreshToken 생성
+        accessToken = tokenProvider.generateToken(testMember, Duration.ofDays(1));  // 임시 accessToken 생성
+        refreshToken = tokenProvider.generateToken(testMember, Duration.ofDays(14));  // 임시 refreshToken 생성
 
         testMember.updateRefreshToken(refreshToken);
-        memberRepository.save(testMember);
+        when(memberRepository.save(testMember)).thenReturn(testMember);
+
+        when(memberRepository.findByRefreshToken(refreshToken)).thenReturn(Optional.of(testMember));
 
         // FcmToken 생성 및 Member에 연결
-        FcmToken testFcmToken = new FcmToken();
-        testFcmToken.setToken("testFcmToken");
-        testFcmToken.setMember(testMember);
-        testFcmToken.setLastUsedTime(LocalDateTime.now());
-        fcmTokenRepository.save(testFcmToken);
+        FcmToken testFcmToken = FcmToken.builder()
+                .token("testFcmToken")
+                .member(testMember)
+                .lastUsedTime(LocalDateTime.now())
+                .build();
+        when(fcmTokenRepository.save(any(FcmToken.class))).thenReturn(testFcmToken);
+
+        //fcm 토큰 찾기
+        when(fcmTokenRepository.findByToken("testFcmToken")).thenReturn(Optional.of(testFcmToken));
     }
 
-    //각 테스트 후마다 실행
     @AfterEach
     void tearDown() {
         Optional<Member> member = memberRepository.findByEmail("test@gmail.com");
-        if(member.isPresent())
-            memberRepository.delete(member.get());
+        member.ifPresent(value -> memberRepository.delete(value));
     }
 
+        @Test
+        @DisplayName("oAuth2 기반 로그인 테스트(): 가짜 카카오 토큰을 통해 로그인 및 회원가입 테스트한다.")
+        public void testOauthSignUp() throws Exception {
+            // given
+            KakaoUserInfoDto.KakaoAccount.Profile profile = new KakaoUserInfoDto.KakaoAccount.Profile("김예찬");
+            KakaoUserInfoDto.KakaoAccount kakaoAccount = new KakaoUserInfoDto.KakaoAccount();
+            kakaoAccount.setEmail("tioon74@gmail.com");
+            kakaoAccount.setProfile(profile);
 
-    @Test
-    @DisplayName("oAuth2 기반 로그인 테스트(): 가짜 카카오 토큰을 통해 로그인 및 회원가입 테스트한다.")
-    public void testOauthSignUp() throws Exception {
-        // given
-        // 가짜 카카오 토큰 Mock 객체 설정
-        KakaoUserInfoDto kakaoUserInfo = new KakaoUserInfoDto("3","tioon74@gmail.com", "김예찬");
-        Mockito.when(oauth2Service.requestKakaoInfo(any(String.class))).thenReturn(kakaoUserInfo); // 카카오 토큰 인증 메서드 Mock 설정
+            KakaoUserInfoDto kakaoUserInfo = new KakaoUserInfoDto("3", kakaoAccount);
 
-        RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-        Mockito.when(restTemplate.exchange(
-                Mockito.eq("https://kapi.kakao.com/v2/user/me"),
-                Mockito.eq(HttpMethod.GET),
-                Mockito.any(HttpEntity.class),
-                Mockito.eq(KakaoUserInfoDto.class)
-        )).thenReturn(new ResponseEntity<>(kakaoUserInfo, HttpStatus.OK));
+            LoginResponse.SignUpResponse signUpResponse = new LoginResponse.SignUpResponse();
+            signUpResponse.setId(1L);
+            signUpResponse.setEmail("tioon74@gmail.com");
+            signUpResponse.setNickname("김예찬");
+            signUpResponse.setMemberType(MemberType.KAKAO);
+            signUpResponse.setAccessToken("newAccessToken");
+            signUpResponse.setRefreshToken("newRefreshToken");
 
-        // HttpRequest Body 설정
-        LoginRequest.SignUp signUpRequest
-                = new LoginRequest.SignUp(MemberType.KAKAO, "김예찬","fcmToken"); // 요청
+            when(loginService.getKakaoUserInfo(any(HttpServletRequest.class))).thenReturn(kakaoUserInfo);
+            when(oauth2Service.requestKakaoInfo(anyString())).thenReturn(kakaoUserInfo);
+            when(loginService.loginWithExistingUser(any(KakaoUserInfoDto.class), any(LoginRequest.SignUp.class))).thenReturn(signUpResponse);
+            when(loginService.signUpNewUser(any(KakaoUserInfoDto.class), any(LoginRequest.SignUp.class))).thenReturn(signUpResponse);
 
+            LoginRequest.SignUp signUpRequest = new LoginRequest.SignUp(MemberType.KAKAO, "김예찬", "fcmToken");
 
-        // when
-        mockMvc.perform(post("/api/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header("Authorization", "Bearer " + refreshToken)
-                        .content(objectMapper.writeValueAsString(signUpRequest)))
-        // then
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.email", is("tioon74@gmail.com")))
-                .andExpect(jsonPath("$.nickname", is("김예찬")))
-                .andExpect(jsonPath("$.memberType", is("KAKAO")))
-                .andExpect(jsonPath("$.accessToken", notNullValue()))
-                .andExpect(jsonPath("$.refreshToken", notNullValue()));
+            // when
+            mockMvc.perform(post("/api/auth/login")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header("Authorization", "Bearer " + refreshToken)
+                            .content(objectMapper.writeValueAsString(signUpRequest)))
+                    // then
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.email", is("tioon74@gmail.com")))
+                    .andExpect(jsonPath("$.nickname", is("김예찬")))
+                    .andExpect(jsonPath("$.memberType", is("KAKAO")))
+                    .andExpect(jsonPath("$.accessToken", notNullValue()))
+                    .andExpect(jsonPath("$.refreshToken", notNullValue()));
+
     }
 
     @Test
