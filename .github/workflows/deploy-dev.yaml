@@ -18,7 +18,7 @@ jobs:
         with:
           java-version: '17'
           distribution: 'adopt'
-#
+
       - name: Create and configure application.yml
         run: |
           echo "${{ secrets.APPLICATION_YML }}" > baebae-BE/src/main/resources/application.yml
