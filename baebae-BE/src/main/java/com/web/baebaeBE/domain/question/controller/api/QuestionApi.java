@@ -2,6 +2,7 @@ package com.web.baebaeBE.domain.question.controller.api;
 
 import com.web.baebaeBE.domain.question.dto.QuestionCreateRequest;
 import com.web.baebaeBE.domain.question.dto.QuestionDetailResponse;
+import com.web.baebaeBE.domain.question.dto.QuestionUpdateRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -110,8 +111,7 @@ public interface QuestionApi {
                             "}")))
     @PutMapping("/{questionId}")
     ResponseEntity<Void> updateQuestion(
-            @PathVariable Long questionId,
-            @RequestParam String content);
+            @PathVariable Long questionId, @RequestBody QuestionUpdateRequest request);
 
     @Operation(
             summary = "질문 삭제",

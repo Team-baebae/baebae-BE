@@ -28,7 +28,6 @@ public class AnswerMapper {
         Answer answer = Answer.builder()
                 .question(question)
                 .member(member)
-                .nickname(request.getNickname())
                 .content(request.getContent())
                 .linkAttachments(request.getLinkAttachments())
                 .profileOnOff(request.getProfileOnOff())
@@ -53,8 +52,7 @@ public class AnswerMapper {
                 question.getContent(),
                 member.getId(),
                 answer.getContent(),
-                question.getSender().getNickname(),
-                answer.getNickname(),
+                member.getNickname(),
                 answer.isProfileOnOff(),
                 answer.getLinkAttachments(),
                 music != null ? music.getMusicName() : null,

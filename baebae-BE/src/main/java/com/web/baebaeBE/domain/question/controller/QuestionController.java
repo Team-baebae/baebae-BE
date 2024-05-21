@@ -3,6 +3,7 @@ package com.web.baebaeBE.domain.question.controller;
 import com.web.baebaeBE.domain.question.controller.api.QuestionApi;
 import com.web.baebaeBE.domain.question.dto.QuestionCreateRequest;
 import com.web.baebaeBE.domain.question.dto.QuestionDetailResponse;
+import com.web.baebaeBE.domain.question.dto.QuestionUpdateRequest;
 import com.web.baebaeBE.domain.question.service.QuestionService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -51,8 +52,8 @@ public class QuestionController implements QuestionApi {
 
     @PutMapping("/{questionId}")
     public ResponseEntity<Void> updateQuestion(
-            @PathVariable Long questionId, @RequestParam String content) {
-        questionService.updateQuestion(questionId, content);
+            @PathVariable Long questionId, @RequestBody QuestionUpdateRequest request) {
+        questionService.updateQuestion(questionId, request);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 

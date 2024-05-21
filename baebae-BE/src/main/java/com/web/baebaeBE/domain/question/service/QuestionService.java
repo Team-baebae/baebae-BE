@@ -5,6 +5,7 @@ import com.web.baebaeBE.domain.member.entity.Member;
 import com.web.baebaeBE.domain.member.repository.MemberRepository;
 import com.web.baebaeBE.domain.question.dto.QuestionCreateRequest;
 import com.web.baebaeBE.domain.question.dto.QuestionDetailResponse;
+import com.web.baebaeBE.domain.question.dto.QuestionUpdateRequest;
 import com.web.baebaeBE.domain.question.exception.QuestionError;
 import com.web.baebaeBE.domain.question.repository.QuestionMapper;
 import com.web.baebaeBE.global.error.exception.BusinessException;
@@ -49,13 +50,12 @@ public class QuestionService {
     }
 
     @Transactional
-    public QuestionDetailResponse updateQuestion(Long questionId, String content) {
+    public QuestionDetailResponse updateQuestion(Long questionId, QuestionUpdateRequest request) {
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new BusinessException(QuestionError.NO_EXIST_QUESTION));
-        question.updateContent(content);
+        question.updateContent(question.getContent());
+        question.setNickname(request.getNickname()); // 닉네임 업데이트
         Question updatedQuestion = questionRepository.save(question);
-
-        //firebaseNotificationService.notifyNewQuestion(updatedQuestion.getSender(), updatedQuestion); // 파이어베이스 메세지 송신
 
         return questionMapper.toDomain(updatedQuestion);
     }
