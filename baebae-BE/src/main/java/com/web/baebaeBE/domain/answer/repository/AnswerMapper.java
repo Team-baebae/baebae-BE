@@ -57,6 +57,7 @@ public class AnswerMapper {
                 member.getId(),
                 answer.getContent(),
                 answer.getNickname(),
+                question.getSender().getNickname(),
                 answer.isProfileOnOff(),
                 answer.getLinkAttachments(),
                 music != null ? music.getMusicName() : null,
