@@ -6,6 +6,9 @@ import com.web.baebaeBE.domain.category.dto.CategoryRequest;
 import com.web.baebaeBE.domain.category.dto.CategoryResponse;
 import com.web.baebaeBE.domain.category.entity.Category;
 import com.web.baebaeBE.domain.category.service.CategoryService;
+import com.web.baebaeBE.global.authorization.annotation.AuthorizationCategory;
+import com.web.baebaeBE.global.authorization.annotation.AuthorizationCategoryAndAnswer;
+import com.web.baebaeBE.global.authorization.annotation.AuthorizationMember;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +24,7 @@ public class CategoryController implements CategoryApi {
     private final CategoryService categoryService;
 
     @PostMapping(value = "/{memberId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @AuthorizationMember
     public ResponseEntity<CategoryResponse.CategoryInformationResponse> createCategory(
             @PathVariable Long memberId,
             @RequestPart(value = "categoryImage", required = false) MultipartFile categoryImage,
@@ -40,6 +44,7 @@ public class CategoryController implements CategoryApi {
     }
 
     @PostMapping("/{categoryId}/answers/{answerId}")
+    @AuthorizationCategoryAndAnswer
     public ResponseEntity<Void> addAnswerToCategory(
             @PathVariable Long categoryId,
             @PathVariable Long answerId
@@ -49,7 +54,8 @@ public class CategoryController implements CategoryApi {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/{categoryId}/image")
+    @PatchMapping(value = "/{categoryId}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @AuthorizationCategory
     public ResponseEntity<CategoryResponse.CategoryInformationResponse> updateCategoryImage(
             @PathVariable Long categoryId,
             @RequestPart("imageFile") MultipartFile imageFile
@@ -60,6 +66,7 @@ public class CategoryController implements CategoryApi {
 
 
     @PutMapping("/{categoryId}")
+    @AuthorizationCategory
     public ResponseEntity<CategoryResponse.CategoryInformationResponse> updateCategory(
             @PathVariable Long categoryId,
             @RequestBody CategoryRequest.UpdateCategory updateCategory
@@ -70,6 +77,7 @@ public class CategoryController implements CategoryApi {
     }
 
     @DeleteMapping("/{categoryId}")
+    @AuthorizationCategory
     public ResponseEntity<Void> deleteCategory(
             @PathVariable Long categoryId
     ) {
