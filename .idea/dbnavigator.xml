@@ -13,7 +13,7 @@
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="3a9db6ca-0c2d-42f5-b226-3084272cd299">
-      <console name="Baebae-db" type="STANDARD" schema="babaeDB" session="Main"><![CDATA[select * from member;]]></console>
+      <console name="Baebae-db" type="STANDARD" schema="babaeDB" session="Main"><![CDATA[select * from categorized_answer;]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseEditorStateManager">
