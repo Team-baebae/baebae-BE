@@ -59,7 +59,7 @@ public class FirebaseNotificationService {
 
         // 알림 생성 및 전송
         NotificationRequest.create notificationDto = new NotificationRequest.create(
-                question.getId(),
+                member.getId(),
                 member.getNickname() + "님이 질문에 답변을 남겼어요!",
                 question.getContent(),
                 NotificationRequest.EventType.NEW_ANSWER,
