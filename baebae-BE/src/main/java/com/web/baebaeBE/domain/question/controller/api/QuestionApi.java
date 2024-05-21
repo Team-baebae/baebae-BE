@@ -41,8 +41,9 @@ public interface QuestionApi {
                             "}")))
     @PostMapping("/sender/{senderId}/receiver/{receiverId}")
     ResponseEntity<QuestionDetailResponse> createQuestion(
-            @RequestBody QuestionCreateRequest request,
-            @PathVariable Long senderId, @PathVariable Long receiverId);
+            @PathVariable Long senderId, @PathVariable Long receiverId,
+            @RequestBody QuestionCreateRequest request
+            );
 
     @Operation(
             summary = "모든 질문 조회",

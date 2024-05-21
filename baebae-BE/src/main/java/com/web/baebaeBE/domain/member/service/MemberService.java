@@ -76,23 +76,10 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-    public void deleteMember(Long id, HttpServletRequest httpServletRequest) {
-        String accessToken = jwtTokenProvider.getToken(httpServletRequest);
-        verifyMemberWithToken(id, accessToken);
-
+    public void deleteMember(Long id) {
         memberRepository.deleteById(id);
     }
 
-    public void verifyMemberWithToken(Long memberId,String accessToken){
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BusinessException(LoginException.NOT_EXIST_MEMBER));
-
-        String memberEmail = jwtTokenProvider.getUserEmail(accessToken);
-
-        //회원 정보와 토큰안의 이메일 정보가 일치하지않으면 예외 발생
-        if(!member.getEmail().equals(memberEmail))
-            throw new BusinessException(MemberException.NOT_VERIFY_MEMBET_WITH_TOKEN);
-    }
 
     // 닉네임 기반으로 memberId를 찾아오는 메서드
     public MemberResponse.MemberIdResponse getMemberIdByNickname(String nickname) {
