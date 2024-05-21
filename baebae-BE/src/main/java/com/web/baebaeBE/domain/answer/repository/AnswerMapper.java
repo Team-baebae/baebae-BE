@@ -29,6 +29,7 @@ public class AnswerMapper {
                 .question(question)
                 .member(member)
                 .content(request.getContent())
+                .nickname(request.getNickname())
                 .linkAttachments(request.getLinkAttachments())
                 .profileOnOff(request.getProfileOnOff())
                 .createdDate(LocalDateTime.now())
@@ -52,6 +53,7 @@ public class AnswerMapper {
                 question.getContent(),
                 member.getId(),
                 answer.getContent(),
+                answer.getNickname(),
                 member.getNickname(),
                 answer.isProfileOnOff(),
                 answer.getLinkAttachments(),

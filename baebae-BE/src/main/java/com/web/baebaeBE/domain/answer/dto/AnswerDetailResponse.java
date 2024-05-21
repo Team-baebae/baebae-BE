@@ -13,6 +13,7 @@ public class AnswerDetailResponse {
     private String questionContent;
     private Long memberId;
     private String content;
+    private String nickname;
     private String memberNickname;
     private Boolean profileOnOff;
     private String linkAttachments;
@@ -24,7 +25,7 @@ public class AnswerDetailResponse {
 
 
     public AnswerDetailResponse(Long answerId, Long questionId, String questionContent, Long memberId,
-                                String content, String memberNickname, Boolean profileOnOff,
+                                String nickname, String content, String memberNickname, Boolean profileOnOff,
                                 String linkAttachments, String musicName, String musicSinger, String musicAudioUrl,
                                  String imageUrl, LocalDateTime createdDate) {
 
@@ -34,6 +35,7 @@ public class AnswerDetailResponse {
         this.questionContent = questionContent;
         this.memberId = memberId;
         this.content = content;
+        this.nickname = nickname;
         this.memberNickname = memberNickname;
         this.profileOnOff = profileOnOff;
         this.linkAttachments = linkAttachments;
@@ -45,10 +47,10 @@ public class AnswerDetailResponse {
     }
 
     public static AnswerDetailResponse of(Long answerId, Long questionId, String questionContent, Long memberId,
-                                          String content, String memberNickname, Boolean profileOnOff,
+                                          String content, String nickname, String memberNickname, Boolean profileOnOff,
                                           String linkAttachments, String musicName, String musicSinger, String musicAudioUrl,
                                           String imageUrl, LocalDateTime createdDate) {
-        return new AnswerDetailResponse(answerId, questionId, questionContent, memberId, content, memberNickname,
+        return new AnswerDetailResponse(answerId, questionId, questionContent, memberId, content, nickname, memberNickname,
                  profileOnOff, linkAttachments, musicName, musicSinger, musicAudioUrl, imageUrl, createdDate);
 
       
