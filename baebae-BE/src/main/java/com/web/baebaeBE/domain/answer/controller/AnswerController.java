@@ -42,6 +42,13 @@ public class AnswerController implements AnswerApi {
         return ResponseEntity.ok(answerService.getAllAnswers(memberId, categoryId, pageable));
     }
 
+    @PutMapping(value = "/{answerId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<AnswerDetailResponse> updateAnswer(@PathVariable Long answerId,
+                                                             @RequestPart(value = "imageFile", required = false) MultipartFile imageFile,
+                                                             @RequestPart AnswerCreateRequest request) {
+        AnswerDetailResponse updatedAnswer = answerService.updateAnswer(answerId, request, imageFile);
+        return ResponseEntity.ok(updatedAnswer);
+    }
 
     @DeleteMapping("/{answerId}")
     public ResponseEntity<Void> deleteAnswer(@PathVariable Long answerId) {
