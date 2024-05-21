@@ -37,7 +37,7 @@ public class AnswerCreateRequest {
     public static AnswerCreateRequest of(Long questionId, String content,
                                          Boolean profileOnOff, String linkAttachments,
                                          String musicName, String musicSinger, String musicAudioUrl, String imageUrl, boolean updateImage) {
-        return new AnswerCreateRequest(questionId, content, profileOnOff, linkAttachments,
+        return new AnswerCreateRequest(questionId, content,  profileOnOff, linkAttachments,
                 musicName, musicSinger, musicAudioUrl, imageUrl, updateImage);
     }
 }
