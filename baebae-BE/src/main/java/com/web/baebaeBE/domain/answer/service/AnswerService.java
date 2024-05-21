@@ -1,7 +1,6 @@
 package com.web.baebaeBE.domain.answer.service;
 
 import com.web.baebaeBE.domain.answer.dto.AnswerDetailResponse;
-import com.web.baebaeBE.domain.answer.dto.AnswerResponse;
 import com.web.baebaeBE.domain.answer.exception.AnswerError;
 import com.web.baebaeBE.domain.answer.repository.AnswerMapper;
 import com.web.baebaeBE.domain.categorized.answer.entity.CategorizedAnswer;
@@ -33,9 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -91,13 +88,6 @@ public class AnswerService {
         return answerMapper.toDomain(savedAnswer);
     }
 
-    @Transactional
-    public List<AnswerResponse> getAnswersByMemberId(Long memberId) {
-        List<Answer> answers = answerRepository.findByMemberId(memberId);
-        return answers.stream()
-                .map(answerMapper::toResponse)
-                .collect(Collectors.toList());
-    }
 
     @Transactional
     public Page<AnswerDetailResponse> getAllAnswers(Long memberId, Long categoryId, Pageable pageable) {
@@ -109,36 +99,6 @@ public class AnswerService {
             Page<Answer> answerPage = categorizedAnswerPage.map(CategorizedAnswer::getAnswer);
             return answerPage.map(answerMapper::toDomain);
         }
-    }
-
-    @Transactional
-    public AnswerDetailResponse updateAnswer(Long answerId, AnswerCreateRequest request, MultipartFile imageFile) {
-        Answer answer = answerRepository.findByAnswerId(answerId)
-                .orElseThrow(() -> new BusinessException(AnswerError.NO_EXIST_ANSWER));
-        answer.setContent(request.getContent());
-        answer.setLinkAttachments(request.getLinkAttachments());
-
-        // Music 엔티티 업데이트
-        answer.getMusic().setMusicName(request.getMusicName());
-        answer.getMusic().setMusicSinger(request.getMusicSinger());
-        answer.getMusic().setMusicAudioUrl(request.getMusicAudioUrl());
-
-        if (request.isUpdateImage() && imageFile != null && !imageFile.isEmpty()) {
-            try (InputStream inputStream = imageFile.getInputStream()) {
-                String imageUrl = s3ImageStorageService.uploadFile(answer.getMember().getId().toString(), answerId.toString(), "image", 0, inputStream, imageFile.getSize(), imageFile.getContentType());
-                answer.setImageFile(imageUrl);
-            } catch (IOException e) {
-                throw new BusinessException(AnswerError.IMAGE_PROCESSING_ERROR);
-            }
-        }
-
-        // 질문의 isAnswered 상태를 true로 업데이트
-        Question question = answer.getQuestion();
-        question.setAnswered(true);
-
-        questionRepository.save(question);
-        answer = answerRepository.save(answer);
-        return answerMapper.toDomain(answer);
     }
 
     @Transactional
