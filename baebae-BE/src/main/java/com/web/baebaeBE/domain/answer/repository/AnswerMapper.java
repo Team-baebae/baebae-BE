@@ -24,7 +24,7 @@ public class AnswerMapper {
                 .musicAudioUrl(request.getMusicAudioUrl())
                 .build();
 
-        String senderNickname = question.getSender().getNickname();
+        String senderNickname = question.getNickname();
 
         // Answer 엔티티 생성 및 Music 설정
         Answer answer = Answer.builder()
