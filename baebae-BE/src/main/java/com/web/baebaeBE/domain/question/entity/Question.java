@@ -46,6 +46,7 @@ public class Question {
 
     public void updateContent(String content) {
         this.content = content;
+
     }
 
 

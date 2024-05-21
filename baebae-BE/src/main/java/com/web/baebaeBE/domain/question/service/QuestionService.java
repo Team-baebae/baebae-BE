@@ -52,18 +52,6 @@ public class QuestionService {
     }
 
     @Transactional
-    public QuestionDetailResponse updateQuestion(Long questionId, String content) {
-        Question question = questionRepository.findById(questionId)
-                .orElseThrow(() -> new BusinessException(QuestionError.NO_EXIST_QUESTION));
-        question.updateContent(content);
-        Question updatedQuestion = questionRepository.save(question);
-
-        //firebaseNotificationService.notifyNewQuestion(updatedQuestion.getSender(), updatedQuestion); // 파이어베이스 메세지 송신
-
-        return questionMapper.toDomain(updatedQuestion);
-    }
-
-    @Transactional
     public void deleteQuestion(Long questionId) {
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new BusinessException(QuestionError.NO_EXIST_QUESTION));

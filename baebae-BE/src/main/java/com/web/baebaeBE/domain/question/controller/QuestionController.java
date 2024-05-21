@@ -54,14 +54,6 @@ public class QuestionController implements QuestionApi {
         return ResponseEntity.ok(questions.getContent());
     }
 
-    @PutMapping("/{questionId}")
-    @AuthorizationQuestion
-    public ResponseEntity<Void> updateQuestion(
-            @PathVariable Long questionId, @RequestParam String content) {
-        questionService.updateQuestion(questionId, content);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
-    }
-
     @DeleteMapping("/{questionId}")
     @AuthorizationQuestion
     public ResponseEntity<Void> deleteQuestion(@PathVariable Long questionId) {

@@ -91,13 +91,6 @@ public class AnswerService {
         return answerMapper.toDomain(savedAnswer);
     }
 
-    @Transactional
-    public List<AnswerResponse> getAnswersByMemberId(Long memberId) {
-        List<Answer> answers = answerRepository.findByMemberId(memberId);
-        return answers.stream()
-                .map(answerMapper::toResponse)
-                .collect(Collectors.toList());
-    }
 
     @Transactional
     public Page<AnswerDetailResponse> getAllAnswers(Long memberId, Long categoryId, Pageable pageable) {

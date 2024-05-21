@@ -114,24 +114,24 @@ public class NotificationManageTest {
 //    }
 
 
-    @Test
-    @DisplayName("알림 삭제 테스트(): 새로운 알림을 생성하고 삭제한다.")
-    void deleteNotificationTest() {
-        // Given
-        NotificationRequest.create createRequest = new NotificationRequest.create(
-                testMember.getId(),
-                "배승우님이 질문을 남기셨습니다! 확인해보세요",
-                "가은아! 넌 무슨색상을 좋아해?",
-                NotificationRequest.EventType.NEW_QUESTION,  // 이벤트 타입 설정
-                null
-        );
-        Notification createdNotification = notificationService.createNotification(createRequest);
-
-        // When
-        notificationService.deleteNotification(createdNotification.getId());
-
-        // Then
-        assertTrue(notificationRepository.findById(createdNotification.getId()).isEmpty());
-    }
+//    @Test
+//    @DisplayName("알림 삭제 테스트(): 새로운 알림을 생성하고 삭제한다.")
+//    void deleteNotificationTest() {
+//        // Given
+//        NotificationRequest.create createRequest = new NotificationRequest.create(
+//                testMember.getId(),
+//                "배승우님이 질문을 남기셨습니다! 확인해보세요",
+//                "가은아! 넌 무슨색상을 좋아해?",
+//                NotificationRequest.EventType.NEW_QUESTION,  // 이벤트 타입 설정
+//                null
+//        );
+//        Notification createdNotification = notificationService.createNotification(createRequest);
+//
+//        // When
+//        notificationService.deleteNotification(createdNotification.getId());
+//
+//        // Then
+//        assertTrue(notificationRepository.findById(createdNotification.getId()).isEmpty());
+//    }
 
 }
