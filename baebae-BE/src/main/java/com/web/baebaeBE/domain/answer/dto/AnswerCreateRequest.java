@@ -10,7 +10,6 @@ public class AnswerCreateRequest {
     private Long questionId;
     private Boolean profileOnOff;
     private String content;
-    private String nickname;
     private String linkAttachments;
     private String musicName;
     private String musicSinger;
