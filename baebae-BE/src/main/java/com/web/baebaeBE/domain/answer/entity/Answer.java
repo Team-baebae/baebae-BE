@@ -37,12 +37,14 @@ public class Answer {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
-
     @Column(name = "image_file")
     private String imageFile;  // 이미지 파일 경로를 저장하는 리스트
 
     @Column(name = "content", columnDefinition = "TEXT", nullable = false)
     private String content;
+
+    @Column(name = "nickname")
+    private String nickname;
 
     @OneToOne(mappedBy = "answer", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Music music;
@@ -65,10 +67,10 @@ public class Answer {
     @Column(name = "profile_on_off", nullable = false)
     private boolean profileOnOff;
 
-    public static Answer of(Long id, Question question, Member member, String content,
+    public static Answer of(Long id, Question question, Member member, String content, String nickname,
                             String imageFile, Music music, String linkAttachments, String imageUrl, LocalDateTime createdDate,
                             ReactionCount reactionCount, boolean profileOnOff) {
-        return new Answer(id, question, member, imageFile, content, music, linkAttachments, imageUrl, createdDate, null, reactionCount, profileOnOff);
+        return new Answer(id, question, member, imageFile, content, nickname, music, linkAttachments, imageUrl, createdDate, null, reactionCount, profileOnOff);
     }
 
 }

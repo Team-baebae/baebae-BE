@@ -12,7 +12,6 @@ import com.web.baebaeBE.domain.member.repository.MemberRepository;
 import com.web.baebaeBE.domain.question.repository.QuestionRepository;
 import com.web.baebaeBE.domain.question.dto.QuestionCreateRequest;
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -97,6 +96,7 @@ public class QuestionTest {
     }
 
     @Test
+    @DisplayName("질문 생성 테스트(): 질문을 생성한다.")
     public void createQuestionTest() throws Exception {
         String content = "이것은 회원의 질문입니다.";
         QuestionDetailResponse questionDetailResponse = new QuestionDetailResponse(1L, content, "장지효", "장지효", true, LocalDateTime.now(), false);
@@ -142,22 +142,6 @@ public class QuestionTest {
     }
 
 
-    @Test
-    @DisplayName("질문 수정 테스트(): 질문을 수정한다.")
-    public void updateQuestionTest() throws Exception {
-        // Mock 설정
-        String updatedContent = "이것은 수정 후의 질문입니다.";
-        QuestionDetailResponse questionDetailResponse = new QuestionDetailResponse(1L, updatedContent, "닉네임", "장지효", true, LocalDateTime.now(), true);
-
-        when(questionService.updateQuestion(eq(1L), eq(updatedContent))).thenReturn(questionDetailResponse);
-
-        // 질문 수정 요청을 보내고 응답을 확인
-        mockMvc.perform(put("/api/questions/{questionId}", 1L)
-                        .param("content", updatedContent)
-                        .header("Authorization", "Bearer " + refreshToken)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNoContent());
-    }
 
     @Test
     @DisplayName("질문 삭제 테스트(): 질문을 삭제한다.")

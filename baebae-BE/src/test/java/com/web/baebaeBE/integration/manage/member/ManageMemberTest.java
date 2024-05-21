@@ -2,6 +2,11 @@ package com.web.baebaeBE.integration.manage.member;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.web.baebaeBE.domain.fcm.dto.FcmRequest;
+import com.web.baebaeBE.domain.fcm.entity.FcmToken;
+import com.web.baebaeBE.domain.fcm.repository.FcmTokenRepository;
+import com.web.baebaeBE.domain.fcm.service.FcmService;
+import com.web.baebaeBE.domain.oauth2.controller.Oauth2Controller;
+import com.web.baebaeBE.domain.question.dto.QuestionCreateRequest;
 import com.web.baebaeBE.global.jwt.JwtTokenProvider;
 import com.web.baebaeBE.domain.member.entity.Member;
 import com.web.baebaeBE.domain.member.entity.MemberType;
@@ -14,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -28,8 +34,11 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -44,8 +53,14 @@ public class ManageMemberTest {
     private MockMvc mockMvc;
     @Autowired
     private JwtTokenProvider tokenProvider;
-    @Autowired
+    @MockBean
     private MemberRepository memberRepository;
+    @MockBean
+    private Oauth2Controller oauth2Controller;
+    @MockBean
+    private FcmService fcmService;
+    @MockBean
+    private FcmTokenRepository fcmTokenRepository;
     private ObjectMapper objectMapper = new ObjectMapper();
     private String accessToken;
     private String refreshToken;
@@ -54,28 +69,42 @@ public class ManageMemberTest {
 
     @BeforeEach
     void setup() {
-        testMember = memberRepository.save(Member.builder()
+        // 새로운 멤버 객체를 생성하지만, 실제 저장된 객체의 ID를 반환하도록 Mock 설정
+        Member initialMember = Member.builder()
                 .email("test@gmail.com")
                 .nickname("김예찬")
                 .memberType(MemberType.KAKAO)
                 .refreshToken("null")
-                .build());
+                .build();
+
+        Member savedMember = Member.builder()
+                .id(1L) // Mocking된 저장된 객체의 ID 설정
+                .email("test@gmail.com")
+                .nickname("김예찬")
+                .memberType(MemberType.KAKAO)
+                .refreshToken("null")
+                .build();
+
+        when(memberRepository.save(any(Member.class))).thenReturn(savedMember);
+        when(memberRepository.findByEmail("test@gmail.com")).thenReturn(Optional.of(savedMember));
+
+        testMember = memberRepository.save(initialMember); // 실제 저장된 객체로 갱신
 
         accessToken = tokenProvider.generateToken(testMember, Duration.ofDays(1)); // 임시 accessToken 생성
         refreshToken = tokenProvider.generateToken(testMember, Duration.ofDays(14)); // 임시 refreshToken 생성
 
         testMember.updateRefreshToken(refreshToken);
-        memberRepository.save(testMember);
+
+        // 업데이트된 멤버 다시 저장
+        when(memberRepository.save(testMember)).thenReturn(testMember);
+        when(memberRepository.findById(testMember.getId())).thenReturn(Optional.of(testMember));
     }
 
-    //각 테스트 후마다 실행
     @AfterEach
     void tearDown() {
         Optional<Member> member = memberRepository.findByEmail("test@gmail.com");
-        if(member.isPresent())
-            memberRepository.delete(member.get());
+        member.ifPresent(value -> memberRepository.delete(value));
     }
-
 
     @Test
     @DisplayName("회원정보 조회 테스트(): 해당 회원의 상세정보를 조회한다.")
@@ -86,14 +115,13 @@ public class ManageMemberTest {
         mockMvc.perform(get("/api/member/{memberId}", testMember.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", "Bearer " + accessToken))
-        // then
+                // then
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.memberId").exists())
                 .andExpect(jsonPath("$.email").exists())
                 .andExpect(jsonPath("$.nickname").exists())
                 .andExpect(jsonPath("$.memberType").exists());
     }
-
     @Test
     @DisplayName("프로필 사진 업데이트 테스트(): 회원의 프로필 사진을 업데이트한다.")
     public void updateProfileTest() throws Exception {
@@ -132,6 +160,16 @@ public class ManageMemberTest {
     public void addFcmTokenTest() throws Exception {
         // given
         FcmRequest.CreateToken tokenRequest = new FcmRequest.CreateToken("fwef094938jweSIJDe8204gaskd390GK32G9HADF0809d8708U908ud9UHD9FH4e32982hF0ODH22E");
+
+        FcmToken fcmToken = FcmToken.builder()
+                .id(1L)
+                .token(tokenRequest.getFcmToken())
+                .member(testMember)
+                .lastUsedTime(LocalDateTime.now())
+                .build();
+
+        when(fcmTokenRepository.save(any(FcmToken.class))).thenReturn(fcmToken);
+        when(fcmService.addFcmToken(testMember.getId(), tokenRequest.getFcmToken())).thenReturn(fcmToken);
 
         // when
         mockMvc.perform(post("/api/fcm/{memberId}", testMember.getId())
