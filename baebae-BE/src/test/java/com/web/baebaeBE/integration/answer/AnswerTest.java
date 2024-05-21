@@ -53,13 +53,13 @@ public class AnswerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
+    @MockBean
     private MemberRepository memberRepository;
 
-    @Autowired
+    @MockBean
     private QuestionRepository questionRepository;
 
-    @Autowired
+    @MockBean
     private QuestionJpaRepository questionJpaRepository;
 
     @MockBean
@@ -80,20 +80,29 @@ public class AnswerTest {
 
     @BeforeEach
     void setup() {
-        testMember = memberRepository.save(Member.builder()
+        // Mock 객체 초기화
+        testMember = Member.builder()
                 .email("test@gmail.com")
                 .nickname("장지효")
                 .memberType(MemberType.KAKAO)
                 .refreshToken("null")
-                .build());
+                .build();
 
-        testReceiver = memberRepository.save(Member.builder()
+        testReceiver = Member.builder()
                 .email("test@gmail2.com")
                 .nickname("장지효2")
                 .memberType(MemberType.KAKAO)
                 .refreshToken("null")
-                .build());
+                .build();
 
+        // memberRepository.save() 메서드를 목킹하여 호출된 객체를 반환하도록 설정
+        when(memberRepository.save(any(Member.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // testMember와 testReceiver를 저장
+        testMember = memberRepository.save(testMember);
+        testReceiver = memberRepository.save(testReceiver);
+
+        // 토큰 생성 및 업데이트
         refreshToken = tokenProvider.generateToken(testMember, Duration.ofDays(14));
         testMember.updateRefreshToken(refreshToken);
         memberRepository.save(testMember);
@@ -102,41 +111,43 @@ public class AnswerTest {
         testReceiver.updateRefreshToken(refreshToken);
         memberRepository.save(testReceiver);
 
-        testQuestion = questionRepository.save(new Question(null, testMember, testReceiver,"이것은 질문입니다.", "장지효", true, LocalDateTime.now(), false));
+        // memberRepository.save() 메서드를 목킹하여 호출된 객체를 반환하도록 설정
+        when(questionRepository.save(any(Question.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // testQuestion 저장
+        testQuestion = questionRepository.save(new Question(null, testMember, testReceiver, "이것은 질문입니다.", "장지효", true, LocalDateTime.now(), false));
     }
 
     @AfterEach
     void tearDown() {
         questionJpaRepository.deleteAll();
-        Optional<Member> member = memberRepository.findByEmail("test@gmail.com");
-        member.ifPresent(memberRepository::delete);
+        memberRepository.deleteAll();
     }
 
     @Test
     @DisplayName("답변 생성 테스트(): 답변을 생성한다.")
     public void createAnswerTest() throws Exception {
         AnswerCreateRequest createRequest = new AnswerCreateRequest(
-                testQuestion.getId(), "이것은 답변입니다.", "장지효", true, "https://link.com",
+                testQuestion.getId(), "이것은 답변입니다.", true, "https://link.com",
                 "노래 제목", "가수 이름", "https://audio.url", "https://image.url", true
         );
         MockMultipartFile imageFile = new MockMultipartFile("imageFile", "image.jpg", MediaType.IMAGE_JPEG_VALUE, "image content".getBytes());
         MockMultipartFile requestFile = new MockMultipartFile("request", "", MediaType.APPLICATION_JSON_VALUE, objectMapper.writeValueAsBytes(createRequest));
 
-        when(answerService.createAnswer(any(AnswerCreateRequest.class), eq(testMember.getId()), any(MockMultipartFile.class)))
+        when(answerService.createAnswer(any(AnswerCreateRequest.class), eq(1L), any(MockMultipartFile.class)))
                 .thenReturn(new AnswerDetailResponse(
-                        1L, testQuestion.getId(), testQuestion.getContent(), testMember.getId(), "이것은 답변입니다.",
-                        testMember.getNickname(), "장지효", true, "https://link.com", "노래 제목", "가수 이름", "https://audio.url",
+                        1L, testQuestion.getId(), testQuestion.getContent(),1L, "이것은 답변입니다.",
+                        testMember.getNickname(), true, "https://link.com", "노래 제목", "가수 이름", "https://audio.url",
                         "https://image.url", LocalDateTime.now()
                 ));
 
-        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/answers/{memberId}", testMember.getId())
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/answers/{memberId}", 1L)
                         .file(imageFile)
                         .file(requestFile)
                         .header("Authorization", "Bearer " + refreshToken)
                         .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content").value("이것은 답변입니다."))
-                .andExpect(jsonPath("$.nickname").value("장지효"))
                 .andExpect(jsonPath("$.profileOnOff").value(true))
                 .andExpect(jsonPath("$.linkAttachments").value("https://link.com"))
                 .andExpect(jsonPath("$.musicName").value("노래 제목"))
@@ -152,16 +163,16 @@ public class AnswerTest {
     public void getAllAnswersTest() throws Exception {
         AnswerDetailResponse answerDetailResponse = new AnswerDetailResponse(
                 1L, testQuestion.getId(), testQuestion.getContent(), testMember.getId(),
-                "이것은 답변입니다.", testMember.getNickname(), "장지효", true, "https://link.com",
+                "이것은 답변입니다.", testMember.getNickname(), true, "https://link.com",
                 "노래 제목", "가수 이름", "https://audio.url", "https://image.url", LocalDateTime.now()
         );
         List<AnswerDetailResponse> answerDetailResponseList = List.of(answerDetailResponse);
         Page<AnswerDetailResponse> answerDetailResponsePage = new PageImpl<>(answerDetailResponseList, Pageable.unpaged(), 1);
 
-        when(answerService.getAllAnswers(eq(testMember.getId()), any(Long.class), any(Pageable.class)))
+        when(answerService.getAllAnswers(eq(1L), any(Long.class), any(Pageable.class)))
                 .thenReturn(answerDetailResponsePage);
 
-        mockMvc.perform(get("/api/answers/member/{memberId}", testMember.getId())
+        mockMvc.perform(get("/api/answers/member/{memberId}", 1L)
                         .param("categoryId", "1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -173,7 +184,7 @@ public class AnswerTest {
     public void updateAnswerTest() throws Exception {
         // Given
         AnswerCreateRequest updateRequest = new AnswerCreateRequest(
-                testQuestion.getId(), "이것은 수정된답변입니다.", "장지효", true, "https://link.com",
+                testQuestion.getId(), "이것은 수정된답변입니다.", true, "https://link.com",
                 "노래 제목", "가수 이름", "https://audio.url", "https://image.url", true
         );
         MockMultipartFile imageFile = new MockMultipartFile("imageFile", "image.jpg", MediaType.IMAGE_JPEG_VALUE, "image content".getBytes());
@@ -181,7 +192,7 @@ public class AnswerTest {
 
         AnswerDetailResponse answerDetailResponse = new AnswerDetailResponse(
                 1L, testQuestion.getId(), testQuestion.getContent(), testMember.getId(), "이것은 수정된답변입니다.",
-                testMember.getNickname(), "장지효", true, "https://link.com", "노래 제목", "가수 이름", "https://audio.url",
+                testMember.getNickname(),  true, "https://link.com", "노래 제목", "가수 이름", "https://audio.url",
                 "https://image.url", LocalDateTime.now()
         );
 
@@ -198,7 +209,6 @@ public class AnswerTest {
                 .andDo(print()) // 응답 내용 출력
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content").value("이것은 수정된답변입니다."))
-                .andExpect(jsonPath("$.nickname").value("장지효"))
                 .andExpect(jsonPath("$.profileOnOff").value(true))
                 .andExpect(jsonPath("$.linkAttachments").value("https://link.com"))
                 .andExpect(jsonPath("$.musicName").value("노래 제목"))
@@ -223,7 +233,7 @@ public class AnswerTest {
         when(answerService.hasReacted(eq(1L), eq(testMember.getId()))).thenReturn(Map.of());
 
         mockMvc.perform(get("/api/answers/{answerId}/reacted", 1L)
-                        .param("memberId", String.valueOf(testMember.getId()))
+                        .param("memberId", String.valueOf(1L))
                         .header("Authorization", "Bearer " + refreshToken)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
