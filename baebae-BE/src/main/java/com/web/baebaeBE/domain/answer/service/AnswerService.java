@@ -66,14 +66,18 @@ public class AnswerService {
         // Answer 생성
         Answer answer = answerMapper.toEntity(request, question, member);
         Answer savedAnswer = answerRepository.save(answer);
+        String imageUrl;
         if (!imageFile.isEmpty()) {
             try (InputStream inputStream = imageFile.getInputStream()) {
-                String imageUrl = s3ImageStorageService.uploadFile(member.getId().toString(), answer.getId().toString(), "image", 0, inputStream, imageFile.getSize(), imageFile.getContentType());
+                imageUrl = s3ImageStorageService.uploadFile(member.getId().toString(), answer.getId().toString(), "image", 0, inputStream, imageFile.getSize(), imageFile.getContentType());
                 answer.setImageFile(imageUrl);
             } catch (IOException e) {
                 throw new BusinessException(AnswerError.IMAGE_PROCESSING_ERROR);
             }
+        } else{
+            imageUrl = s3ImageStorageService.getDefaultFileUrl(); // 기본이미지
         }
+        answer.setImageFile(imageUrl);
 
         // ReactionCount 생성
         ReactionCount reactionCount = ReactionCount.builder()

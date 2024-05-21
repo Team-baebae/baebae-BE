@@ -42,7 +42,7 @@ public class Question {
     private LocalDateTime createdDate;
 
     @Column(name = "is_answered", nullable = false)
-    private boolean isAnswered = false;
+    private boolean isAnswered;
 
     public void updateContent(String content) {
         this.content = content;
