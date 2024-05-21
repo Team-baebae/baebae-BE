@@ -89,4 +89,21 @@ public class AuthPolicyAspect {
             throw new BusinessException(MemberException.NOT_MATCH_MEMBER);
         }
     }
+
+    @Before("@annotation(com.web.baebaeBE.global.authorization.annotation.AuthorizationCategoryAndAnswer) && args(categoryId,answerId,..)")
+    public void checkCategoryAndAnswer(JoinPoint joinPoint, Long categoryId, Long answerId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentEmail = authentication.getName();
+        System.out.println("checkCategoryAndAnswer: " + categoryId + " " + answerId);
+
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new BusinessException(CategoryException.CATEGORY_NOT_FOUND));
+
+        Answer answer = answerRepository.findByAnswerId(answerId)
+                .orElseThrow(() -> new BusinessException(AnswerError.NO_EXIST_ANSWER));
+
+        if (!category.getMember().getEmail().equals(currentEmail) && !answer.getMember().getEmail().equals(currentEmail)) {
+            throw new BusinessException(MemberException.NOT_MATCH_MEMBER);
+        }
+    }
 }
