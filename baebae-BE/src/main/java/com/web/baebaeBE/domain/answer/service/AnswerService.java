@@ -60,6 +60,9 @@ public class AnswerService {
         Question question = questionRepository.findById(request.getQuestionId())
                 .orElseThrow(() -> new BusinessException(AnswerError.NO_EXIST_QUESTION));
 
+        if(question.isAnswered() == true)
+            throw new BusinessException(AnswerError.ALREADY_ANSWERED_QUESTION); // 이미 답변한 질문이면 예외처리
+
         // Answer 생성
         Answer answer = answerMapper.toEntity(request, question, member);
         Answer savedAnswer = answerRepository.save(answer);
@@ -86,7 +89,7 @@ public class AnswerService {
         question.setAnswered(true);
         questionRepository.save(question);
 
-        firebaseNotificationService.notifyNewAnswer(member, question,savedAnswer); // 푸시 메세지 전송
+        firebaseNotificationService.notifyNewAnswer(question.getSender(), question,savedAnswer); // 푸시 메세지 전송
 
         return answerMapper.toDomain(savedAnswer);
     }
