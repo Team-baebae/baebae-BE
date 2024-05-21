@@ -24,12 +24,14 @@ public class AnswerMapper {
                 .musicAudioUrl(request.getMusicAudioUrl())
                 .build();
 
+        String senderNickname = question.getSender().getNickname();
+
         // Answer 엔티티 생성 및 Music 설정
         Answer answer = Answer.builder()
                 .question(question)
                 .member(member)
                 .content(request.getContent())
-                .nickname(request.getNickname())
+                .nickname(senderNickname)
                 .linkAttachments(request.getLinkAttachments())
                 .profileOnOff(request.getProfileOnOff())
                 .createdDate(LocalDateTime.now())
@@ -47,6 +49,7 @@ public class AnswerMapper {
         Member member = answer.getMember();
         Question question = answer.getQuestion();
 
+
         return AnswerDetailResponse.of(
                 answer.getId(),
                 question.getId(),
@@ -54,7 +57,6 @@ public class AnswerMapper {
                 member.getId(),
                 answer.getContent(),
                 answer.getNickname(),
-                member.getNickname(),
                 answer.isProfileOnOff(),
                 answer.getLinkAttachments(),
                 music != null ? music.getMusicName() : null,

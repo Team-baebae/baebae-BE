@@ -20,12 +20,11 @@ public class AnswerCreateRequest {
 
 
 
-    public AnswerCreateRequest(Long questionId, String content, String nickname,
+    public AnswerCreateRequest(Long questionId, String content,
                                Boolean profileOnOff, String linkAttachments,
                                String musicName, String musicSinger, String musicAudioUrl, String imageUrl, boolean updateImage) {
         this.questionId = questionId;
         this.content = content;
-        this.nickname = nickname;
         this.profileOnOff = profileOnOff;
         this.linkAttachments = linkAttachments;
         this.musicName = musicName;
@@ -36,10 +35,10 @@ public class AnswerCreateRequest {
 
     }
 
-    public static AnswerCreateRequest of(Long questionId, String content, String nickname,
+    public static AnswerCreateRequest of(Long questionId, String content,
                                          Boolean profileOnOff, String linkAttachments,
                                          String musicName, String musicSinger, String musicAudioUrl, String imageUrl, boolean updateImage) {
-        return new AnswerCreateRequest(questionId, content, nickname, profileOnOff, linkAttachments,
+        return new AnswerCreateRequest(questionId, content,  profileOnOff, linkAttachments,
                 musicName, musicSinger, musicAudioUrl, imageUrl, updateImage);
     }
 }
