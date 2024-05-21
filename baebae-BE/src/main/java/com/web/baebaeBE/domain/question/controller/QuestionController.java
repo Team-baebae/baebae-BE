@@ -4,6 +4,8 @@ import com.web.baebaeBE.domain.question.controller.api.QuestionApi;
 import com.web.baebaeBE.domain.question.dto.QuestionCreateRequest;
 import com.web.baebaeBE.domain.question.dto.QuestionDetailResponse;
 import com.web.baebaeBE.domain.question.service.QuestionService;
+import com.web.baebaeBE.global.authorization.annotation.AuthorizationMember;
+import com.web.baebaeBE.global.authorization.annotation.AuthorizationQuestion;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -22,8 +24,11 @@ public class QuestionController implements QuestionApi {
     }
 
     @PostMapping("/sender/{senderId}/receiver/{receiverId}")
+    @AuthorizationMember
     public ResponseEntity<QuestionDetailResponse> createQuestion(
-            @RequestBody QuestionCreateRequest request, @PathVariable Long senderId, @PathVariable Long receiverId) {
+            @PathVariable Long senderId,
+            @PathVariable Long receiverId,
+            @RequestBody QuestionCreateRequest request) {
         QuestionDetailResponse createdQuestion = questionService.createQuestion(request, senderId, receiverId);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdQuestion);
     }
@@ -50,6 +55,7 @@ public class QuestionController implements QuestionApi {
     }
 
     @PutMapping("/{questionId}")
+    @AuthorizationQuestion
     public ResponseEntity<Void> updateQuestion(
             @PathVariable Long questionId, @RequestParam String content) {
         questionService.updateQuestion(questionId, content);
@@ -57,6 +63,7 @@ public class QuestionController implements QuestionApi {
     }
 
     @DeleteMapping("/{questionId}")
+    @AuthorizationQuestion
     public ResponseEntity<Void> deleteQuestion(@PathVariable Long questionId) {
         questionService.deleteQuestion(questionId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
