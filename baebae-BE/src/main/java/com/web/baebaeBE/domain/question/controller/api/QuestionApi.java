@@ -2,7 +2,6 @@ package com.web.baebaeBE.domain.question.controller.api;
 
 import com.web.baebaeBE.domain.question.dto.QuestionCreateRequest;
 import com.web.baebaeBE.domain.question.dto.QuestionDetailResponse;
-import com.web.baebaeBE.domain.question.dto.QuestionUpdateRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -92,26 +91,6 @@ public interface QuestionApi {
     ResponseEntity<List<QuestionDetailResponse>> getUnansweredQuestions(
             @PathVariable Long memberId, Pageable pageable);
 
-    @Operation(
-            summary = "질문 수정",
-            description = "기존 질문의 내용을 수정합니다.",
-            security = @SecurityRequirement(name = "bearerAuth")
-    )
-    @Parameter(
-            in = ParameterIn.HEADER,
-            name = "Authorization", required = true,
-            schema = @Schema(type = "string"),
-            description = "Bearer [Access 토큰]")
-    @ApiResponse(responseCode = "204", description = "질문 수정 성공")
-    @ApiResponse(responseCode = "401", description = "토큰 인증 실패",
-            content = @Content(mediaType = "application/json",
-                    examples = @ExampleObject(value = "{\n" +
-                            "  \"errorCode\": \"T-002\",\n" +
-                            "  \"message\": \"해당 토큰은 유효한 토큰이 아닙니다.\"\n" +
-                            "}")))
-    @PutMapping("/{questionId}")
-    ResponseEntity<Void> updateQuestion(
-            @PathVariable Long questionId, @RequestBody QuestionUpdateRequest request);
 
     @Operation(
             summary = "질문 삭제",

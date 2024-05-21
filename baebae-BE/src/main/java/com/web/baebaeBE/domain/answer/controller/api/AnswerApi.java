@@ -62,6 +62,24 @@ public interface AnswerApi {
             @PathVariable Long memberId,
             @RequestParam(required = false) Long category,
             Pageable pageable);
+    @Operation(
+            summary = "답변 수정",
+            description = "기존 답변을 수정합니다.",
+            security = @SecurityRequirement(name = "bearerAuth")
+    )
+    @Parameter(
+            in = ParameterIn.HEADER,
+            name = "Authorization", required = true,
+            schema = @Schema(type = "string"),
+            description = "Bearer [Access 토큰]")
+    @ApiResponse(responseCode = "201", description = "답변 수정 성공",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = AnswerDetailResponse.class)))
+    @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    ResponseEntity<AnswerDetailResponse> updateAnswer(
+            @PathVariable Long answerId,
+            @RequestPart(value = "imageFile", required = false) MultipartFile imageFile,
+            @RequestPart AnswerCreateRequest request);
 
     @Operation(
             summary = "답변 삭제",

@@ -7,7 +7,6 @@ import com.web.baebaeBE.domain.notification.dto.NotificationRequest;
 import com.web.baebaeBE.domain.notification.service.NotificationService;
 import com.web.baebaeBE.domain.question.dto.QuestionCreateRequest;
 import com.web.baebaeBE.domain.question.dto.QuestionDetailResponse;
-import com.web.baebaeBE.domain.question.dto.QuestionUpdateRequest;
 import com.web.baebaeBE.domain.question.exception.QuestionError;
 import com.web.baebaeBE.domain.question.repository.QuestionMapper;
 import com.web.baebaeBE.global.error.exception.BusinessException;
@@ -50,17 +49,6 @@ public class QuestionService {
     public Page<QuestionDetailResponse> getQuestionsByMemberId(Long memberId, Pageable pageable) {
         Page<Question> questions = questionRepository.findAllByReceiverId(memberId, pageable);
         return questions.map(question -> questionMapper.toDomain(question));
-    }
-
-    @Transactional
-    public QuestionDetailResponse updateQuestion(Long questionId, QuestionUpdateRequest request) {
-        Question question = questionRepository.findById(questionId)
-                .orElseThrow(() -> new BusinessException(QuestionError.NO_EXIST_QUESTION));
-        question.updateContent(question.getContent());
-        question.setNickname(request.getNickname()); // 닉네임 업데이트
-        Question updatedQuestion = questionRepository.save(question);
-
-        return questionMapper.toDomain(updatedQuestion);
     }
 
     @Transactional
