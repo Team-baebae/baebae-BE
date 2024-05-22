@@ -109,6 +109,7 @@ public class QuestionTest {
         when(memberRepository.findByRefreshToken(refreshToken)).thenReturn(Optional.of(testReceiver));
     }
 
+
     @Test
     @DisplayName("질문 생성 테스트(): 질문을 생성한다.")
     public void createQuestionTest() throws Exception {
