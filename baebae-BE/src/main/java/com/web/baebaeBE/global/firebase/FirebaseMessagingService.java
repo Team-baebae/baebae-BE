@@ -35,8 +35,10 @@ public class FirebaseMessagingService {
                 .build();
 
         try {
-            log.info("Send FCM message to {}", token);
-            return FirebaseMessaging.getInstance().send(message);
+            log.info("Sending FCM message to token: {}", token);
+            String response = FirebaseMessaging.getInstance().send(message);
+            log.info("Successfully sent FCM message. Message ID: {}", response);
+            return response;
         } catch (FirebaseMessagingException e) {
             if (e.getMessagingErrorCode().equals(MessagingErrorCode.INVALID_ARGUMENT)) {
                 // 토큰이 유효하지 않은 경우, 오류 코드를 반환

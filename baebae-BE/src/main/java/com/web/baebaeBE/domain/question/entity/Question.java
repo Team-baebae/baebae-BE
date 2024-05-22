@@ -27,6 +27,7 @@ public class Question {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "receiver_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Member receiver;
 
     @Column(nullable = false, columnDefinition = "TEXT")
