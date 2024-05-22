@@ -28,6 +28,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -48,6 +50,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @WithMockUser
 public class AnswerTest {
     @Autowired
@@ -137,7 +140,7 @@ public class AnswerTest {
         when(answerService.createAnswer(any(AnswerCreateRequest.class), eq(1L), any(MockMultipartFile.class)))
                 .thenReturn(new AnswerDetailResponse(
                         1L, testQuestion.getId(), testQuestion.getContent(),1L, "이것은 답변입니다.",
-                        testMember.getNickname(), true, "https://link.com", "노래 제목", "가수 이름", "https://audio.url",
+                        testMember.getNickname(), "안녕",true, "https://link.com", "노래 제목", "가수 이름", "https://audio.url",
                         "https://image.url", LocalDateTime.now()
                 ));
 
@@ -163,7 +166,7 @@ public class AnswerTest {
     public void getAllAnswersTest() throws Exception {
         AnswerDetailResponse answerDetailResponse = new AnswerDetailResponse(
                 1L, testQuestion.getId(), testQuestion.getContent(), testMember.getId(),
-                "이것은 답변입니다.", testMember.getNickname(), true, "https://link.com",
+                "이것은 답변입니다.", testMember.getNickname(), "안녕", true, "https://link.com",
                 "노래 제목", "가수 이름", "https://audio.url", "https://image.url", LocalDateTime.now()
         );
         List<AnswerDetailResponse> answerDetailResponseList = List.of(answerDetailResponse);
@@ -192,7 +195,7 @@ public class AnswerTest {
 
         AnswerDetailResponse answerDetailResponse = new AnswerDetailResponse(
                 1L, testQuestion.getId(), testQuestion.getContent(), testMember.getId(), "이것은 수정된답변입니다.",
-                testMember.getNickname(),  true, "https://link.com", "노래 제목", "가수 이름", "https://audio.url",
+                testMember.getNickname(),  "안녕",true, "https://link.com", "노래 제목", "가수 이름", "https://audio.url",
                 "https://image.url", LocalDateTime.now()
         );
 
