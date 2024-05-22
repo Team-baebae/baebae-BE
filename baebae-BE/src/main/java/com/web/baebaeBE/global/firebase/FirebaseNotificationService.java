@@ -70,8 +70,10 @@ public class FirebaseNotificationService {
         // 모든 fcm 토큰 가져오기
         List<FcmToken> fcmTokens = fcmTokenRepository.findByMemberId(question.getSender().getId());
 
+        System.out.println(question.getSender().getId() + "   " + question.getSender().getNickname());
         for (FcmToken fcmToken : fcmTokens) {
             fcmService.updateLastUsedTime(fcmToken);
+            System.out.println("     "+fcmToken.getToken());
             sendNotificationToUser(fcmToken, notificationTitle, notificationBody);
         }
     }
