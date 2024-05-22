@@ -35,7 +35,6 @@ import static org.mockito.Mockito.*;
 
 @SpringBootTest()
 @AutoConfigureMockMvc
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @WithMockUser
 @Transactional
 public class NotificationManageTest {

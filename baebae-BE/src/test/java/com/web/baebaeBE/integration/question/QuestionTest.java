@@ -44,7 +44,6 @@ import java.util.Optional;
 @SpringBootTest()
 @AutoConfigureMockMvc
 @WithMockUser
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @Transactional
 public class QuestionTest {
 
@@ -71,6 +70,7 @@ public class QuestionTest {
     @BeforeEach
     void setup() {
         testMember = Member.builder()
+                .id(1L)
                 .email("test@gmail.com")
                 .nickname("장지효")
                 .memberType(MemberType.KAKAO)
@@ -78,6 +78,7 @@ public class QuestionTest {
                 .build();
 
         testReceiver = Member.builder()
+                .id(2L)
                 .email("test@gmail2.com")
                 .nickname("장지효2")
                 .memberType(MemberType.KAKAO)

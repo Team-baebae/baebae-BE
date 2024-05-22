@@ -45,7 +45,6 @@ import static org.hamcrest.Matchers.notNullValue;
 
 @SpringBootTest()
 @AutoConfigureMockMvc
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @WithMockUser
 @Transactional
 public class MemberIntegrationTest {
