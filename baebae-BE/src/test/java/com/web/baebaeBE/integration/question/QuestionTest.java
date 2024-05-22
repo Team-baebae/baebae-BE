@@ -1,10 +1,12 @@
 package com.web.baebaeBE.integration.question;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.web.baebaeBE.config.jwt.JwtFactory;
 import com.web.baebaeBE.domain.oauth2.controller.Oauth2Controller;
 import com.web.baebaeBE.domain.question.dto.QuestionDetailResponse;
 import com.web.baebaeBE.domain.question.entity.Question;
 import com.web.baebaeBE.domain.question.service.QuestionService;
+import com.web.baebaeBE.global.jwt.JwtProperties;
 import com.web.baebaeBE.global.jwt.JwtTokenProvider;
 import com.web.baebaeBE.domain.member.entity.Member;
 import com.web.baebaeBE.domain.member.entity.MemberType;
@@ -57,7 +59,8 @@ public class QuestionTest {
     private QuestionRepository questionRepository;
     @MockBean
     private QuestionService questionService;
-
+    @Autowired
+    private JwtProperties jwtProperties;
     @Autowired
     private JwtTokenProvider tokenProvider;
     @Autowired
@@ -88,25 +91,26 @@ public class QuestionTest {
                 .refreshToken("null")
                 .build();
 
+
         when(memberRepository.save(any(Member.class))).thenReturn(testMember);
         when(memberRepository.findByEmail("test@gmail.com")).thenReturn(Optional.of(testMember));
         when(memberRepository.findById(1L)).thenReturn(Optional.of(testMember));
 
         when(memberRepository.save(any(Member.class))).thenReturn(testReceiver);
         when(memberRepository.findByEmail("test@gmail2.com")).thenReturn(Optional.of(testReceiver));
-        when(memberRepository.findById(1L)).thenReturn(Optional.of(testReceiver));
+        when(memberRepository.findById(2L)).thenReturn(Optional.of(testReceiver));
 
         refreshToken = tokenProvider.generateToken(testMember, Duration.ofDays(14));  // 임시 refreshToken 생성
-        refreshToken = tokenProvider.generateToken(testReceiver, Duration.ofDays(14));
+        refreshTokenReceiver = tokenProvider.generateToken(testReceiver, Duration.ofDays(14));
 
         testMember.updateRefreshToken(refreshToken);
         when(memberRepository.save(testMember)).thenReturn(testMember);
 
-        testReceiver.updateRefreshToken(refreshToken);
+        testReceiver.updateRefreshToken(refreshTokenReceiver);
         when(memberRepository.save(testReceiver)).thenReturn(testReceiver);
 
         when(memberRepository.findByRefreshToken(refreshToken)).thenReturn(Optional.of(testMember));
-        when(memberRepository.findByRefreshToken(refreshToken)).thenReturn(Optional.of(testReceiver));
+        when(memberRepository.findByRefreshToken(refreshTokenReceiver)).thenReturn(Optional.of(testReceiver));
     }
 
 
