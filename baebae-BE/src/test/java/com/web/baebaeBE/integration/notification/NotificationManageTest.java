@@ -22,6 +22,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +35,7 @@ import static org.mockito.Mockito.*;
 
 @SpringBootTest()
 @AutoConfigureMockMvc
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @WithMockUser
 @Transactional
 public class NotificationManageTest {
@@ -114,7 +116,7 @@ public class NotificationManageTest {
         when(notificationService.createNotification(any(NotificationRequest.create.class)))
                 .thenAnswer(invocation -> {
                     NotificationRequest.create request = invocation.getArgument(0);
-                    // Call the Firebase service when creating the notification
+                    // 파이어베이스 호출
                     mockFirebaseMessagingService.sendNotification(
                             testMember.getRefreshToken(),
                             request.getNotificationContent(),

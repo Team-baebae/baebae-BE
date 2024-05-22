@@ -41,6 +41,7 @@ out/
 application.yml
 application-deploy.yml
 application-local.yml
+application-test.yml
 
 ### fcm ###
 baebae-ff525-firebase-adminsdk-zbc8h-7fd10e518b.json
