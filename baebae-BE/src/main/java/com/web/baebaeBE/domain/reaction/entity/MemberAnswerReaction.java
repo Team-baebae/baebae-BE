@@ -10,6 +10,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "member_answer_reaction")
+@IdClass(MemberIdAnswerId.class)
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -18,14 +19,12 @@ import org.hibernate.annotations.OnDeleteAction;
 public class MemberAnswerReaction {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
+    @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "answer_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
