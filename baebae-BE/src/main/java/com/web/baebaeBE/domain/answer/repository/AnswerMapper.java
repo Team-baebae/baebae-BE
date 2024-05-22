@@ -11,18 +11,21 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Component
 @AllArgsConstructor
 public class AnswerMapper {
     public Answer toEntity(AnswerCreateRequest request, Question question, Member member) {
-        // Music 엔티티 생성
-        Music music = Music.builder()
-                .musicName(request.getMusicName())
-                .musicSinger(request.getMusicSinger())
-                .musicAudioUrl(request.getMusicAudioUrl())
-                .build();
+        // 요청에서 music 관련 필드가 있는지 확인
+        Music music = null;
+        if (request.getMusicName() != null || request.getMusicSinger() != null || request.getMusicAudioUrl() != null) {
+            // Music 엔티티 생성
+            music = Music.builder()
+                    .musicName(request.getMusicName())
+                    .musicSinger(request.getMusicSinger())
+                    .musicAudioUrl(request.getMusicAudioUrl())
+                    .build();
+        }
 
         String senderNickname = question.getNickname();
 
@@ -35,11 +38,13 @@ public class AnswerMapper {
                 .linkAttachments(request.getLinkAttachments())
                 .profileOnOff(request.getProfileOnOff())
                 .createdDate(LocalDateTime.now())
-                .music(music)
+                .music(music) // music이 null이 아닌 경우 설정
                 .build();
 
-        // Music 엔티티에 Answer 설정
-        music.setAnswer(answer);
+        // Music 엔티티에 Answer 설정 (music이 null이 아닌 경우)
+        if (music != null) {
+            music.setAnswer(answer);
+        }
 
         return answer;
     }
@@ -48,7 +53,6 @@ public class AnswerMapper {
         Music music = answer.getMusic();
         Member member = answer.getMember();
         Question question = answer.getQuestion();
-
 
         return AnswerDetailResponse.of(
                 answer.getId(),
@@ -65,7 +69,6 @@ public class AnswerMapper {
                 music != null ? music.getMusicAudioUrl() : null,
                 answer.getImageFile(),
                 answer.getCreatedDate()
-
         );
     }
 
