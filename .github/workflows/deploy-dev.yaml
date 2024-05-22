@@ -23,6 +23,7 @@ jobs:
         run: |
           echo "${{ secrets.APPLICATION_YML }}" > baebae-BE/src/main/resources/application.yml
           echo "${{ secrets.APPLICATION_DEPLOY_YML }}" > baebae-BE/src/main/resources/application-deploy.yml
+          echo "${{ secrets.APPLICATION_TEST_YML }}" > baebae-BE/src/test/resources/application-test.yml
 
       - name: create-json
         id: create-json
