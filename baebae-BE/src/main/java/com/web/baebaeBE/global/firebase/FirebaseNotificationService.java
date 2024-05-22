@@ -7,6 +7,8 @@ import com.web.baebaeBE.domain.fcm.repository.FcmTokenRepository;
 import com.web.baebaeBE.domain.fcm.service.FcmService;
 import com.web.baebaeBE.domain.member.entity.Member;
 import com.web.baebaeBE.domain.answer.entity.Answer;
+import com.web.baebaeBE.domain.notification.dto.NotificationRequest;
+import com.web.baebaeBE.domain.notification.service.NotificationService;
 import com.web.baebaeBE.domain.question.entity.Question;
 import com.web.baebaeBE.domain.reaction.entity.MemberAnswerReaction;
 import lombok.RequiredArgsConstructor;
@@ -26,11 +28,22 @@ public class FirebaseNotificationService {
     private final FirebaseMessagingService firebaseMessagingService;
     private final FcmTokenRepository fcmTokenRepository;
     private final FcmService fcmService;
+    private final NotificationService notificationService;
 
 
     public void notifyNewQuestion(Member member, Question question) {
         String notificationTitle = question.getNickname() + "님이 질문을 남겼어요!\n";
         String notificationBody = question.getContent();
+
+        // 알림 생성 및 전송
+        NotificationRequest.create notificationDto = new NotificationRequest.create(
+                member.getId(),
+                question.getNickname() + "님이 질문을 남겼어요!",
+                question.getContent(),
+                NotificationRequest.EventType.NEW_ANSWER,
+                null
+        );
+        notificationService.createNotification(notificationDto);
 
         // 모든 fcm 토큰 가져오기
         List<FcmToken> fcmTokens = fcmTokenRepository.findByMemberId(member.getId());
@@ -43,6 +56,16 @@ public class FirebaseNotificationService {
     public void notifyNewAnswer(Member member, Question question, Answer answer) {
         String notificationTitle = member.getNickname() + "님이 질문에 답변을 남겼어요!\n";
         String notificationBody = answer.getContent();
+
+        // 알림 생성 및 전송
+        NotificationRequest.create notificationDto = new NotificationRequest.create(
+                member.getId(),
+                member.getNickname() + "님이 질문에 답변을 남겼어요!",
+                question.getContent(),
+                NotificationRequest.EventType.NEW_ANSWER,
+                null
+        );
+        notificationService.createNotification(notificationDto);
 
         // 모든 fcm 토큰 가져오기
         List<FcmToken> fcmTokens = fcmTokenRepository.findByMemberId(question.getSender().getId());
@@ -71,6 +94,16 @@ public class FirebaseNotificationService {
                 break;
         }
         String notificationTitle = member.getNickname()+"님이 " + emoticon + "을 남겼어요!\n";
+
+        //알림 생성 및 저장
+        NotificationRequest.create notificationDto = new NotificationRequest.create(
+                answer.getMember().getId(),
+                notificationTitle,
+                answer.getContent(),
+                NotificationRequest.EventType.NEW_ANSWER,
+                reaction.getReaction()
+        );
+        notificationService.createNotification(notificationDto);
 
         // 모든 fcm 토큰 가져오기
         List<FcmToken> fcmTokens = fcmTokenRepository.findByMemberId(answer.getMember().getId());

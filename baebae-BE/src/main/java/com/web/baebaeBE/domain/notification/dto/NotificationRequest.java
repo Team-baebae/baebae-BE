@@ -1,5 +1,6 @@
 package com.web.baebaeBE.domain.notification.dto;
 
+import com.web.baebaeBE.domain.reaction.entity.ReactionValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +18,7 @@ public class NotificationRequest {
     private String notificationContent;
     private String detailContent;
     private EventType eventType;
-    private String reactionType;
+    private ReactionValue reactionType;
   }
 
   public enum EventType {

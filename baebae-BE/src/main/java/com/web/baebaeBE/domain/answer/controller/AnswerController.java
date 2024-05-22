@@ -7,6 +7,9 @@ import com.web.baebaeBE.domain.answer.dto.AnswerResponse;
 import com.web.baebaeBE.domain.answer.service.AnswerService;
 
 import com.web.baebaeBE.domain.reaction.entity.ReactionValue;
+import com.web.baebaeBE.global.authorization.annotation.AuthorizationAnswer;
+import com.web.baebaeBE.global.authorization.annotation.AuthorizationMember;
+import com.web.baebaeBE.global.authorization.annotation.AuthorizationQuestion;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +29,7 @@ public class AnswerController implements AnswerApi {
     private final AnswerService answerService;
 
     @PostMapping(value = "/{memberId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @AuthorizationMember
     public ResponseEntity<AnswerDetailResponse> createAnswer(@PathVariable Long memberId,
                                                              @RequestPart(value = "imageFile") MultipartFile imageFile,
                                                              @RequestPart AnswerCreateRequest request) {
@@ -43,6 +47,7 @@ public class AnswerController implements AnswerApi {
     }
 
     @PutMapping(value = "/{answerId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @AuthorizationAnswer
     public ResponseEntity<AnswerDetailResponse> updateAnswer(@PathVariable Long answerId,
                                                              @RequestPart(value = "imageFile", required = false) MultipartFile imageFile,
                                                              @RequestPart AnswerCreateRequest request) {
@@ -51,6 +56,7 @@ public class AnswerController implements AnswerApi {
     }
 
     @DeleteMapping("/{answerId}")
+    @AuthorizationAnswer
     public ResponseEntity<Void> deleteAnswer(@PathVariable Long answerId) {
         answerService.deleteAnswer(answerId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);

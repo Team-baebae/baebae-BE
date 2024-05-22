@@ -60,17 +60,24 @@ public class AnswerService {
         Question question = questionRepository.findById(request.getQuestionId())
                 .orElseThrow(() -> new BusinessException(AnswerError.NO_EXIST_QUESTION));
 
+        if(question.isAnswered() == true)
+            throw new BusinessException(AnswerError.ALREADY_ANSWERED_QUESTION); // 이미 답변한 질문이면 예외처리
+
         // Answer 생성
         Answer answer = answerMapper.toEntity(request, question, member);
         Answer savedAnswer = answerRepository.save(answer);
+        String imageUrl;
         if (!imageFile.isEmpty()) {
             try (InputStream inputStream = imageFile.getInputStream()) {
-                String imageUrl = s3ImageStorageService.uploadFile(member.getId().toString(), answer.getId().toString(), "image", 0, inputStream, imageFile.getSize(), imageFile.getContentType());
+                imageUrl = s3ImageStorageService.uploadFile(member.getId().toString(), answer.getId().toString(), "image", 0, inputStream, imageFile.getSize(), imageFile.getContentType());
                 answer.setImageFile(imageUrl);
             } catch (IOException e) {
                 throw new BusinessException(AnswerError.IMAGE_PROCESSING_ERROR);
             }
+        } else{
+            imageUrl = s3ImageStorageService.getDefaultFileUrl(); // 기본이미지
         }
+        answer.setImageFile(imageUrl);
 
         // ReactionCount 생성
         ReactionCount reactionCount = ReactionCount.builder()
@@ -82,15 +89,6 @@ public class AnswerService {
                 .build();
         reactionCountJpaRepository.save(reactionCount);
 
-        // 알림 생성 및 전송
-        NotificationRequest.create notificationDto = new NotificationRequest.create(
-                member.getId(),
-                "귀하의 질문에 새로운 답변이 등록되었습니다!",
-                question.getContent(),
-                NotificationRequest.EventType.NEW_ANSWER,
-                null
-        );
-        notificationService.createNotification(notificationDto);
         // 질문의 isAnswered 상태를 true로 업데이트
         question.setAnswered(true);
         questionRepository.save(question);

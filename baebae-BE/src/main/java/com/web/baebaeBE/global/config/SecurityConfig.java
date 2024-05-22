@@ -5,10 +5,14 @@ import com.web.baebaeBE.global.jwt.JwtTokenProvider;
 import com.web.baebaeBE.domain.login.service.OAuth2UserCustomService;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -21,8 +25,10 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import javax.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static com.web.baebaeBE.global.security.SecurityConstants.NO_AUTH_LIST;
 import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
@@ -33,8 +39,9 @@ import static org.springframework.boot.autoconfigure.security.servlet.PathReques
 @EnableMethodSecurity
 public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
-    private final OAuth2UserCustomService oAuth2UserCustomService;
 
+    @Value("${allowed.origins}")
+    private String[] allowedOrigins;
 
 
     // Spring Security 제외 목록 (인증,인가 검사 제외)
@@ -42,6 +49,9 @@ public class SecurityConfig {
     public WebSecurityCustomizer configure() {
         return web -> {
             web.ignoring()
+                    .requestMatchers(HttpMethod.GET, "/api/member/profile-image/{memberId}")
+                    .requestMatchers(HttpMethod.GET, "/api/category/{memberId}")
+                    .requestMatchers(HttpMethod.GET, "/api/member/nickname/{nickname}")
                     //.requestMatchers(toH2Console())
                     .requestMatchers(NO_AUTH_LIST);
                     //.requestMatchers("/**");
@@ -80,7 +90,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "https://api.flipit.co.kr")); // 허용할 오리진 설정
+        configuration.setAllowedOrigins(List.of(allowedOrigins)); // 허용할 오리진 설정
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH")); // 허용할 HTTP 메소드 설정
         configuration.setAllowedHeaders(Collections.singletonList("*")); // 허용할 HTTP 헤더 설정
         configuration.setAllowCredentials(true); // 쿠키를 포함한 요청 허용 설정

@@ -4,6 +4,8 @@ import com.web.baebaeBE.domain.answer.entity.Answer;
 import com.web.baebaeBE.domain.category.entity.Category;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
 
@@ -18,14 +20,17 @@ public class CategorizedAnswer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "categorized_answer_id")
     private Long id;
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Category category;
 
     @ManyToOne
     @JoinColumn(name = "answer_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Answer answer;
 
 }

@@ -42,7 +42,7 @@ public class Question {
     private LocalDateTime createdDate;
 
     @Column(name = "is_answered", nullable = false)
-    private boolean isAnswered = false;
+    private boolean isAnswered;
 
 
     public static Question of(Long id, Member sender, Member receiver, String content, String nickname, Boolean profileOnOff,

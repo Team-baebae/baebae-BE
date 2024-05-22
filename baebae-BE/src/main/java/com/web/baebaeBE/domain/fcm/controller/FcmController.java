@@ -26,12 +26,12 @@ public class FcmController implements FcmApi {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/{memberId}")
+    /*@PutMapping("/{memberId}")
     public ResponseEntity<Void> updateFcmToken(
             @PathVariable Long memberId,
             @RequestBody FcmRequest.UpdateToken request
     ) {
         fcmService.updateFcmToken(request.getOldFcmToken(), request.getNewFcmToken(), memberId);
         return ResponseEntity.ok().build();
-    }
+    }*/
 }

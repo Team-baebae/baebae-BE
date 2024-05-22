@@ -13,7 +13,8 @@ public enum AnswerError implements ErrorCode {
     NO_EXIST_ANSWER(HttpStatus.NOT_FOUND, "M-002", "존재하지 않는 답변입니다."),
     NO_EXIST_QUESTION(HttpStatus.NOT_FOUND, "M-003", "존재하지 않는 질문입니다."),
     IMAGE_PROCESSING_ERROR(HttpStatus.NOT_FOUND, "M-004", "이미지 업로드 오류입니다."),
-    ALREADY_REACTED(HttpStatus.NOT_FOUND, "M-005", "이미 반응하였습니다.");
+    ALREADY_REACTED(HttpStatus.NOT_FOUND, "M-005", "이미 반응하였습니다."),
+    ALREADY_ANSWERED_QUESTION(HttpStatus.CONFLICT, "M-006", "이미 답변한 질문입니다.");
 
     private final HttpStatus httpStatus;
     private final String errorCode;
