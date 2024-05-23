@@ -41,4 +41,4 @@ jobs:
         run: |
           cd baebae-BE
           chmod +x ./gradlew
-          ./gradlew build 
+          ./gradlew build --quiet
