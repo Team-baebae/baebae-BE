@@ -26,7 +26,7 @@ public class Music {
     @Column(name = "music_name", nullable = false)
     private String musicName;
 
-    @Column(name = "music_audo_url")
+    @Column(name = "music_audio_url")
     private String musicAudioUrl;
 
     @Column(name = "music_singer", nullable = false)
