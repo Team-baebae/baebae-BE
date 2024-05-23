@@ -35,14 +35,12 @@ jobs:
           json: ${{ secrets.FCM_CERTIFICATION }}
             cat baebae-BE/src/main/resources/baebae-ff525-firebase-adminsdk-zbc8h-7fd10e518b.json
 
-      - name: Print firebase-admin-sdk file
-        run: cat baebae-BE/src/main/resources/baebae-ff525-firebase-adminsdk-zbc8h-7fd10e518b.json
 
       - name: Build with Gradle
         run: |
           cd baebae-BE
           chmod +x ./gradlew
-          ./gradlew build -x test
+          ./gradlew build --quiet
 
       - name: Create deployment package
         run: |
