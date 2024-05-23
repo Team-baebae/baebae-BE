@@ -38,7 +38,7 @@ jobs:
           
       - name: Create Firebase credentials file
         run: |
-          echo "${{ secrets.FIREBASE_CREDENTIALS_JSON }}" > baebae-BE/src/main/resources/baebae-ff525-firebase-adminsdk-zbc8h-7fd10e518b.json
+          echo "${{ secrets.FIREBASE_CREDENTIALS_JSON }}" > baebae-BE/src/test/resources/baebae-ff525-firebase-adminsdk-zbc8h-7fd10e518b.json
 
 
       - name: Build with Gradle
