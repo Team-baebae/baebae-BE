@@ -53,14 +53,8 @@ public class OtherController {
     @GetMapping("/api/image")
     @Operation(
             summary = "이미지 추출 API",
-            description = "S3에 저장된 이미지를 추출합니다.",
-            security = @SecurityRequirement(name = "bearerAuth")
+            description = "S3에 저장된 이미지를 추출합니다."
     )
-    @Parameter(
-            in = ParameterIn.HEADER,
-            name = "Authorization", required = true,
-            schema = @Schema(type = "string"),
-            description = "Bearer [Access 토큰]")
     public ResponseEntity<Map<String, String>> getFile(@RequestParam String url) throws IOException{
         InputStream inputStream = s3ImageStorageService.getFileData(url);
         byte[] bytes = inputStream.readAllBytes();
