@@ -38,7 +38,7 @@ jobs:
           
       - name: Create Firebase credentials file in test resources
         id: create-json
-        uses: jsdainell/create-json@1.1.2
+        uses: jsdaniell/create-json@1.1.2
         with:
           name: "baebae-BE/src/test/resources/baebae-ff525-firebase-adminsdk-zbc8h-7fd10e518b.json"
           json: ${{ secrets.FCM_CERTIFICATION}}
