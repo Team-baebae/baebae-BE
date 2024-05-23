@@ -121,29 +121,15 @@ public class AnswerTest {
                 .refreshToken("null")
                 .build();
 
-        // JwtFactory를 사용하여 testReceiver에 대한 토큰 생성
-        JwtFactory jwtFactoryForReceiver = new JwtFactory(
-                testReceiver.getEmail(),
-                new Date(),
-                new Date(new Date().getTime() + 14 * 24 * 60 * 60 * 1000), // 14일 후 만료
-                new HashMap<>()
-        );
 
-        String receiverToken = jwtFactoryForReceiver.createToken(jwtProperties);
-        System.out.println();
-        testReceiver.updateRefreshToken(receiverToken);
-
-        // testMember 인증
         when(memberRepository.save(any(Member.class))).thenReturn(testMember);
         when(memberRepository.findByEmail("test@gmail.com")).thenReturn(Optional.of(testMember));
         when(memberRepository.findById(1L)).thenReturn(Optional.of(testMember));
 
-        // testReceiver 인증
         when(memberRepository.save(any(Member.class))).thenReturn(testReceiver);
         when(memberRepository.findByEmail("test@gmail2.com")).thenReturn(Optional.of(testReceiver));
-        when(memberRepository.findById(2L)).thenReturn(Optional.of(testReceiver));
+        when(memberRepository.findById(1L)).thenReturn(Optional.of(testReceiver));
 
-        //토큰 생성
         refreshToken = tokenProvider.generateToken(testMember, Duration.ofDays(14));  // 임시 refreshToken 생성
         refreshToken = tokenProvider.generateToken(testReceiver, Duration.ofDays(14));
 
@@ -153,7 +139,6 @@ public class AnswerTest {
         testReceiver.updateRefreshToken(refreshToken);
         when(memberRepository.save(testReceiver)).thenReturn(testReceiver);
 
-        // 토큰으로 사용자 return
         when(memberRepository.findByRefreshToken(refreshToken)).thenReturn(Optional.of(testMember));
         when(memberRepository.findByRefreshToken(refreshToken)).thenReturn(Optional.of(testReceiver));
 
@@ -225,7 +210,7 @@ public class AnswerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].content").value("이것은 답변입니다."));
     }
-    /*
+/*
     @Test
     @DisplayName("답변 수정 테스트(): 답변을 수정한다.")
     public void updateAnswerTest() throws Exception {
@@ -242,25 +227,9 @@ public class AnswerTest {
                 testMember.getNickname(), "안녕", true, "https://link.com", "노래 제목", "가수 이름", "https://audio.url",
                 "https://image.url", LocalDateTime.now()
         );
-        Music music = Music.builder()
-                .musicName("노래 제목")
-                .musicSinger("가수 이름")
-                .musicAudioUrl("https://audio.url")
-                .build();
-
-        Answer answer = Answer.builder()
-                .id(1L)
-                .question(testQuestion)
-                .member(testMember)
-                .content("이것은 답변입니다.")
-                .profileOnOff(true)
-                .linkAttachments("https://link.com")
-                .music(music)
-                .imageUrl("https://image.url")
-                .build();
 
         // Mock 설정
-        when(answerRepository.findByAnswerId(1L)).thenReturn(Optional.of(answer));
+        when(answerRepository.findByAnswerId(1L)).thenReturn(Optional.of(testAnswer));
         when(answerService.updateAnswer(eq(1L), any(AnswerCreateRequest.class), any(MockMultipartFile.class)))
                 .thenReturn(answerDetailResponse);
 
@@ -293,7 +262,7 @@ public class AnswerTest {
                 .musicAudioUrl("https://audio.url")
                 .build();
 
-        Answer answer = Answer.builder()
+        testAnswer = Answer.builder()
                 .id(1L)
                 .question(testQuestion)
                 .member(testMember)
@@ -304,10 +273,7 @@ public class AnswerTest {
                 .imageUrl("https://image.url")
                 .build();
 
-        when(answerRepository.save(any(Answer.class))).thenReturn(answer);
-        answer = answerRepository.save(answer);
-
-        when(answerRepository.findByAnswerId(1L)).thenReturn(Optional.of(answer));
+        when(answerRepository.findByAnswerId(1L)).thenReturn(Optional.of(testAnswer));
         doNothing().when(answerService).deleteAnswer(eq(1L));
 
         // When
@@ -316,7 +282,7 @@ public class AnswerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
-       */
+*/
     @Test
     @DisplayName("답변 반응 확인 테스트(): 답변에 대한 반응 상태를 확인한다.")
     public void hasReactedTest() throws Exception {
@@ -329,4 +295,5 @@ public class AnswerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(0));
     }
+
 }
