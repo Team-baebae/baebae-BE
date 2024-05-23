@@ -37,12 +37,16 @@ jobs:
           echo "${{ secrets.APPLICATION_TEST_YML }}" > baebae-BE/src/test/resources/application-test.yml
           
       - name: Create Firebase credentials file in main resources
+        env:
+          FIREBASE_CREDENTIALS_JSON: ${{ secrets.FIREBASE_CREDENTIALS_JSON }}
         run: |
-          echo "${{ secrets.FIREBASE_CREDENTIALS_JSON }}" | sed 's/\\n/\n/g' > baebae-BE/src/main/resources/baebae-ff525-firebase-adminsdk-zbc8h-7fd10e518b.json
+          echo $FIREBASE_CREDENTIALS_JSON | base64 --decode > baebae-BE/src/main/resources/baebae-ff525-firebase-adminsdk-zbc8h-7fd10e518b.json
 
       - name: Create Firebase credentials file in test resources
+        env:
+          FIREBASE_CREDENTIALS_JSON: ${{ secrets.FIREBASE_CREDENTIALS_JSON }}
         run: |
-          echo "${{ secrets.FIREBASE_CREDENTIALS_JSON }}" | sed 's/\\n/\n/g' > baebae-BE/src/test/resources/baebae-ff525-firebase-adminsdk-zbc8h-7fd10e518b.json
+          echo $FIREBASE_CREDENTIALS_JSON | base64 --decode > baebae-BE/src/test/resources/baebae-ff525-firebase-adminsdk-zbc8h-7fd10e518b.json
 
       - name: Build with Gradle
         run: |
