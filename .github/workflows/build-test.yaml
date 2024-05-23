@@ -35,9 +35,18 @@ jobs:
           echo "${{ secrets.APPLICATION_DEPLOY_YML }}" > baebae-BE/src/main/resources/application-deploy.yml
           echo "${{ secrets.TEST_APPLICATION_YML }}" > baebae-BE/src/test/resources/application.yml
           echo "${{ secrets.APPLICATION_TEST_YML }}" > baebae-BE/src/test/resources/application-test.yml
+
+
+      - name: Create Firebase credentials file in main resources
+        id: create-main-json
+        uses: jsdaniell/create-json@1.1.2
+        with:
+          name: "baebae-BE/src/main/resources/baebae-ff525-firebase-adminsdk-zbc8h-7fd10e518b.json"
+          json: ${{ secrets.FCM_CERTIFICATION }}
+
           
       - name: Create Firebase credentials file in test resources
-        id: create-json
+        id: create-json-test
         uses: jsdaniell/create-json@1.1.2
         with:
           name: "baebae-BE/src/test/resources/baebae-ff525-firebase-adminsdk-zbc8h-7fd10e518b.json"
