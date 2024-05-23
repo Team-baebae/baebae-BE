@@ -45,11 +45,6 @@ public class Question {
     @Column(name = "is_answered", nullable = false)
     private boolean isAnswered;
 
-    public void updateContent(String content) {
-        this.content = content;
-
-    }
-
 
     public static Question of(Long id, Member sender, Member receiver, String content, String nickname, Boolean profileOnOff,
                               LocalDateTime createdDate, Boolean isAnswered) {

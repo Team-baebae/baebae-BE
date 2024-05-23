@@ -1,10 +1,12 @@
 package com.web.baebaeBE.integration.question;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.web.baebaeBE.config.jwt.JwtFactory;
 import com.web.baebaeBE.domain.oauth2.controller.Oauth2Controller;
 import com.web.baebaeBE.domain.question.dto.QuestionDetailResponse;
 import com.web.baebaeBE.domain.question.entity.Question;
 import com.web.baebaeBE.domain.question.service.QuestionService;
+import com.web.baebaeBE.global.jwt.JwtProperties;
 import com.web.baebaeBE.global.jwt.JwtTokenProvider;
 import com.web.baebaeBE.domain.member.entity.Member;
 import com.web.baebaeBE.domain.member.entity.MemberType;
@@ -25,6 +27,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -44,7 +47,7 @@ import java.util.Optional;
 @SpringBootTest()
 @AutoConfigureMockMvc
 @WithMockUser
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@ActiveProfiles("test")
 @Transactional
 public class QuestionTest {
 
@@ -56,7 +59,8 @@ public class QuestionTest {
     private QuestionRepository questionRepository;
     @MockBean
     private QuestionService questionService;
-
+    @Autowired
+    private JwtProperties jwtProperties;
     @Autowired
     private JwtTokenProvider tokenProvider;
     @Autowired
@@ -66,11 +70,13 @@ public class QuestionTest {
     private Member testMember;
     private Member testReceiver;
     private String refreshToken;
+    private String refreshTokenReceiver;
     private QuestionDetailResponse testQuestionDetailResponse;
 
     @BeforeEach
     void setup() {
         testMember = Member.builder()
+                .id(1L)
                 .email("test@gmail.com")
                 .nickname("장지효")
                 .memberType(MemberType.KAKAO)
@@ -78,24 +84,35 @@ public class QuestionTest {
                 .build();
 
         testReceiver = Member.builder()
+                .id(2L)
                 .email("test@gmail2.com")
                 .nickname("장지효2")
                 .memberType(MemberType.KAKAO)
                 .refreshToken("null")
                 .build();
 
-        refreshToken = tokenProvider.generateToken(testMember, Duration.ofDays(14));
-        testMember.updateRefreshToken(refreshToken);
-        memberRepository.save(testMember);
 
-        refreshToken = tokenProvider.generateToken(testReceiver, Duration.ofDays(14));
-        testReceiver.updateRefreshToken(refreshToken);
-        memberRepository.save(testReceiver);
-
+        when(memberRepository.save(any(Member.class))).thenReturn(testMember);
         when(memberRepository.findByEmail("test@gmail.com")).thenReturn(Optional.of(testMember));
-        when(memberRepository.findByEmail("test@gmail2.com")).thenReturn(Optional.of(testReceiver));
+        when(memberRepository.findById(1L)).thenReturn(Optional.of(testMember));
 
+        when(memberRepository.save(any(Member.class))).thenReturn(testReceiver);
+        when(memberRepository.findByEmail("test@gmail2.com")).thenReturn(Optional.of(testReceiver));
+        when(memberRepository.findById(2L)).thenReturn(Optional.of(testReceiver));
+
+        refreshToken = tokenProvider.generateToken(testMember, Duration.ofDays(14));  // 임시 refreshToken 생성
+        refreshTokenReceiver = tokenProvider.generateToken(testReceiver, Duration.ofDays(14));
+
+        testMember.updateRefreshToken(refreshToken);
+        when(memberRepository.save(testMember)).thenReturn(testMember);
+
+        testReceiver.updateRefreshToken(refreshTokenReceiver);
+        when(memberRepository.save(testReceiver)).thenReturn(testReceiver);
+
+        when(memberRepository.findByRefreshToken(refreshToken)).thenReturn(Optional.of(testMember));
+        when(memberRepository.findByRefreshToken(refreshTokenReceiver)).thenReturn(Optional.of(testReceiver));
     }
+
 
     @Test
     @DisplayName("질문 생성 테스트(): 질문을 생성한다.")
@@ -149,20 +166,21 @@ public class QuestionTest {
     @DisplayName("질문 삭제 테스트(): 질문을 삭제한다.")
     public void deleteQuestionTest() throws Exception {
 
-        String content = "이것은 삭제할 질문입니다.";
-
+        // 질문 생성 및 저장
         Question question = Question.builder()
+                .id(1L)
                 .sender(testMember)
                 .receiver(testReceiver)
-                .content(content)
+                .content("이것은 삭제할 질문입니다.")
                 .nickname("닉네임")
                 .profileOnOff(true)
                 .createdDate(LocalDateTime.now())
                 .build();
-        question.setId(1L);
 
         when(questionRepository.save(any(Question.class))).thenReturn(question);
+        question = questionRepository.save(question);
 
+        when(questionRepository.findById(1L)).thenReturn(Optional.of(question));
         doNothing().when(questionService).deleteQuestion(eq(1L));
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/questions/{questionId}", question.getId())

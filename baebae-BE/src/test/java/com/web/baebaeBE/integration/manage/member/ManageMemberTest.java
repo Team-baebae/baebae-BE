@@ -46,7 +46,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest()
 @AutoConfigureMockMvc
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @WithMockUser
 @Transactional
 public class ManageMemberTest {
@@ -181,7 +180,6 @@ public class ManageMemberTest {
                 // then
                 .andExpect(status().isOk());
     }
-
 
     @Test
     @DisplayName("닉네임 업데이트 테스트(): 해당 회원의 닉네임을 업데이트한다.")

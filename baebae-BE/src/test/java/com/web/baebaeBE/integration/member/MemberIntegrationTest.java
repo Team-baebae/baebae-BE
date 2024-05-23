@@ -45,7 +45,6 @@ import static org.hamcrest.Matchers.notNullValue;
 
 @SpringBootTest()
 @AutoConfigureMockMvc
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @WithMockUser
 @Transactional
 public class MemberIntegrationTest {
@@ -135,7 +134,7 @@ public class MemberIntegrationTest {
             when(loginService.loginWithExistingUser(any(KakaoUserInfoDto.class), any(LoginRequest.SignUp.class))).thenReturn(signUpResponse);
             when(loginService.signUpNewUser(any(KakaoUserInfoDto.class), any(LoginRequest.SignUp.class))).thenReturn(signUpResponse);
 
-            LoginRequest.SignUp signUpRequest = new LoginRequest.SignUp(MemberType.KAKAO, "김예찬", "fcmToken");
+            LoginRequest.SignUp signUpRequest = new LoginRequest.SignUp(MemberType.KAKAO, "김예찬");
 
             // when
             mockMvc.perform(post("/api/auth/login")
