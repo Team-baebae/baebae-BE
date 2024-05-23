@@ -29,6 +29,12 @@ public class FcmService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(MemberException.NOT_EXIST_MEMBER));
 
+        // 중복 토큰 검사
+        Optional<FcmToken> existingToken = fcmTokenRepository.findByToken(fcmToken);
+        if (existingToken.isPresent()) {
+            throw new BusinessException(FcmException.TOKEN_ALREADY_EXISTS);
+        }
+
         FcmToken token = FcmToken.builder()
                 .token(fcmToken)
                 .member(member)

@@ -22,7 +22,7 @@ public class FcmController implements FcmApi {
             @PathVariable Long memberId,
             @RequestBody FcmRequest.CreateToken request
     ) {
-        FcmToken token = fcmService.addFcmToken(memberId, request.getFcmToken());
+        fcmService.addFcmToken(memberId, request.getFcmToken());
         return ResponseEntity.ok().build();
     }
 

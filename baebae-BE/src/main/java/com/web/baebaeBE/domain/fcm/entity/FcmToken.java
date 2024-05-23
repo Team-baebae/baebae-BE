@@ -37,5 +37,4 @@ public class FcmToken {
     public void updateLastUsedTime() {
         this.lastUsedTime = LocalDateTime.now();
     }
-
 }
