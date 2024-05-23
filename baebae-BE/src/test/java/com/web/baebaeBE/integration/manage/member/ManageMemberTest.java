@@ -181,7 +181,6 @@ public class ManageMemberTest {
                 .andExpect(status().isOk());
     }
 
-
     @Test
     @DisplayName("닉네임 업데이트 테스트(): 해당 회원의 닉네임을 업데이트한다.")
     public void updateNicknameTest() throws Exception {
