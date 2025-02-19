@@ -1,6 +1,6 @@
 package com.web.baebaeBE.global.image.s3;
 
-import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
@@ -15,8 +15,9 @@ import java.net.URL;
 
 @Service
 public class S3ImageStorageService implements ImageStorageService {
+
     @Autowired
-    private AmazonS3Client amazonS3Client;
+    private AmazonS3 amazonS3Client;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
@@ -27,9 +28,11 @@ public class S3ImageStorageService implements ImageStorageService {
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(size);
         metadata.setContentType(contentType);
+
         PutObjectRequest request = new PutObjectRequest(bucketName, key, inputStream, metadata)
                 .withCannedAcl(CannedAccessControlList.PublicRead);
         amazonS3Client.putObject(request);
+
         return getFileUrl(memberId, Id, fileType, index);
     }
 
@@ -39,7 +42,6 @@ public class S3ImageStorageService implements ImageStorageService {
         amazonS3Client.deleteObject(bucketName, key);
     }
 
-    // 여기서 Id는 answerId OR categoryId
     @Override
     public String getFileUrl(String memberId, String Id, String fileType, int index) {
         String key = generateFilePath(memberId, Id, fileType, index);
@@ -47,21 +49,20 @@ public class S3ImageStorageService implements ImageStorageService {
     }
 
     public String getDefaultFileUrl() {
-        return amazonS3Client.getUrl(bucketName,"default_image.jpg").toExternalForm();
+        return amazonS3Client.getUrl(bucketName, "default_image.jpg").toExternalForm();
     }
 
     public InputStream getFileData(String fileUrl) {
         try {
             URL url = new URL(fileUrl);
-            String bucket = "baebae-bucket/";
-            String key = url.getPath().substring(bucket.length()+1);
-            System.out.println(key);
+            String key = url.getPath().substring(1);
             S3Object s3Object = amazonS3Client.getObject(bucketName, key);
             return s3Object.getObjectContent();
         } catch (MalformedURLException e) {
             throw new RuntimeException("Invalid file URL", e);
         }
     }
+
     public String generateFilePath(String memberId, String id, String fileType, int index) {
         switch (fileType) {
             case "profile":
