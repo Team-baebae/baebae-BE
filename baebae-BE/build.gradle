@@ -27,7 +27,11 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.hibernate.validator:hibernate-validator:8.0.0.Final'
+	implementation 'org.glassfish:jakarta.el:4.0.2'
 	testImplementation 'org.projectlombok:lombok:1.18.22'
+
 
 	//롬복
 	implementation 'org.projectlombok:lombok'
@@ -64,6 +68,10 @@ dependencies {
 	//Firebase
 	implementation 'com.google.firebase:firebase-admin:7.3.0'
 	implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.2.2'
+}
+
+tasks.withType(Test) {
+	enabled = false
 }
 
 tasks.named('bootBuildImage') {

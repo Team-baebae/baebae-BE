@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/baebae-BE.iml" filepath="$PROJECT_DIR$/.idea/baebae-BE.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/com.web.baebae-BE.main.iml" filepath="$PROJECT_DIR$/.idea/modules/com.web.baebae-BE.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/com.web.baebae-BE.test.iml" filepath="$PROJECT_DIR$/.idea/modules/com.web.baebae-BE.test.iml" />
     </modules>
   </component>
 </project>
