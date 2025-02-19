@@ -3,10 +3,10 @@ name: Feature Branch CI
 on:
   push:
     branches:
-      - main
+      - develop
 
 jobs:
-  build-and-package:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -28,41 +28,43 @@ jobs:
           echo "${{ secrets.TEST_APPLICATION_YML }}" > baebae-BE/src/test/resources/application.yml
           echo "${{ secrets.APPLICATION_TEST_YML }}" > baebae-BE/src/test/resources/application-test.yml
 
-      - name: create-json
-        id: create-json
+      - name: Create JSON config
         uses: jsdaniell/create-json@1.1.2
         with:
           name: "baebae-BE/src/main/resources/baebae-ff525-firebase-adminsdk-zbc8h-7fd10e518b.json"
           json: ${{ secrets.FCM_CERTIFICATION }}
-            cat baebae-BE/src/main/resources/baebae-ff525-firebase-adminsdk-zbc8h-7fd10e518b.json
 
       - name: Build with Gradle
         run: |
           cd baebae-BE
           chmod +x ./gradlew
-          ./gradlew build -
+          ./gradlew build --quiet
 
       - name: Create deployment package
         run: |
           zip -r deploy-package.zip baebae-BE/build/libs/baebae-BE-0.0.1-SNAPSHOT.jar
 
-      - name: Configure AWS CLI && Upload file to Object Storage
+      - name: Upload package to AWS S3
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.NAVER_ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.NAVER_SECRET_KEY }}
-          AWS_DEFAULT_REGION: 'us-east-2'
+          AWS_DEFAULT_REGION: "ap-northeast-2"
         run: |
-          aws --endpoint-url=https://kr.object.ncloudstorage.com s3 cp deploy-package.zip s3://baebae-bucket/deploy-package --content-type application/zip
+          aws s3 cp deploy-package.zip s3://baebae-bucket-2025/deploy-package --region ap-northeast-2 --content-type application/zip
 
-      - name: Start Deploy Using SourceDeploy
+      - name: Deploy to AWS EC2
         env:
-          PROJECT_ID: ${{ secrets.PROJECT_ID }}
-          STAGE_ID: ${{ secrets.STAGE_ID }}
-          SCENARIO_ID: ${{ secrets.SCENARIO_ID }}
-          ACCESS_KEY: ${{ secrets.NAVER_ACCESS_KEY }}
-          SECRET_KEY: ${{ secrets.NAVER_SECRET_KEY }}
+          PRIVATE_KEY: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
+          HOST: ${{ secrets.AWS_HOST }}
+          USER: ubuntu
         run: |
-          cd baebae-BE
-          chmod +x request_source_deploy_start.sh
-          ./request_source_deploy_start.sh
-
+          echo "$PRIVATE_KEY" > private_key.pem
+          chmod 600 private_key.pem
+          ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST << 'EOF'
+            cd /home/ubuntu/app
+            aws s3 cp s3://baebae-bucket-2025/deploy-package /home/ubuntu/app/deploy-package.zip
+            unzip deploy-package.zip
+            ./deploy_script.sh  
+          EOF
+          
+          
