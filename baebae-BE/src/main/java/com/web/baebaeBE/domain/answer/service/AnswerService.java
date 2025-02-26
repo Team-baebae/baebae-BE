@@ -82,14 +82,13 @@ public class AnswerService {
         }
         answer.setImageFile(imageUrl);
 
-        String musicUrl = request.getMusicAudioUrl();  // 프론트에서 받은 Spotify URL
+        String musicUrl = request.getMusicAudioUrl();
 
-        // 5️⃣ `Music` 객체 생성 및 저장
         Music music = Music.builder()
-                .musicName(request.getMusicName())   // 프론트에서 받은 음악 제목
-                .musicSinger(request.getMusicSinger()) // 프론트에서 받은 가수명
-                .musicAudioUrl(musicUrl) // 🎯 **Spotify에서 받은 URL을 저장**
-                .answer(answer)  // Answer와 연결
+                .musicName(request.getMusicName())
+                .musicSinger(request.getMusicSinger())
+                .musicAudioUrl(musicUrl)
+                .answer(answer)
                 .build();
 
         musicRepository.save(music);
