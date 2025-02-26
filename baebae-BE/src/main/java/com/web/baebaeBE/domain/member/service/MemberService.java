@@ -17,6 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -89,5 +91,17 @@ public class MemberService {
                 .orElseThrow(() -> new BusinessException(MemberException.NOT_EXIST_MEMBER));
 
         return  MemberResponse.MemberIdResponse.of(member.getId());
+    }
+
+
+
+
+    // 본인 제외하고 모든 회원을 조회하는 메서드
+    public List<MemberResponse.MemberSearchInformationResponse> searchMembers(Long memberId) {
+        List<Member> members = memberRepository.findAllByIdNot(memberId);
+        return members.stream()
+                .map(member -> MemberResponse.MemberSearchInformationResponse.of(
+                        member.getId(), member.getNickname(), member.getProfileImage()))
+                .collect(Collectors.toList());
     }
 }
