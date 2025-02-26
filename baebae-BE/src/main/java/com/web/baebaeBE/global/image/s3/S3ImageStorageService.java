@@ -55,7 +55,9 @@ public class S3ImageStorageService implements ImageStorageService {
     public InputStream getFileData(String fileUrl) {
         try {
             URL url = new URL(fileUrl);
-            String key = url.getPath().substring(1);
+            String bucket = "baebae-bucket/";
+            String key = url.getPath().substring(bucket.length()+1);
+            System.out.println(key);
             S3Object s3Object = amazonS3Client.getObject(bucketName, key);
             return s3Object.getObjectContent();
         } catch (MalformedURLException e) {

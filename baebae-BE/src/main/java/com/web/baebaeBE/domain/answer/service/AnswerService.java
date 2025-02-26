@@ -9,6 +9,8 @@ import com.web.baebaeBE.domain.categorized.answer.repository.CategorizedAnswerRe
 import com.web.baebaeBE.domain.login.exception.LoginException;
 import com.web.baebaeBE.domain.member.entity.Member;
 import com.web.baebaeBE.domain.member.repository.MemberRepository;
+import com.web.baebaeBE.domain.music.entity.Music;
+import com.web.baebaeBE.domain.music.repository.MusicRepository;
 import com.web.baebaeBE.domain.notification.dto.NotificationRequest;
 import com.web.baebaeBE.domain.notification.service.NotificationService;
 import com.web.baebaeBE.domain.question.repository.QuestionRepository;
@@ -52,6 +54,7 @@ public class AnswerService {
     private final AnswerMapper answerMapper;
     private final ReactionCountJpaRepository reactionCountJpaRepository;
     private final FirebaseNotificationService firebaseNotificationService;
+    private final MusicRepository musicRepository;
 
     @Transactional
     public AnswerDetailResponse createAnswer(AnswerCreateRequest request, Long memberId, MultipartFile imageFile) {
@@ -78,6 +81,18 @@ public class AnswerService {
             imageUrl = s3ImageStorageService.getDefaultFileUrl(); // 기본이미지
         }
         answer.setImageFile(imageUrl);
+
+        String musicUrl = request.getMusicAudioUrl();  // 프론트에서 받은 Spotify URL
+
+        // 5️⃣ `Music` 객체 생성 및 저장
+        Music music = Music.builder()
+                .musicName(request.getMusicName())   // 프론트에서 받은 음악 제목
+                .musicSinger(request.getMusicSinger()) // 프론트에서 받은 가수명
+                .musicAudioUrl(musicUrl) // 🎯 **Spotify에서 받은 URL을 저장**
+                .answer(answer)  // Answer와 연결
+                .build();
+
+        musicRepository.save(music);
 
         // ReactionCount 생성
         ReactionCount reactionCount = ReactionCount.builder()
