@@ -14,6 +14,8 @@ import java.util.Optional;
 
 public interface FollowRepository extends JpaRepository<Follow, Long> {
     Optional<Follow> findByFollowerIdAndFollowingId(Long followerId, Long followingId);
+    // 중복 체크에 사용할 메서드
+    boolean existsByFollowerIdAndFollowingId(Long followerId, Long followingId);
 
     @Query("SELECT fol " +
             "FROM Follow f " +

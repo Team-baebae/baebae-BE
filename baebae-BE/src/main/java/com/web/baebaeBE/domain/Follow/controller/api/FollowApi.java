@@ -145,6 +145,32 @@ public interface FollowApi {
             Pageable page
     );
 
+    @Operation(
+            summary = "팔로우 여부 조회",
+            description = "팔로우 여부를 조회합니다.",
+            security = @SecurityRequirement(name = "bearerAuth")
+    )
+    @Parameter(
+            in = ParameterIn.HEADER,
+            name = "Authorization", required = true,
+            schema = @Schema(type = "string"),
+            description = "Bearer [Access 토큰]")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회"),
+            @ApiResponse(responseCode = "401", description = "토큰 인증 실패",
+                    content = @Content(mediaType = "application/json",
+                            examples = @ExampleObject(value = "{\n" +
+                                    "  \"errorCode\": \"T-002\",\n" +
+                                    "  \"message\": \"해당 토큰은 유효한 토큰이 아닙니다.\"\n" +
+                                    "}"))
+            )
+    })
+    @GetMapping("isFollowing/{followerId}/{followingId}")
+    public ResponseEntity<FollowResponse.isFollowingResponse> isFollowing(
+            @PathVariable Long followerId,
+            @PathVariable Long followingId
+    );
+
 
 
 }

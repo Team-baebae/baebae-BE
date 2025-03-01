@@ -25,4 +25,19 @@ public class FollowResponse {
                     .build();
         }
     }
+
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class isFollowingResponse {
+        private boolean isFollow;
+
+        public static isFollowingResponse of(boolean isFollow) {
+            return isFollowingResponse.builder()
+                    .isFollow(isFollow)
+                    .build();
+        }
+    }
 }

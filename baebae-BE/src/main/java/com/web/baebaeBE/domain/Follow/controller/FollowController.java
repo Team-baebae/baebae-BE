@@ -52,13 +52,14 @@ public class FollowController implements FollowApi {
         return ResponseEntity.ok(followService.getFollowingList(memberId, page));
     }
 
-
-    /*@PutMapping("/{memberId}")
-    public ResponseEntity<Void> updateFcmToken(
-            @PathVariable Long memberId,
-            @RequestBody FcmRequest.UpdateToken request
+    @GetMapping("isFollowing/{followerId}/{followingId}")
+    public ResponseEntity<FollowResponse.isFollowingResponse> isFollowing(
+            @PathVariable Long followerId,
+            @PathVariable Long followingId
     ) {
-        fcmService.updateFcmToken(request.getOldFcmToken(), request.getNewFcmToken(), memberId);
-        return ResponseEntity.ok().build();
-    }*/
+        return ResponseEntity.ok(followService.isFollowing(followerId, followingId));
+    }
+
+
+
 }

@@ -34,8 +34,9 @@ public class FollowService {
         Member following = memberRepository.findById(followingId)
                 .orElseThrow(() -> new BusinessException(MemberException.NOT_EXIST_MEMBER));
 
-        if (!follower.getId().equals(followerId) || !following.getId().equals(followingId)) {
-            throw new BusinessException(FollowException.NOT_EXIST_MEMBER);
+        //이미 팔로우 관계가 있는지 확인
+        if (followRepository.existsByFollowerIdAndFollowingId(followerId, followingId)) {
+            throw new BusinessException(FollowException.ALREADY_EXISTS_FOLLOW);
         }
 
         Follow follow = Follow.builder()
@@ -67,5 +68,10 @@ public class FollowService {
         return followRepository.findAllFollowingsByMemberId(memberId, page)
                 .map(member -> FollowResponse.FollowMemberResponse.of(member));
 
+    }
+
+    public FollowResponse.isFollowingResponse isFollowing(Long followerId, Long followingId) {
+        Optional<Follow> follow = followRepository.findByFollowerIdAndFollowingId(followerId, followingId);
+        return FollowResponse.isFollowingResponse.of(follow.isPresent());
     }
 }
