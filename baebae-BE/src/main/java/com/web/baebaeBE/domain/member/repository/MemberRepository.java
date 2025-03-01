@@ -1,6 +1,8 @@
 package com.web.baebaeBE.domain.member.repository;
 
 import com.web.baebaeBE.domain.member.entity.Member;
+
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -16,5 +18,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
   boolean existsByNickname(String nickname);
 
   Optional<Member> findByRefreshToken(String refreshToken);
+  List<Member> findAllByIdNot(Long memberId);
+
 }
 

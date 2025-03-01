@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -76,6 +78,15 @@ public class MemberController implements MemberApi {
 
     memberService.deleteMember(memberId);
     return ResponseEntity.ok().build();
+  }
+
+  @GetMapping("/search/{memberId}")
+  @AuthorizationMember
+  public List<MemberResponse.MemberSearchInformationResponse> searchMembers(
+          @PathVariable Long memberId,
+          HttpServletRequest httpServletRequest) {
+
+    return memberService.searchMembers(memberId);
   }
 
 

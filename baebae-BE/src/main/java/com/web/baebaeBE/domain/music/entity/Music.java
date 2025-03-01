@@ -17,7 +17,7 @@ public class Music {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "question_id", updatable = false, nullable = false)
-    private Long id;
+    private Long id; // 이름바꾸기
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "answer_id", nullable = false)
