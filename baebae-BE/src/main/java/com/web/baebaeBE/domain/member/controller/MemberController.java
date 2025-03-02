@@ -8,6 +8,8 @@ import com.web.baebaeBE.domain.member.dto.MemberResponse;
 import com.web.baebaeBE.global.authorization.annotation.AuthorizationMember;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -80,13 +82,13 @@ public class MemberController implements MemberApi {
     return ResponseEntity.ok().build();
   }
 
-  @GetMapping("/search/{memberId}")
-  @AuthorizationMember
-  public List<MemberResponse.MemberSearchInformationResponse> searchMembers(
-          @PathVariable Long memberId,
+  @GetMapping("/search/{nickname}")
+  public Page<MemberResponse.MemberSearchInformationResponse> searchMembers(
+          @PathVariable String nickname,
+          Pageable page,
           HttpServletRequest httpServletRequest) {
 
-    return memberService.searchMembers(memberId);
+    return memberService.searchMembers(nickname, page);
   }
 
 
