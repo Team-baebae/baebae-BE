@@ -14,6 +14,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -211,7 +213,7 @@ public interface MemberApi {
 
     @Operation(
             summary = "회원 검색",
-            description = "본인을 제외한 모든 회원을 검색합니다.",
+            description = "모든 회원을 닉네임을 기반으로 검색합니다.",
             security = @SecurityRequirement(name = "bearerAuth")
     )
     @Parameter(
@@ -225,17 +227,11 @@ public interface MemberApi {
                     content = @Content(mediaType = "application/json",
                             examples = @ExampleObject(value = "{\n" +
                                     "  \"errorCode\": \"MM-002\",\n" +
-                                    "  \"message\": \"회원정보와 토큰정보가 일치하지 않습니다.\"\n" +
+                                    "  \"message\": \"토큰정보가 일치하지 않습니다.\"\n" +
                                     "}"))
             ),
-            @ApiResponse(responseCode = "404", description = "존재하지 않는 회원",
-                    content = @Content(mediaType = "application/json",
-                            examples = @ExampleObject(value = "{\n" +
-                                    "  \"errorCode\": \"M-002\",\n" +
-                                    "  \"message\": \"존재하지 않는 회원입니다.\"\n" +
-                                    "}"))
-            )
     })
-    List<MemberResponse.MemberSearchInformationResponse> searchMembers(@PathVariable Long memberId,
+    Page<MemberResponse.MemberSearchInformationResponse> searchMembers(@PathVariable String nickname,
+                                                                       Pageable page,
                                                                        HttpServletRequest httpServletRequest);
 }
