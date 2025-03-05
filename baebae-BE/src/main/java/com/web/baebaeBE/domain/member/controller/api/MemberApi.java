@@ -14,9 +14,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Tag(name = "Member", description = "회원 관리 API")
 public interface MemberApi {
@@ -206,4 +210,28 @@ public interface MemberApi {
     ResponseEntity<Void> deleteMember(@PathVariable Long memberId,
                                         HttpServletRequest httpServletRequest);
 
+
+    @Operation(
+            summary = "회원 검색",
+            description = "모든 회원을 닉네임을 기반으로 검색합니다.",
+            security = @SecurityRequirement(name = "bearerAuth")
+    )
+    @Parameter(
+            in = ParameterIn.HEADER,
+            name = "Authorization", required = true,
+            schema = @Schema(type = "string"),
+            description = "Bearer [Access 토큰]")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "검색 성공"),
+            @ApiResponse(responseCode = "401", description = "토큰 인증 실패",
+                    content = @Content(mediaType = "application/json",
+                            examples = @ExampleObject(value = "{\n" +
+                                    "  \"errorCode\": \"MM-002\",\n" +
+                                    "  \"message\": \"토큰정보가 일치하지 않습니다.\"\n" +
+                                    "}"))
+            ),
+    })
+    Page<MemberResponse.MemberSearchInformationResponse> searchMembers(@PathVariable String nickname,
+                                                                       Pageable page,
+                                                                       HttpServletRequest httpServletRequest);
 }

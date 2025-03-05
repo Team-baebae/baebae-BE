@@ -8,10 +8,14 @@ import com.web.baebaeBE.domain.member.dto.MemberResponse;
 import com.web.baebaeBE.global.authorization.annotation.AuthorizationMember;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 
 @RestController
@@ -76,6 +80,15 @@ public class MemberController implements MemberApi {
 
     memberService.deleteMember(memberId);
     return ResponseEntity.ok().build();
+  }
+
+  @GetMapping("/search/{nickname}")
+  public Page<MemberResponse.MemberSearchInformationResponse> searchMembers(
+          @PathVariable String nickname,
+          Pageable page,
+          HttpServletRequest httpServletRequest) {
+
+    return memberService.searchMembers(nickname, page);
   }
 
 

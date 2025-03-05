@@ -78,6 +78,25 @@ public class MemberResponse {
     }
   }
 
+  @Getter
+  @Setter
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
+  public static class MemberSearchInformationResponse{
+    private Long memberId;
+    private String nickname;
+    private String profileImage;
+
+    public static MemberSearchInformationResponse of (Long memberId, String nickname, String profileImage){
+      return MemberSearchInformationResponse.builder()
+              .memberId(memberId)
+              .nickname(nickname)
+              .profileImage(profileImage)
+              .build();
+    }
+  }
+
 
 
 

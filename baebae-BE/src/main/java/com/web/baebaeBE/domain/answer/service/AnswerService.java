@@ -82,17 +82,6 @@ public class AnswerService {
         }
         answer.setImageFile(imageUrl);
 
-        String musicUrl = request.getMusicAudioUrl();
-
-        Music music = Music.builder()
-                .musicName(request.getMusicName())
-                .musicSinger(request.getMusicSinger())
-                .musicAudioUrl(musicUrl)
-                .answer(answer)
-                .build();
-
-        musicRepository.save(music);
-
         // ReactionCount 생성
         ReactionCount reactionCount = ReactionCount.builder()
                 .answer(savedAnswer)
@@ -107,7 +96,8 @@ public class AnswerService {
         question.setAnswered(true);
         questionRepository.save(question);
 
-        firebaseNotificationService.notifyNewAnswer(member, question,savedAnswer); // 푸시 메세지 전송
+        //firebaseNotificationService.notifyNewAnswer(member, question,savedAnswer); // 푸시 메세지 전송
+
 
         return answerMapper.toDomain(savedAnswer);
     }

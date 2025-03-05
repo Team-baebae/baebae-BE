@@ -11,12 +11,16 @@ import com.web.baebaeBE.domain.member.dto.MemberResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -89,5 +93,15 @@ public class MemberService {
                 .orElseThrow(() -> new BusinessException(MemberException.NOT_EXIST_MEMBER));
 
         return  MemberResponse.MemberIdResponse.of(member.getId());
+    }
+
+
+
+
+    // 모든 회원을 조회하는 메서드
+    public Page<MemberResponse.MemberSearchInformationResponse> searchMembers(String nickname, Pageable page) {
+        return memberRepository.findByNicknameContainingIgnoreCase(nickname, page)
+                .map(member -> MemberResponse.MemberSearchInformationResponse.of(member.getId(), member.getNickname(), member.getProfileImage()));
+
     }
 }
