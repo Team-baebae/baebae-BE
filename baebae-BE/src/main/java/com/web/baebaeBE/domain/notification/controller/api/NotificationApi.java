@@ -21,7 +21,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public interface NotificationApi {
 
     @Operation(
-            summary = "유저의 모든 알림 조회",
+            summary = "유저의 모든 알림 조회하기",
             description = "지정된 멤버 ID에 대한 모든 알림을 조회합니다.",
             security = @SecurityRequirement(name = "bearerAuth")
     )
