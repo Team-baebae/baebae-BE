@@ -61,10 +61,11 @@ jobs:
           echo "$PRIVATE_KEY" > private_key.pem
           chmod 600 private_key.pem
           ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST << 'EOF'
-            cd /home/ubuntu/app
-            aws s3 cp s3://baebae-bucket-2025/deploy-package /home/ubuntu/app/deploy-package.zip
-            unzip deploy-package.zip
-            ./deploy_script.sh  # 배포 실행 스크립트
+              cd /home/ubuntu/app
+              aws s3 cp s3://baebae-bucket-2025/deploy-package /home/ubuntu/app/deploy-package.zip
+              sudo unzip -o /home/ubuntu/app/deploy-package.zip -d /home/ubuntu/app/  
+              ./deploy_script.sh  
           EOF
+      
           
           
