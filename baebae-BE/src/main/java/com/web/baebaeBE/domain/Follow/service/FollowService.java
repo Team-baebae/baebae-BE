@@ -2,6 +2,7 @@ package com.web.baebaeBE.domain.Follow.service;
 
 import com.web.baebaeBE.domain.Follow.dto.FollowResponse;
 import com.web.baebaeBE.domain.Follow.entity.Follow;
+import com.web.baebaeBE.domain.Follow.entity.relationType;
 import com.web.baebaeBE.domain.Follow.entity.statusType;
 import com.web.baebaeBE.domain.Follow.exception.FollowException;
 import com.web.baebaeBE.domain.Follow.repository.FollowRepository;
@@ -43,6 +44,7 @@ public class FollowService {
                 .follower(follower)
                 .following(following)
                 .status(statusType.APPROVED) // 현재는 승인만 존재 (2025.02.28)
+                .relation(relationType.NEW)
                 .createdAt(LocalDateTime.now())
                 .build();
 
