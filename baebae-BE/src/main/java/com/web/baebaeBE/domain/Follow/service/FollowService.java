@@ -76,4 +76,9 @@ public class FollowService {
         Optional<Follow> follow = followRepository.findByFollowerIdAndFollowingId(followerId, followingId);
         return FollowResponse.isFollowingResponse.of(follow.isPresent());
     }
+
+    public FollowResponse.hasNewFollowersResponse hasFollowers(Long memberId){
+        boolean hasNewFollower = followRepository.existsByFollowingIdAndRelation(memberId, relationType.NEW);
+        return FollowResponse.hasNewFollowersResponse.of(hasNewFollower);
+    }
 }

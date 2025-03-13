@@ -60,6 +60,13 @@ public class FollowController implements FollowApi {
         return ResponseEntity.ok(followService.isFollowing(followerId, followingId));
     }
 
+    @GetMapping("followers/new/{memberId}")
+    public ResponseEntity<FollowResponse.hasNewFollowersResponse> getHasNewFollowers(
+            @PathVariable Long memberId
+    ) {
+        return ResponseEntity.ok(followService.hasFollowers(memberId));
+    }
+
 
 
 }
