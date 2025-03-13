@@ -13,7 +13,7 @@ import java.io.InputStream;
 
 import javax.annotation.PostConstruct;
 
-@Configuration
+//@Configuration
 public class FirebaseInitializer {
 
     @Value("${firebase.service-account-file}")
