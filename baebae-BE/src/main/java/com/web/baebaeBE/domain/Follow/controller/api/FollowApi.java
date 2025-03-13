@@ -16,7 +16,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 @Tag(name = "Follow", description = "Follow 관련 API")
 public interface FollowApi {
@@ -169,6 +172,31 @@ public interface FollowApi {
     public ResponseEntity<FollowResponse.isFollowingResponse> isFollowing(
             @PathVariable Long followerId,
             @PathVariable Long followingId
+    );
+
+    @Operation(
+            summary = "새 팔로워 존재 유무 확인",
+            description = "해당 유저의 새로운 팔로워가 존재하는지 유무를 판단한다.",
+            security = @SecurityRequirement(name = "bearerAuth")
+    )
+    @Parameter(
+            in = ParameterIn.HEADER,
+            name = "Authorization", required = true,
+            schema = @Schema(type = "string"),
+            description = "Bearer [Access 토큰]")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회"),
+            @ApiResponse(responseCode = "401", description = "토큰 인증 실패",
+                    content = @Content(mediaType = "application/json",
+                            examples = @ExampleObject(value = "{\n" +
+                                    "  \"errorCode\": \"T-002\",\n" +
+                                    "  \"message\": \"해당 토큰은 유효한 토큰이 아닙니다.\"\n" +
+                                    "}"))
+            )
+    })
+    @GetMapping("followers/new/{memberId}")
+    public ResponseEntity<FollowResponse.hasNewFollowersResponse> getHasNewFollowers(
+            @PathVariable Long memberId
     );
 
 
