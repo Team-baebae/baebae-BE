@@ -23,6 +23,9 @@ public class Follow {
     @Column(name = "status", nullable = false)
     private statusType status;
 
+    @Column(name = "type", nullable = false)
+    private relationType relation;
+
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
