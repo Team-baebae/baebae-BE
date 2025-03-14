@@ -2,6 +2,7 @@ package com.web.baebaeBE.domain.Follow.service;
 
 import com.web.baebaeBE.domain.Follow.dto.FollowResponse;
 import com.web.baebaeBE.domain.Follow.entity.Follow;
+import com.web.baebaeBE.domain.Follow.entity.relationType;
 import com.web.baebaeBE.domain.Follow.entity.statusType;
 import com.web.baebaeBE.domain.Follow.exception.FollowException;
 import com.web.baebaeBE.domain.Follow.repository.FollowRepository;
@@ -43,6 +44,7 @@ public class FollowService {
                 .follower(follower)
                 .following(following)
                 .status(statusType.APPROVED) // 현재는 승인만 존재 (2025.02.28)
+                .relation(relationType.NEW)
                 .createdAt(LocalDateTime.now())
                 .build();
 
@@ -73,5 +75,14 @@ public class FollowService {
     public FollowResponse.isFollowingResponse isFollowing(Long followerId, Long followingId) {
         Optional<Follow> follow = followRepository.findByFollowerIdAndFollowingId(followerId, followingId);
         return FollowResponse.isFollowingResponse.of(follow.isPresent());
+    }
+
+    public FollowResponse.hasNewFollowersResponse hasFollowers(Long memberId){
+        boolean hasNewFollower = followRepository.existsByFollowingIdAndRelation(memberId, relationType.NEW);
+        return FollowResponse.hasNewFollowersResponse.of(hasNewFollower);
+    }
+
+    public void updateAllRelationsToExisting(Long memberId) {
+        followRepository.updateNewRelationToExistingByMemberId(memberId, relationType.EXISTING, relationType.NEW);
     }
 }

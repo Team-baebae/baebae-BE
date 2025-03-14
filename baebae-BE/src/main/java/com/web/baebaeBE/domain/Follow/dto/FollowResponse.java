@@ -40,4 +40,18 @@ public class FollowResponse {
                     .build();
         }
     }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor
+    public static class hasNewFollowersResponse {
+        private boolean hasNewFollow;
+
+        public static hasNewFollowersResponse of(boolean hasNewFollow) {
+            return hasNewFollowersResponse.builder()
+                    .hasNewFollow(hasNewFollow)
+                    .build();
+        }
+    }
 }
