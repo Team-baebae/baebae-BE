@@ -7,6 +7,7 @@ import com.web.baebaeBE.domain.member.entity.Member;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -31,4 +32,9 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
 
     boolean existsByFollowingIdAndRelation(Long memberId, relationType relation);
 
+    @Modifying
+    @Query("UPDATE Follow f SET f.relation = :existingRelation WHERE f.following.id = :memberId AND f.relation = :newRelation")
+    void updateNewRelationToExistingByMemberId(@Param("memberId") Long memberId,
+                                          @Param("existingRelation") relationType existingRelation,
+                                          @Param("newRelation") relationType newRelation);
 }

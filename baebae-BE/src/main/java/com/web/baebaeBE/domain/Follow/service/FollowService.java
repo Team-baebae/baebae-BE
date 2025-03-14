@@ -81,4 +81,8 @@ public class FollowService {
         boolean hasNewFollower = followRepository.existsByFollowingIdAndRelation(memberId, relationType.NEW);
         return FollowResponse.hasNewFollowersResponse.of(hasNewFollower);
     }
+
+    public void updateAllRelationsToExisting(Long memberId) {
+        followRepository.updateNewRelationToExistingByMemberId(memberId, relationType.EXISTING, relationType.NEW);
+    }
 }
