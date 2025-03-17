@@ -1,7 +1,5 @@
 package com.web.baebaeBE.domain.Follow.dto;
 
-import com.web.baebaeBE.domain.Follow.entity.Follow;
-import com.web.baebaeBE.domain.member.dto.MemberResponse;
 import com.web.baebaeBE.domain.member.entity.Member;
 import lombok.*;
 
@@ -16,12 +14,14 @@ public class FollowResponse {
         private Long memberId;
         private String nickname;
         private String profileImage;
+        private boolean following;
 
-        public static FollowMemberResponse of(Member member) {
+        public static FollowMemberResponse of(Member member, boolean isFollowing) {
             return FollowMemberResponse.builder()
                     .memberId(member.getId())
                     .nickname(member.getNickname())
                     .profileImage(member.getProfileImage())
+                    .following(isFollowing)
                     .build();
         }
     }

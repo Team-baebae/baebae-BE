@@ -18,7 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -60,15 +62,23 @@ public class FollowService {
 
     // 나를 팔로우하는 사람들 리스트
     public Page<FollowResponse.FollowMemberResponse> getFollowerList(Long memberId, Pageable page) {
-        return followRepository.findAllFollowersByMemberId(memberId, page)
-                .map(member -> FollowResponse.FollowMemberResponse.of(member));
+
+        Page<Member> members = followRepository.findAllFollowersByMemberId(memberId, page);
+
+        // 내가 팔로우하는 사람들의 ID 목록을 Set으로 조회
+        Set<Long> followingSet = new HashSet<>(followRepository.findAllFollowingIdsByMemberId(memberId));
+
+        // 팔로워 목록을 응답 객체로 변환 (각 팔로워에 대해 내가 팔로우하는지 확인)
+        return members.map(member ->
+                FollowResponse.FollowMemberResponse.of(member, followingSet.contains(member.getId()))
+        );
 
     }
 
     // 내가 팔로우하는 사람들 리스트
     public Page<FollowResponse.FollowMemberResponse> getFollowingList(Long memberId, Pageable page) {
         return followRepository.findAllFollowingsByMemberId(memberId, page)
-                .map(member -> FollowResponse.FollowMemberResponse.of(member));
+                .map(member -> FollowResponse.FollowMemberResponse.of(member, true));
 
     }
 
