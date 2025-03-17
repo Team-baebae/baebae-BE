@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface FollowRepository extends JpaRepository<Follow, Long> {
@@ -22,7 +23,12 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
             "FROM Follow f " +
             "JOIN f.follower fol " +
             "WHERE f.following.id = :memberId")
-    Page<Member> findAllFollowersByMemberId(@Param("memberId") Long memberId, Pageable pageable);
+    Page<Member> findAllFollowersByMemberId(
+            @Param("memberId") Long memberId,
+            Pageable pageable);
+
+    @Query("SELECT f.following.id FROM Follow f WHERE f.follower.id = :memberId")
+    List<Long> findAllFollowingIdsByMemberId(@Param("memberId") Long memberId);
 
     @Query("SELECT fol " +
             "FROM Follow f " +
