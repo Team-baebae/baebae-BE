@@ -23,7 +23,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
   Optional<Member> findByRefreshToken(String refreshToken);
 
   // 닉네임이 포함된 회원 목록 조회 (대소문자 구분 없이 검색)
-  Page<Member> findByNicknameContainingIgnoreCase(String nickname, Pageable pageable);
+  Page<Member> findByNicknameStartingWithIgnoreCase(String nickname, Pageable pageable);
 
 }
 

@@ -100,7 +100,7 @@ public class MemberService {
 
     // 모든 회원을 조회하는 메서드
     public Page<MemberResponse.MemberSearchInformationResponse> searchMembers(String nickname, Pageable page) {
-        return memberRepository.findByNicknameContainingIgnoreCase(nickname, page)
+        return memberRepository.findByNicknameStartingWithIgnoreCase(nickname, page)
                 .map(member -> MemberResponse.MemberSearchInformationResponse.of(member.getId(), member.getNickname(), member.getProfileImage()));
 
     }
