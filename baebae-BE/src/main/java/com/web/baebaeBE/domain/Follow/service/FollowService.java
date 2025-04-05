@@ -53,6 +53,13 @@ public class FollowService {
         followRepository.save(follow);
     }
 
+    public FollowResponse.FollowCountResponse getFollowerCount(Long memberId) {
+        long followerCount = followRepository.countByFollower_Id(memberId);
+        long followingCount = followRepository.countByFollowing_Id(memberId);
+
+        return FollowResponse.FollowCountResponse.of(followerCount, followingCount);
+    }
+
     public void deleteFollower(Long followerId, Long followingId) {
         Follow follow = followRepository.findByFollowerIdAndFollowingId(followerId, followingId)
                 .orElseThrow(() -> new BusinessException(FollowException.NOT_EXIST_FOLLOW));

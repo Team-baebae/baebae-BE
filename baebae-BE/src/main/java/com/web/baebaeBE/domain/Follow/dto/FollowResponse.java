@@ -42,6 +42,23 @@ public class FollowResponse {
     }
 
     @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class FollowCountResponse {
+        private long followerCount;
+        private long followingCount;
+
+        public static FollowCountResponse of(long followerCount, long followingCount) {
+            return FollowCountResponse.builder()
+                    .followerCount(followerCount)
+                    .followingCount(followingCount)
+                    .build();
+        }
+    }
+
+    @Getter
     @Builder
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
