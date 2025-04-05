@@ -19,6 +19,12 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
     // 중복 체크에 사용할 메서드
     boolean existsByFollowerIdAndFollowingId(Long followerId, Long followingId);
 
+    // 특정 사용자가 팔로우하는 사람 수
+    long countByFollower_Id(Long memberId);
+
+    // 특정 사용자를 팔로우하는 사람 수
+    long countByFollowing_Id(Long memberId);
+
     @Query("SELECT fol " +
             "FROM Follow f " +
             "JOIN f.follower fol " +

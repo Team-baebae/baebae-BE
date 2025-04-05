@@ -197,6 +197,30 @@ public interface FollowApi {
     );
 
     @Operation(
+            summary = "팔로잉, 팔로워 수 조회",
+            description = "해당 유저의 팔로잉, 팔로워 수를 조회한다. (팔로워 수, 팔로잉 수)",
+            security = @SecurityRequirement(name = "bearerAuth")
+    )
+    @Parameter(
+            in = ParameterIn.HEADER,
+            name = "Authorization", required = true,
+            schema = @Schema(type = "string"),
+            description = "Bearer [Access 토큰]")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회"),
+            @ApiResponse(responseCode = "401", description = "토큰 인증 실패",
+                    content = @Content(mediaType = "application/json",
+                            examples = @ExampleObject(value = "{\n" +
+                                    "  \"errorCode\": \"T-002\",\n" +
+                                    "  \"message\": \"해당 토큰은 유효한 토큰이 아닙니다.\"\n" +
+                                    "}"))
+            )
+    })
+    @GetMapping("followers/count/{memberId}")
+    public ResponseEntity<FollowResponse.FollowCountResponse> getFollowerCount(
+            @PathVariable Long memberId
+    );
+    @Operation(
             summary = "새 팔로워들을 기존 팔로워들로 변경",
             description = "해당 멤버의 새로운 팔로워들을 기존 팔로워들로 변경한다.",
             security = @SecurityRequirement(name = "bearerAuth")

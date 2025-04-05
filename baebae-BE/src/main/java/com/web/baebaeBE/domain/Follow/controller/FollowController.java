@@ -67,6 +67,13 @@ public class FollowController implements FollowApi {
         return ResponseEntity.ok(followService.hasFollowers(memberId));
     }
 
+    @GetMapping("followers/count/{memberId}")
+    public ResponseEntity<FollowResponse.FollowCountResponse> getFollowerCount(
+            @PathVariable Long memberId
+    ) {
+        return ResponseEntity.ok(followService.getFollowerCount(memberId));
+    }
+
     @PatchMapping("followers/relation/update/{memberId}")
     public ResponseEntity<Void> updateFollowRelation(
             @PathVariable Long memberId
