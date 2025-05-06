@@ -54,8 +54,8 @@ public class FollowService {
     }
 
     public FollowResponse.FollowCountResponse getFollowerCount(Long memberId) {
-        long followerCount = followRepository.countByFollower_Id(memberId);
-        long followingCount = followRepository.countByFollowing_Id(memberId);
+        long followerCount = followRepository.countByFollowing_Id(memberId);
+        long followingCount = followRepository.countByFollower_Id(memberId);
 
         return FollowResponse.FollowCountResponse.of(followerCount, followingCount);
     }
